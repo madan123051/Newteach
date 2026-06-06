@@ -679,6 +679,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script>
   // Firebase Config
   const firebaseConfig = {
@@ -693,6 +694,7 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  const auth = firebase.auth();
 
   // Mobile menu
   const hamburger = document.getElementById('hamburger');
@@ -713,6 +715,26 @@
     });
   },{threshold:0.1});
   document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+
+  async function ensureFirebaseWriteAccess(){
+    if (auth.currentUser) return auth.currentUser;
+    try {
+      const cred = await auth.signInAnonymously();
+      return cred.user;
+    } catch (err) {
+      console.warn('Anonymous auth failed; trying public Firestore write:', err.message);
+      return null;
+    }
+  }
+
+  function withTimeout(promise, ms, label){
+    let timeoutId;
+    const timeout = new Promise((_, reject) => {
+      timeoutId = setTimeout(() => reject(new Error(label + ' timed out. Please check Firebase rules/network.')), ms);
+    });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timeoutId));
+  }
 
   function escapeHtml(value){
     return String(value || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -780,15 +802,16 @@
   document.getElementById('jobForm').onsubmit = async (e) => {
     e.preventDefault();
     try {
-      await db.collection('careers').add({
-        name: document.getElementById('appName').value,
-        phone: document.getElementById('appPhone').value,
-        email: document.getElementById('appEmail').value,
+      await ensureFirebaseWriteAccess();
+      await withTimeout(db.collection('careers').add({
+        name: document.getElementById('appName').value.trim(),
+        phone: document.getElementById('appPhone').value.trim(),
+        email: document.getElementById('appEmail').value.trim(),
         position: document.getElementById('jobTitleInput').value,
         status: 'new',
-        message: document.getElementById('appResume').value,
+        message: document.getElementById('appResume').value.trim(),
         createdAt: new Date().toISOString()
-      });
+      }), 12000, 'Application submission');
       alert('Application submitted successfully!');
       document.getElementById('applicationModal').style.display = 'none';
       document.getElementById('jobForm').reset();
@@ -803,21 +826,26 @@
     btn.disabled = true; btn.innerHTML = 'Sending...';
 
     try {
-      await db.collection('leads').add({
-        name: e.target.querySelector('input[placeholder="Your Name"]').value,
-        phone: e.target.querySelector('input[placeholder="+91 XXXXX XXXXX"]').value,
-        email: e.target.querySelector('input[placeholder="your@email.com"]').value,
-        service: e.target.querySelector('select').value,
-        message: e.target.querySelector('textarea').value,
+      await ensureFirebaseWriteAccess();
+      const payload = {
+        name: document.getElementById('leadName').value.trim(),
+        phone: document.getElementById('leadPhone').value.trim(),
+        email: document.getElementById('leadEmail').value.trim(),
+        service: document.getElementById('leadService').value,
+        message: document.getElementById('leadMessage').value.trim(),
         status: 'new',
         createdAt: new Date().toISOString()
-      });
+      };
+      await withTimeout(Promise.all([
+        db.collection('quotes').add({ ...payload, location: '', source: 'website-get-quote' }),
+        db.collection('leads').add({ ...payload, source: 'website-get-quote' })
+      ]), 12000, 'Quote request');
       btn.innerHTML = '✓ Message Sent!';
       btn.style.background = '#10b981';
       e.target.reset();
       setTimeout(() => { btn.disabled = false; btn.innerHTML = original; btn.style.background = ''; }, 3000);
     } catch (err) {
-      alert('Error: ' + err.message);
+      alert('Message could not be sent to admin: ' + err.message);
       btn.disabled = false; btn.innerHTML = original;
     }
   };

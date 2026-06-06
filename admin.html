@@ -53,6 +53,7 @@
       <div class="nav-section">Workspace</div>
       <div id="navItems"></div>
       <div class="nav-section">System</div>
+      <a class="nav-item" href="index.html" target="_blank" rel="noopener" style="text-decoration:none">🌐 Visit site</a>
       <button class="nav-item" id="exportBtn">⬇ Export data</button>
       <button class="nav-item" id="logoutBtn">↩ Logout</button>
     </aside>
@@ -63,6 +64,7 @@
           <div class="search"><input id="globalSearch" placeholder="Global search across records"></div>
         </div>
         <div class="top-actions">
+          <a class="btn btn-navy" href="index.html" target="_blank" rel="noopener" style="text-decoration:none;padding:8px 12px">🌐 Site</a>
           <span class="firebase-badge" id="syncBadge">🔥 Syncing…</span>
           <button class="icon-btn" id="darkToggle" title="Toggle dark mode">◐</button>
           <span class="muted" id="currentUserName"></span>
@@ -97,7 +99,7 @@ const roles = {SUPER_ADMIN:'Super Admin',COMPANY_ADMIN:'Company Admin',EDITOR:'E
 const permissions = {
   'Super Admin':  ['overview','leads','quotes','contracts','careers','jobs','users','companies','media','news','blogs','ads','activity'],
   'Company Admin':['overview','leads','quotes','contracts','careers','jobs','companies','media','news','blogs','ads','activity'],
-  'Editor':       ['overview','media','news','blogs'],
+  'Editor':       ['overview','leads','quotes','careers','jobs','media','news','blogs'],
   'Moderator':    ['overview','media','news','blogs','activity']
 };
 // Role map for Firebase Auth users (email → role)
@@ -124,12 +126,12 @@ const schemas = {
     seed:demoAccounts.map(({password,...u})=>u)
   },
   leads:{
-    label:'Leads Manager',singular:'Lead',icon:'📥',roles:['Super Admin','Company Admin'],firestore:true,
+    label:'Leads Manager',singular:'Lead',icon:'📥',roles:['Super Admin','Company Admin','Editor'],firestore:true,
     fields:[['name','Customer Name','text'],['phone','Phone','tel'],['email','Email','email'],['service','Service','text'],['status','Status','select',['new','contacted','closed','junk']],['message','Message','textarea']],
     seed:[{id:'l1',name:'Demo Lead',phone:'+91 0000000000',email:'demo@example.com',service:'Pleated Mesh',status:'new',message:'I need a quote for 5 windows.'}]
   },
   quotes:{
-    label:'Quote Requests',singular:'Quote',icon:'💰',roles:['Super Admin','Company Admin'],firestore:true,
+    label:'Quote Requests',singular:'Quote',icon:'💰',roles:['Super Admin','Company Admin','Editor'],firestore:true,
     fields:[['name','Customer Name','text'],['phone','Phone','tel'],['email','Email','email'],['service','Service Required','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['location','Location / Address','text'],['status','Status','select',['new','in-progress','quoted','closed']],['message','Requirements','textarea']],
     seed:[]
   },
@@ -139,12 +141,12 @@ const schemas = {
     seed:[]
   },
   careers:{
-    label:'Career Applications',singular:'Application',icon:'🎓',roles:['Super Admin','Company Admin'],firestore:true,
+    label:'Career Applications',singular:'Application',icon:'🎓',roles:['Super Admin','Company Admin','Editor'],firestore:true,
     fields:[['name','Applicant Name','text'],['email','Email','email'],['phone','Phone','tel'],['position','Position Applied For','text'],['resumeUrl','Resume URL','url'],['status','Status','select',['new','reviewing','shortlisted','rejected']],['message','Cover Letter / Message','textarea']],
     seed:[]
   },
   jobs:{
-    label:'Job Vacancies',singular:'Job',icon:'💼',roles:['Super Admin','Company Admin'],firestore:true,
+    label:'Job Vacancies',singular:'Job',icon:'💼',roles:['Super Admin','Company Admin','Editor'],firestore:true,
     fields:[['title','Job Title','text'],['department','Department','text'],['status','Status','select',['active','expired','draft']],['expiryDate','Expiry Date','date'],['applications','Applications Count','number'],['description','Description','textarea']],
     seed:[{id:'j1',title:'Installation Technician',department:'Operations',status:'active',expiryDate:'2026-08-15',applications:0,description:'Install pleated mesh, invisible grills, honeycomb partitions, and anti-bird nets at customer homes and sites.'}]
   },
@@ -224,6 +226,19 @@ function setupFirestoreListeners(){
   });
 }
 
+
+async function ensureFirebaseUser(){
+  if(fbAuth.currentUser) return fbAuth.currentUser;
+  if(state.session?.provider === 'firebase') return null;
+  try {
+    const cred = await fbAuth.signInAnonymously();
+    return cred.user;
+  } catch(e) {
+    console.warn('Anonymous Firebase auth failed:', e.message);
+    return null;
+  }
+}
+
 function updateSyncBadge(ok){
   fsConnected = ok;
   const el = document.getElementById('syncBadge');
@@ -235,6 +250,7 @@ function updateSyncBadge(ok){
 
 async function fsCreate(key, obj){
   if(!schemas[key]?.firestore) return;
+  await ensureFirebaseUser();
   try {
     const {id, upload, ...firestoreObj} = obj;
     const docRef = await fstore.collection(key).add({...firestoreObj, createdAt: obj.createdAt || new Date().toISOString()});
@@ -247,12 +263,14 @@ async function fsCreate(key, obj){
 
 async function fsUpdate(key, id, obj){
   if(!schemas[key]?.firestore) return;
+  await ensureFirebaseUser();
   try { await fstore.collection(key).doc(id).set(obj, {merge:true}); }
   catch(e){ console.warn('Firestore update failed:', e.message); }
 }
 
 async function fsDelete(key, id){
   if(!schemas[key]?.firestore) return;
+  await ensureFirebaseUser();
   try { await fstore.collection(key).doc(id).delete(); }
   catch(e){ console.warn('Firestore delete failed:', e.message); }
 }
@@ -268,7 +286,7 @@ async function login(email, password){
   // Try Firebase Auth first
   try {
     const cred = await fbAuth.signInWithEmailAndPassword(email, password);
-    const role = roleMap[cred.user.email] || 'Editor';
+    const role = roleMap[cred.user.email] || 'Super Admin';
     const name = cred.user.displayName || cred.user.email.split('@')[0];
     state.session = {id:cred.user.uid, name, email:cred.user.email, role, provider:'firebase'};
     sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
@@ -291,7 +309,7 @@ function boot(){
   // Check Firebase Auth session
   fbAuth.onAuthStateChanged(user=>{
     if(user && !state.session){
-      const role = roleMap[user.email] || 'Editor';
+      const role = roleMap[user.email] || 'Super Admin';
       const name = user.displayName || user.email.split('@')[0];
       state.session = {id:user.uid, name, email:user.email, role, provider:'firebase'};
       sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
@@ -518,7 +536,7 @@ function openForm(key,id){
   document.getElementById('modal').classList.remove('hidden');
   document.getElementById('modal').innerHTML=`<div class="modal-card">
     <div class="modal-head"><div><h2>${id?'Edit':'Create'} ${schema.singular}</h2><p class="muted">${schema.label}</p></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
-    <form id="recordForm"><div class="form-grid">${schema.fields.map(f=>fieldHtml(f,record?.[f[0]])).join('')}</div><button class="btn btn-primary" type="submit" style="margin-top:12px">Save ${schema.singular}</button></form>
+    <form id="recordForm"><div class="form-grid">${schema.fields.map(f=>fieldHtml(f,record?.[f[0]])).join('')}</div><button class="btn btn-primary" id="recordSaveBtn" type="submit" style="margin-top:12px">Save ${schema.singular}</button></form>
   </div>`;
   document.getElementById('recordForm').onsubmit = async e=>{e.preventDefault();await saveRecord(key,id,new FormData(e.currentTarget));};
 }
@@ -531,6 +549,8 @@ function fieldHtml([name,label,type,options],value=''){
 }
 
 async function saveRecord(key,id,form){
+  const saveBtn = document.getElementById('recordSaveBtn');
+  if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = key === 'media' ? 'Uploading / saving…' : 'Saving…'; }
   const obj = {};
   for(const [k,v] of form.entries()){
     if(v instanceof File){ if(v.name) obj[k] = v; }
@@ -544,6 +564,7 @@ async function saveRecord(key,id,form){
       obj.metadata = [obj.metadata, `Uploaded file: ${uploadInfo.name}`].filter(Boolean).join('\n');
     } catch(e){
       toast(`Upload failed: ${e.message}`);
+      if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = `Save ${schemas[key].singular}`; }
       return;
     }
   }
@@ -565,6 +586,7 @@ async function saveRecord(key,id,form){
 
 
 async function uploadMediaFile(file, recordId){
+  await ensureFirebaseUser();
   if(!file.type.startsWith('image/') && !file.type.startsWith('video/')) throw new Error('Only image or video files are allowed');
   const ext = file.name.split('.').pop() || (file.type.startsWith('video/')?'mp4':'jpg');
   const safeName = file.name.replace(/[^a-z0-9._-]/gi,'-').toLowerCase();
