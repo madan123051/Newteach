@@ -663,19 +663,66 @@
   },{threshold:0.1});
   document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
-  // Form submission
-  document.getElementById('contactForm').addEventListener('submit',function(e){
+  // Data Integration
+  const storageKey = 'newtech-admin-v2';
+  function getDB() {
+    const stored = localStorage.getItem(storageKey);
+    return stored ? JSON.parse(stored) : null;
+  }
+
+  function renderDynamicContent() {
+    const db = getDB();
+    if (!db) return;
+
+    // Render Services (from companies/products logic or specific products schema)
+    // For this demo, we'll keep the static services but wire the Leads form.
+  }
+
+  // Form submission wired to Admin Dashboard
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    const formData = new FormData(this);
+    const db = getDB() || { leads: [] };
+    
+    const newLead = {
+      id: Math.random().toString(36).slice(2, 10),
+      name: this.querySelector('input[placeholder="Your Name"]').value,
+      phone: this.querySelector('input[placeholder="+91 XXXXX XXXXX"]').value,
+      email: this.querySelector('input[placeholder="your@email.com"]').value,
+      service: this.querySelector('select').value,
+      message: this.querySelector('textarea').value,
+      status: 'new',
+      createdAt: new Date().toISOString()
+    };
+
+    if (!db.leads) db.leads = [];
+    db.leads.unshift(newLead);
+    
+    // Add to activity log
+    if (db.activity) {
+      db.activity.unshift({
+        id: Math.random().toString(36).slice(2, 10),
+        action: `New Lead from ${newLead.name}`,
+        actor: 'Website Form',
+        type: 'activity',
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(db));
+
     const btn = this.querySelector('button[type="submit"]');
     const original = btn.innerHTML;
     btn.innerHTML = '✓ Message Sent Successfully!';
     btn.style.background = '#10b981';
-    setTimeout(()=>{
+    setTimeout(() => {
       btn.innerHTML = original;
       btn.style.background = '';
       this.reset();
-    },3000);
+    }, 3000);
   });
+
+  window.addEventListener('DOMContentLoaded', renderDynamicContent);
 
   // Navbar shadow on scroll
   window.addEventListener('scroll',()=>{
