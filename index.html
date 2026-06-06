@@ -583,8 +583,8 @@
         <h2>Recent <span>Installations</span></h2>
         <p style="margin: 0 auto;">See our solutions in action across residential & commercial projects.</p>
       </div>
-      <div class="gallery-grid">
-        <!-- Gallery items will be loaded here from Firebase -->
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- Gallery items will be loaded here -->
       </div>
     </div>
   </section>
@@ -598,7 +598,7 @@
         <p style="color: #64748b; max-width: 600px; margin: 0 auto;">We are looking for talented individuals to join New Tech Home Solutions.</p>
       </div>
       <div id="jobsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-        <!-- Jobs will be loaded here from Firebase -->
+        <!-- Jobs will be loaded here -->
       </div>
       
       <!-- Application Form (Hidden by default) -->
@@ -710,7 +710,7 @@
   <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyATvwM_0B9ibtD9MniIoiNuiirnC0mb2AY",
@@ -725,58 +725,97 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    function initGallerySync() {
-      const galleryGrid = document.querySelector('.gallery-grid');
-      onSnapshot(query(collection(db, "media"), orderBy("createdAt", "desc")), (snapshot) => {
-        if (!snapshot.empty) {
-          galleryGrid.innerHTML = '';
-          snapshot.forEach((doc) => {
-            const item = doc.data();
-            const isVideo = item.type === 'video';
-            galleryGrid.innerHTML += `
-              <div class="gallery-item fade-up visible">
-                ${isVideo ? 
-                  `<video src="${item.url}" style="width:100%; height:100%; object-fit:cover;" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` : 
-                  `<img src="${item.url}" alt="${item.title}">`
-                }
-                <div class="gallery-overlay">
-                  <div>
-                    <span style="background:var(--secondary); color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase;">${item.category}</span>
-                    <h4>${item.title}</h4>
-                  </div>
-                </div>
+    const demoGallery = [
+      { title: "Pleated Mesh Installation", category: "Pleated Mesh", type: "photo", url: "https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/10700f531-e73e-4340-a35e-65f573516584.png" },
+      { title: "Honeycomb Partition", category: "Honey Comb Partition", type: "photo", url: "https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/107062145-8162-4211-8288-0243e8e74f98.png" },
+      { title: "Invisible Grill Security", category: "Invisible Grill", type: "photo", url: "https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/10f279581-3f9c-4860-84a1-0678a2212952.png" },
+      { title: "Anti Bird Netting", category: "Anti Bird Net", type: "photo", url: "https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/10332f913-979b-4330-9759-335384666324.png" },
+      { title: "Modern Balcony Setup", category: "Invisible Grill", type: "photo", url: "https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/109062331-5072-4682-8924-423573881451.png" },
+      { title: "Premium Invisible Grill", category: "Invisible Grill", type: "photo", url: "https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/10d0ff845-07f4-46e8-b38f-ffb94cca9f65.png" }
+    ];
+
+    const demoJobs = [
+      { title: "Sales Executive", department: "Sales", description: "Looking for energetic sales professionals to handle customer inquiries and site visits.", status: "active", expiryDate: "2026-12-31" },
+      { title: "Installation Technician", department: "Operations", description: "Experience in installing pleated mesh, invisible grills, and bird nets required.", status: "active", expiryDate: "2026-12-31" }
+    ];
+
+    function renderGallery(items) {
+      const galleryGrid = document.getElementById('galleryGrid');
+      galleryGrid.innerHTML = items.map(item => {
+        const isVideo = item.type === 'video';
+        return `
+          <div class="gallery-item fade-up visible">
+            ${isVideo ? 
+              `<video src="${item.url}" style="width:100%; height:100%; object-fit:cover;" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` : 
+              `<img src="${item.url}" alt="${item.title}">`
+            }
+            <div class="gallery-overlay">
+              <div>
+                <span style="background:var(--secondary); color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase;">${item.category}</span>
+                <h4>${item.title}</h4>
               </div>
-            `;
-          });
-        }
-      });
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    function initJobsSync() {
+    function renderJobs(jobs) {
       const jobsContainer = document.getElementById('jobsContainer');
-      onSnapshot(query(collection(db, "jobs"), where("status", "==", "active")), (snapshot) => {
-        if (!snapshot.empty) {
-          jobsContainer.innerHTML = '';
-          snapshot.forEach((doc) => {
-            const job = doc.data();
-            jobsContainer.innerHTML += `
-              <div class="card fade-up visible" style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
-                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:15px;">
-                  <div>
-                    <h3 style="margin-bottom:5px; color: #1e3a8a; font-size: 18px;">${job.title}</h3>
-                    <span style="background:#e0f2fe; color:#0369a1; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600;">${job.department}</span>
-                  </div>
-                  <button class="btn-primary" onclick="openJobForm('${job.title}')" style="padding: 8px 16px; font-size: 13px;">Apply</button>
-                </div>
-                <p style="color: #64748b; font-size: 13px; line-height: 1.5; margin-bottom: 15px;">${job.description}</p>
-                <div style="font-size: 11px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 12px;">Expires: ${job.expiryDate}</div>
+      if (jobs.length > 0) {
+        jobsContainer.innerHTML = jobs.map(job => `
+          <div class="card fade-up visible" style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:15px;">
+              <div>
+                <h3 style="margin-bottom:5px; color: #1e3a8a; font-size: 18px;">${job.title}</h3>
+                <span style="background:#e0f2fe; color:#0369a1; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600;">${job.department}</span>
               </div>
-            `;
-          });
-        } else {
-          jobsContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #94a3b8; background: white; border-radius: 16px; border: 1px dashed #cbd5e1;">No active openings.</div>';
+              <button class="btn-primary" onclick="openJobForm('${job.title}')" style="padding: 8px 16px; font-size: 13px;">Apply</button>
+            </div>
+            <p style="color: #64748b; font-size: 13px; line-height: 1.5; margin-bottom: 15px;">${job.description}</p>
+            <div style="font-size: 11px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 12px;">Expires: ${job.expiryDate}</div>
+          </div>
+        `).join('');
+      } else {
+        jobsContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #94a3b8; background: white; border-radius: 16px; border: 1px dashed #cbd5e1;">No active openings.</div>';
+      }
+    }
+
+    async function initSync() {
+      // Show Fallback first
+      renderGallery(demoGallery);
+      renderJobs(demoJobs);
+
+      // Sync Gallery
+      onSnapshot(query(collection(db, "media"), orderBy("createdAt", "desc")), (snapshot) => {
+        if (!snapshot.empty) {
+          const items = [];
+          snapshot.forEach(doc => items.push(doc.data()));
+          renderGallery(items);
         }
       });
+
+      // Sync Jobs
+      onSnapshot(query(collection(db, "jobs"), where("status", "==", "active")), (snapshot) => {
+        if (!snapshot.empty) {
+          const jobs = [];
+          snapshot.forEach(doc => jobs.push(doc.data()));
+          renderJobs(jobs);
+        }
+      });
+
+      // Auto-restore if empty
+      const q = query(collection(db, "media"), limit(1));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        console.log("Restoring demo data to Firebase...");
+        for (const item of demoGallery) {
+          await addDoc(collection(db, "media"), { ...item, createdAt: new Date().toISOString() });
+        }
+        for (const job of demoJobs) {
+          await addDoc(collection(db, "jobs"), { ...job, createdAt: new Date().toISOString() });
+        }
+      }
     }
 
     window.openJobForm = function(title) {
@@ -835,10 +874,7 @@
       } catch (error) { alert("Failed to submit."); }
     };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      initGallerySync();
-      initJobsSync();
-    });
+    window.addEventListener('DOMContentLoaded', initSync);
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -853,6 +889,3 @@
   </script>
 </body>
 </html>
-
-  <!-- Temporary restoration script -->
-  <script type="module" src="restore-data.js"></script>
