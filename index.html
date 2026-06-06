@@ -50,6 +50,12 @@
     transition:all .3s;box-shadow:0 4px 15px rgba(249,115,22,0.3);
   }
   .nav-cta:hover{background:var(--orange-dark);transform:translateY(-2px);}
+  .company-login{
+    background:var(--navy);color:#fff;padding:10px 20px;border-radius:30px;
+    text-decoration:none;font-weight:600;font-size:14px;transition:all .3s;
+    box-shadow:0 4px 15px rgba(30,58,138,0.25);
+  }
+  .company-login:hover{background:var(--navy-dark);transform:translateY(-2px);}
   .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
   .hamburger span{width:26px;height:3px;background:var(--navy);border-radius:2px;transition:.3s;}
 
@@ -278,7 +284,8 @@
     font-size:22px;flex-shrink:0;
   }
   .contact-item h4{color:var(--navy);font-size:16px;margin-bottom:4px;}
-  .contact-item p{color:var(--gray);font-size:14px;margin:0;}
+  .contact-item p, .contact-item a{color:var(--gray);font-size:14px;margin:0;text-decoration:none;}
+  .contact-item a:hover{color:var(--orange);}
 
   .contact-form{
     background:var(--light);padding:40px;border-radius:20px;
@@ -315,7 +322,7 @@
     width:40px;height:40px;border-radius:50%;
     background:rgba(255,255,255,0.1);color:#fff;
     display:flex;align-items:center;justify-content:center;
-    transition:all .3s;
+    transition:all .3s;text-decoration:none;
   }
   .social-links a:hover{background:var(--orange);transform:translateY(-3px);}
   .footer-bottom{
@@ -337,9 +344,14 @@
     }
     .nav-links.active{display:flex;}
     .hamburger{display:flex;}
-    .nav-cta{display:none;}
+    .nav-cta,.company-login{display:none;}
+    .mobile-only { display: block !important; }
   }
+  .mobile-only { display: none; }
   @media(max-width:600px){
+    .nav-container{padding:12px 16px;gap:10px;}
+    .logo img{height:48px;}
+    .company-login{display:none !important;}
     .hero-content h1{font-size:32px;}
     .hero-stats{gap:20px;}
     .stat-item h3{font-size:24px;}
@@ -359,10 +371,9 @@
 <nav class="navbar">
   <div class="nav-container">
     <a href="#" class="logo">
-      <img src="assets/logo.png" alt="New Tech Logo">
+      <img src="assets/logo.png" alt="New Tech Home Solutions Logo">
       <div>
-        <div style="font-weight:800;color:var(--navy);font-size:20px;line-height:1;">New<span style="color:var(--orange);">Tech</span></div>
-        <div style="font-size:10px;color:var(--gray);letter-spacing:1px;">Home Solutions</div>
+        <div style="font-weight:800;color:var(--navy);font-size:20px;line-height:1;">New Tech <span style="color:var(--orange);">Home Solutions</span></div>
       </div>
     </a>
     <ul class="nav-links" id="navLinks">
@@ -400,7 +411,7 @@
       </div>
     </div>
     <div class="hero-image">
-      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Installation">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Home Solutions">
       <div class="hero-badge">BEST<br>QUALITY<br>GUARANTEED</div>
     </div>
   </div>
@@ -413,14 +424,14 @@
       <img src="https://images.unsplash.com/photo-1600585154526-990dcea4db0d?auto=format&fit=crop&w=800&q=80" alt="About Us">
     </div>
     <div class="about-content">
-      <div class="section-label">About Us</div>
-      <h2>Premium <span>Insect Protection</span> Systems for Modern Homes</h2>
-      <p>New Tech Home Solutions provides high-quality fly screens, pleated mesh, and safety grills designed to blend seamlessly with your home interiors while providing maximum protection.</p>
+      <div class="section-label">About Our Company</div>
+      <h2>Your Trusted Partner in <span>Home Protection</span></h2>
+      <p>New Tech Home Solutions is a leader in providing high-quality, durable, and aesthetic protection systems for modern homes. We combine technology with craftsmanship to deliver excellence.</p>
       <ul class="about-features">
-        <li>Custom Fit for Windows & Doors</li>
-        <li>Durable & Weather Resistant</li>
-        <li>Easy Maintenance & Long Lasting</li>
-        <li>Expert Installation Services</li>
+        <li>Premium Quality Materials</li>
+        <li>Expert Installation Team</li>
+        <li>Customized Solutions</li>
+        <li>Post-Installation Support</li>
       </ul>
     </div>
   </div>
@@ -431,14 +442,14 @@
   <div class="section-header">
     <div class="section-label">Our Expertise</div>
     <h2>What We Provide</h2>
-    <p>Discover our range of premium protection solutions tailored for your home.</p>
+    <p>Premium protection and partition solutions tailored for modern Indian homes.</p>
   </div>
   <div class="products-grid">
     <div class="product-card">
       <div class="product-img"><img src="https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=80" alt="Pleated Mesh"></div>
       <div class="product-info">
         <h3>Pleated Mesh</h3>
-        <p>Retractable insect screens that offer elegant protection for large openings.</p>
+        <p>Premium insect protection for windows and doors with elegant design.</p>
         <a href="#contact" class="product-link">Enquire Now →</a>
       </div>
     </div>
@@ -446,7 +457,7 @@
       <div class="product-img"><img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80" alt="Honeycomb"></div>
       <div class="product-info">
         <h3>Honey Comb Partition</h3>
-        <p>Functional and stylish partitions for modern room division.</p>
+        <p>Stylish and functional sliding partitions for room division.</p>
         <a href="#contact" class="product-link">Enquire Now →</a>
       </div>
     </div>
@@ -454,7 +465,7 @@
       <div class="product-img"><img src="https://images.unsplash.com/photo-1585128719715-46776b56a0d1?auto=format&fit=crop&w=800&q=80" alt="Invisible Grill"></div>
       <div class="product-info">
         <h3>Invisible Grill</h3>
-        <p>High-tensile safety grills that provide protection without blocking your view.</p>
+        <p>Modern balcony safety solution with high-tensile stainless steel.</p>
         <a href="#contact" class="product-link">Enquire Now →</a>
       </div>
     </div>
@@ -462,7 +473,7 @@
       <div class="product-img"><img src="https://images.unsplash.com/photo-1505691938895-1758d7eaa511?auto=format&fit=crop&w=800&q=80" alt="Bird Net"></div>
       <div class="product-info">
         <h3>Anti Bird Net</h3>
-        <p>Professional bird control solutions to keep your balconies clean and safe.</p>
+        <p>Professional bird control solutions to keep your balconies clean.</p>
         <a href="#contact" class="product-link">Enquire Now →</a>
       </div>
     </div>
@@ -484,24 +495,23 @@
 <section class="contact" id="contact">
   <div class="contact-container">
     <div class="contact-info">
-      <div class="section-label">Get In Touch</div>
-      <h2>Let's Discuss Your <span>Requirements</span></h2>
-      <p>Reach out to us for a free consultation and quote. We are here to help you protect your home.</p>
+      <h2>Get In <span>Touch</span></h2>
+      <p>Have questions about our products or need a custom quote? Reach us directly.</p>
       <div class="contact-item">
         <div class="contact-icon">📍</div>
-        <div><h4>Location</h4><p>F-1, Hari Nagar II, Near Eco Park, South Delhi Delhi, India</p></div>
+        <div class="contact-text"><h4>Location</h4><p>F-1, Hari Nagar II, Near Eco Park, South Delhi Delhi, India</p></div>
       </div>
       <div class="contact-item">
         <div class="contact-icon">📞</div>
-        <div><h4>Mobile</h4><p>+91 9315739299</p></div>
+        <div class="contact-text"><h4>Mobile</h4><p><a href="tel:+919315739299">+91 9315739299</a></p></div>
       </div>
       <div class="contact-item">
         <div class="contact-icon">💬</div>
-        <div><h4>WhatsApp</h4><p>+91 9354831931</p></div>
+        <div class="contact-text"><h4>WhatsApp</h4><p><a href="https://wa.me/919354831931">+91 9354831931</a></p></div>
       </div>
       <div class="contact-item">
         <div class="contact-icon">✉️</div>
-        <div><h4>Email</h4><p>homesolutionsnewtech@gmail.com</p></div>
+        <div class="contact-text"><h4>Email</h4><p><a href="mailto:homesolutionsnewtech@gmail.com">homesolutionsnewtech@gmail.com</a></p></div>
       </div>
       <div class="social-links">
         <a href="https://www.facebook.com/share/1BNHXkyEpx/?mibextid=wwXIfr">f</a>
@@ -523,7 +533,7 @@
           </div>
         </div>
         <div class="form-group"><label>Message</label><textarea name="message" rows="4" required></textarea></div>
-        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Send Message →</button>
+        <button type="submit" class="btn-primary" style="width:100%; border:none; cursor:pointer; justify-content:center;">Send Message →</button>
       </form>
     </div>
   </div>
@@ -533,13 +543,13 @@
   <div class="footer-container">
     <div class="footer-col">
       <div class="footer-logo"><img src="assets/logo.png" alt="Logo"></div>
-      <p>India's trusted provider of premium home protection systems.</p>
+      <p>Providing premium home protection and interior solutions across Delhi NCR.</p>
     </div>
     <div class="footer-col">
       <h4>Quick Links</h4>
       <a href="#home">Home</a>
       <a href="#about">About</a>
-      <a href="#products">Products</a>
+      <a href="#products">Services</a>
       <a href="#contact">Contact</a>
     </div>
     <div class="footer-col">
@@ -556,9 +566,7 @@
       <p>homesolutionsnewtech@gmail.com</p>
     </div>
   </div>
-  <div class="footer-bottom">
-    <p>© 2026 New Tech Home Solutions. All Rights Reserved.</p>
-  </div>
+  <div class="footer-bottom">© 2026 New Tech Home Solutions. All Rights Reserved.</div>
 </footer>
 
 <script type="module">
