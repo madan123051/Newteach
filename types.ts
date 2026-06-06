@@ -1,93 +1,123 @@
-export type AdminRole = 'Super Admin' | 'Company Admin' | 'Editor' | 'Moderator';
+export type AdminRole = 'Super Admin' | 'Company Admin' | 'Editor';
 export type PublicationStatus = 'draft' | 'published' | 'scheduled' | 'archived';
-export type VerificationStatus = 'pending' | 'verified' | 'rejected';
-export type RecordStatus = 'active' | 'inactive' | 'expired';
+export type CompanyStatus = 'pending' | 'verified' | 'rejected';
+export type MediaType = 'image' | 'video' | 'file';
+export type JobStatus = 'draft' | 'active' | 'closed' | 'expired';
+export type AdStatus = 'draft' | 'active' | 'paused' | 'expired';
 
-export interface UserRecord {
+export interface AuditFields {
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  companyId?: string | null;
+}
+
+export interface UserRecord extends AuditFields {
   id: string;
-  companyId?: string;
+  uid?: string;
   name: string;
   email: string;
   role: AdminRole;
   status: 'active' | 'inactive' | 'invited' | 'locked';
-  mfaEnabled?: boolean;
-  lastLoginAt?: string;
 }
 
-export interface CompanyRecord {
+export interface CompanyRecord extends AuditFields {
   id: string;
   name: string;
-  category: string;
-  description?: string;
-  logo?: string;
-  cover?: string;
-  contact: string;
-  phone?: string;
-  social?: string;
-  status: VerificationStatus;
-}
-
-export interface MediaRecord {
-  id: string;
-  companyId?: string;
-  title: string;
-  type: 'photo' | 'video' | 'document';
-  folder: string;
-  status: 'active' | 'inactive';
-  url: string;
-  metadata: string;
-}
-
-export interface ContentRecord {
-  id: string;
-  title: string;
-  slug?: string;
-  status: PublicationStatus;
   category?: string;
-  tags?: string;
+  tagline?: string;
+  description?: string;
+  logoUrl?: string;
+  coverUrl?: string;
+  galleryUrls?: string[];
+  email?: string;
+  phone?: string;
+  website?: string;
+  address?: string;
+  status: CompanyStatus;
+}
+
+export interface MediaRecord extends AuditFields {
+  id: string;
+  title: string;
+  altText?: string;
+  type: MediaType;
+  status: 'active' | 'inactive';
+  mimeType: string;
+  sizeBytes: number;
+  storagePath: string;
+  thumbnailPath?: string;
+  url: string;
+  thumbnailUrl?: string;
+  metadata?: Record<string, unknown> | string;
+}
+
+export interface NewsRecord extends AuditFields {
+  id: string;
+  title: string;
+  slug: string;
+  summary?: string;
+  content: string;
+  status: PublicationStatus;
+  publishAt?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+}
+
+export interface BlogRecord extends NewsRecord {
+  category?: string;
+  tags?: string[];
   seoTitle?: string;
   seoDescription?: string;
-  publishAt?: string;
-  content: string;
+  canonicalUrl?: string;
 }
 
-export interface AdvertisementRecord {
+export interface JobRecord extends AuditFields {
   id: string;
   title: string;
-  status: 'active' | 'inactive';
-  banner: string;
-  startDate: string;
-  endDate: string;
-  analytics: string;
-}
-
-export interface JobRecord {
-  id: string;
-  title: string;
-  status: 'active' | 'expired' | 'draft';
-  expiryDate: string;
-  department: string;
-  applications: number;
+  department?: string;
+  location?: string;
   description: string;
+  status: JobStatus;
+  expiryDate?: string;
+  applicationCount?: number;
+  applications?: string;
+}
+
+export interface AdvertisementRecord extends AuditFields {
+  id: string;
+  title: string;
+  destinationUrl?: string;
+  bannerUrl?: string;
+  videoUrl?: string;
+  status: AdStatus;
+  startAt?: string;
+  endAt?: string;
+  placement?: string;
 }
 
 export interface ActivityLogRecord {
   id: string;
-  action: string;
-  actor: string;
-  type: string;
-  createdAt: string;
+  action: 'Create' | 'Edit' | 'Delete' | 'Login' | 'Logout' | 'Media Upload' | string;
+  entityType: 'users' | 'companies' | 'media' | 'news' | 'blogs' | 'jobs' | 'ads' | 'auth' | string;
   entityId?: string;
+  actorUserId?: string;
+  actorName?: string;
+  actorRole?: AdminRole | string;
+  companyId?: string | null;
+  userAgent?: string;
   metadata?: Record<string, unknown>;
+  createdAt?: string;
 }
 
 export interface AdminDatabase {
   users: UserRecord[];
   companies: CompanyRecord[];
   media: MediaRecord[];
-  news: ContentRecord[];
-  blogs: ContentRecord[];
-  ads: AdvertisementRecord[];
+  news: NewsRecord[];
+  blogs: BlogRecord[];
   jobs: JobRecord[];
-  activity: ActivityLogRecord[];
+  ads: AdvertisementRecord[];
+  activityLogs: ActivityLogRecord[];
 }
