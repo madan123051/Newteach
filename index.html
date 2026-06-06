@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,6 +50,12 @@
     transition:all .3s;box-shadow:0 4px 15px rgba(249,115,22,0.3);
   }
   .nav-cta:hover{background:var(--orange-dark);transform:translateY(-2px);}
+  .company-login{
+    background:var(--navy);color:#fff;padding:10px 20px;border-radius:30px;
+    text-decoration:none;font-weight:600;font-size:14px;transition:all .3s;
+    box-shadow:0 4px 15px rgba(30,58,138,0.25);
+  }
+  .company-login:hover{background:var(--navy-dark);transform:translateY(-2px);}
   .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
   .hamburger span{width:26px;height:3px;background:var(--navy);border-radius:2px;transition:.3s;}
 
@@ -338,7 +343,7 @@
     }
     .nav-links.active{display:flex;}
     .hamburger{display:flex;}
-    .nav-cta{display:none;}
+    .nav-cta,.company-login{display:none;}
   }
   @media(max-width:600px){
     .hero-content h1{font-size:32px;}
@@ -375,6 +380,7 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a href="#contact" class="nav-cta">Get Quote</a>
+    <a href="admin.html" class="company-login">Company Login</a>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -726,4 +732,3 @@
 
 </body>
 </html>
-```
