@@ -5,6 +5,6 @@ const firebaseConfig = {
   projectId: "newtechhomesolutions-b6ab6",
   storageBucket: "newtechhomesolutions-b6ab6.firebasestorage.app",
   messagingSenderId: "1015056454392",
-  appId: "1:1015056454352:web:2d764c7f4e0f769407e10d",
+  appId: "1:1015056454392:web:2d764c7f4e0f769407e10d",
   measurementId: "G-8HV2QWDK4W"
 };

@@ -86,7 +86,7 @@ const firebaseConfig = {
   projectId: "newtechhomesolutions-b6ab6",
   storageBucket: "newtechhomesolutions-b6ab6.firebasestorage.app",
   messagingSenderId: "1015056454392",
-  appId: "1:1015056454352:web:2d764c7f4e0f769407e10d",
+  appId: "1:1015056454392:web:2d764c7f4e0f769407e10d",
   measurementId: "G-8HV2QWDK4W"
 };
 firebase.initializeApp(firebaseConfig);
@@ -569,19 +569,28 @@ async function saveRecord(key,id,form){
     }
   }
   delete obj.upload;
-  if(id){
-    const i = db[key].findIndex(r=>r.id===id);
-    const updated = {...db[key][i],...obj, updatedAt:new Date().toISOString()};
-    db[key][i] = updated;
-    fsUpdate(key, id, updated);
-    log(`Updated ${schemas[key].singular}: ${obj.title||obj.name||obj.customerName||id}`,key);
-  } else {
-    const newRec = {id:uid(),...obj, createdAt:new Date().toISOString()};
-    db[key].unshift(newRec);
-    fsCreate(key, newRec);
-    log(`Created ${schemas[key].singular}: ${obj.title||obj.name||obj.customerName||''}`,key);
+  try {
+    if(id){
+      const i = db[key].findIndex(r=>r.id===id);
+      const updated = {...db[key][i],...obj, updatedAt:new Date().toISOString()};
+      if(schemas[key]?.firestore) await fsUpdate(key, id, updated);
+      db[key][i] = updated;
+      log(`Updated ${schemas[key].singular}: ${obj.title||obj.name||obj.customerName||id}`,key);
+    } else {
+      const newRec = {id:uid(),...obj, createdAt:new Date().toISOString()};
+      if(schemas[key]?.firestore){
+        const liveId = await fsCreate(key, newRec);
+        newRec.id = liveId || newRec.id;
+      }
+      db[key].unshift(newRec);
+      log(`Created ${schemas[key].singular}: ${obj.title||obj.name||obj.customerName||''}`,key);
+    }
+    save(); closeModal(); renderContent(); toast('Record saved to Firebase ✓');
+  } catch(e){
+    console.error('Record save failed:', e);
+    toast(`Save failed: ${e.message}`);
+    if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = `Save ${schemas[key].singular}`; }
   }
-  save(); closeModal(); renderContent(); toast('Record saved ✓');
 }
 
 
@@ -598,10 +607,15 @@ async function uploadMediaFile(file, recordId){
 
 function confirmDelete(key,id){
   if(confirm('Delete this record? This action is logged.')){
+    const before = db[key];
     db[key] = db[key].filter(r=>r.id!==id);
-    fsDelete(key, id);
-    log(`Deleted ${schemas[key].singular}`,key);
-    save(); renderContent(); toast('Deleted');
+    fsDelete(key, id).then(()=>{
+      log(`Deleted ${schemas[key].singular}`,key);
+      save(); renderContent(); toast('Deleted');
+    }).catch(e=>{
+      db[key] = before;
+      renderContent(); toast(`Delete failed: ${e.message}`);
+    });
   }
 }
 
