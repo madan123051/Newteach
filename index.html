@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>New Tech Home Solutions – Complete Home Protection & Interior Solutions</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/poppins@5.0.8/index.css">
+<!-- Firebase SDKs (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -239,8 +242,8 @@
     position:relative;overflow:hidden;border-radius:15px;
     aspect-ratio:4/3;cursor:pointer;
   }
-  .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
-  .gallery-item:hover img{transform:scale(1.1);}
+  .gallery-item img, .gallery-item video{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
+  .gallery-item:hover img, .gallery-item:hover video{transform:scale(1.1);}
   .gallery-overlay{
     position:absolute;inset:0;
     background:linear-gradient(to top,rgba(30,58,138,0.9),transparent);
@@ -249,6 +252,22 @@
   }
   .gallery-item:hover .gallery-overlay{opacity:1;}
   .gallery-overlay h4{color:#fff;font-size:18px;font-weight:700;}
+
+  /* CAREERS / JOBS */
+  .jobs-section{background:#fff;padding:90px 30px;}
+  .jobs-grid{
+    max-width:1280px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:25px;
+  }
+  .job-card{
+    background:var(--light);padding:30px;border-radius:20px;
+    border:1px solid #e5e7eb;transition:all .3s;
+  }
+  .job-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,0.05);border-color:var(--orange);}
+  .job-card h3{color:var(--navy);margin-bottom:10px;font-size:22px;}
+  .job-card .dept{color:var(--orange);font-weight:600;font-size:14px;text-transform:uppercase;margin-bottom:15px;display:block;}
+  .job-card p{color:var(--gray);font-size:15px;line-height:1.6;margin-bottom:20px;}
+  .job-card .meta{font-size:12px;color:#9ca3af;margin-bottom:20px;display:block;}
 
   /* CTA */
   .cta-section{
@@ -345,13 +364,10 @@
     .nav-links.active{display:flex;}
     .hamburger{display:flex;}
     .nav-cta,.company-login{display:none;}
-    .mobile-only { display: block !important; }
   }
-  .mobile-only { display: none; }
   @media(max-width:600px){
     .nav-container{padding:12px 16px;gap:10px;}
     .logo img{height:48px;}
-    .company-login{display:none !important;}
     .hero-content h1{font-size:32px;}
     .hero-stats{gap:20px;}
     .stat-item h3{font-size:24px;}
@@ -360,7 +376,6 @@
     section{padding:60px 20px;}
   }
 
-  /* Animations */
   .fade-up{opacity:0;transform:translateY(30px);transition:all .8s ease;}
   .fade-up.visible{opacity:1;transform:translateY(0);}
 </style>
@@ -374,7 +389,7 @@
       <img src="assets/logo.png" alt="New Tech Home Solutions Logo">
       <div>
         <div style="font-weight:800;color:var(--navy);font-size:20px;line-height:1;">New Tech <span style="color:var(--orange);">Home Solutions</span></div>
-        <div style="font-size:10px;color:var(--gray);letter-spacing:1px;margin-top:2px;">COMPLETE PROTECTION</div>
+        <div style="font-size:10px;color:var(--gray);letter-spacing:1px;font-weight:600;">COMPLETE PROTECTION</div>
       </div>
     </a>
     <ul class="nav-links" id="navLinks">
@@ -382,23 +397,24 @@
       <li><a href="#about">About</a></li>
       <li><a href="#products">Services</a></li>
       <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#products">New Exclusive</a></li>
-      <li><a href="admin.html#jobs">Career</a></li>
+      <li><a href="#careers">Careers</a></li>
       <li><a href="#contact">Contact</a></li>
-      <li class="mobile-only"><a href="admin.html">Admin Login</a></li>
     </ul>
-    <a href="#contact" class="nav-cta">Get Quote</a>
-    <a href="admin.html" class="company-login">Admin Login</a>
-    <button class="hamburger" id="hamburger">
-      <span></span><span></span><span></span>
-    </button>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <a href="#contact" class="nav-cta">Get Quote</a>
+      <a href="admin.html" class="company-login">Admin Login</a>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-container">
-    <div class="hero-content fade-up">
+    <div class="hero-content">
+      <div class="section-label">Best in Delhi & NCR</div>
       <h1>Complete <span>Home Protection</span> & Interior Solutions</h1>
       <p class="hero-tagline">Providing quality solutions for a safer and more comfortable home.</p>
       <p>We specialize in premium pleated mesh, honeycomb partitions, invisible grills, and anti-bird nets to keep your living space secure and elegant.</p>
@@ -412,9 +428,9 @@
         <div class="stat-item"><h3>100%</h3><p>Quality</p></div>
       </div>
     </div>
-    <div class="hero-image fade-up">
-      <img src="assets/logo.png" alt="New Tech Home Solutions">
-      <div class="hero-badge">BEST<br>QUALITY<br>GUARANTEED</div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Modern Home Solutions">
+      <div class="hero-badge">BEST QUALITY GUARANTEED</div>
     </div>
   </div>
 </section>
@@ -423,18 +439,17 @@
 <section class="about" id="about">
   <div class="about-container">
     <div class="about-image fade-up">
-      <img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/1504e73fe-fb25-4f06-b8f9-9b9d8e21ab60.png" alt="About Us">
+      <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80" alt="About New Tech">
     </div>
     <div class="about-content fade-up">
-      <div class="section-label">About New Tech Home Solutions</div>
-      <h2>Your Trusted Partner in <span>Home Security</span></h2>
-      <p>With over 15 years of experience, New Tech Home Solutions has been at the forefront of providing innovative and durable protection systems for residential and commercial spaces.</p>
-      <p>Our commitment to quality and customer satisfaction has made us a leader in the industry across Delhi and NCR.</p>
+      <div class="section-label">Who We Are</div>
+      <h2>Your Trusted Partner in <span>Home Safety</span></h2>
+      <p>New Tech Home Solutions is a leader in providing innovative safety and interior solutions. With over 15 years of experience, we have helped thousands of homeowners in Delhi and NCR protect their families while maintaining the beauty of their homes.</p>
       <ul class="about-features">
-        <li>Customized Solutions for every home</li>
-        <li>Premium Grade Materials only</li>
+        <li>Premium Quality Materials</li>
         <li>Expert Installation Team</li>
-        <li>Unmatched After-Sales Support</li>
+        <li>Customized Solutions for Every Home</li>
+        <li>Excellent After-Sales Support</li>
       </ul>
     </div>
   </div>
@@ -443,68 +458,42 @@
 <!-- PRODUCTS -->
 <section class="products" id="products">
   <div class="section-header fade-up">
-    <div class="section-label">Our Main Work</div>
-    <h2>Main Services We Offer</h2>
-    <p>Premium quality solutions tailored to your specific needs.</p>
+    <div class="section-label">Our Expertise</div>
+    <h2>Premium <span>Solutions</span> for You</h2>
+    <p>Discover our range of high-quality products designed for safety, comfort, and style.</p>
   </div>
   <div class="products-grid">
     <div class="product-card fade-up">
-      <div class="product-img"><img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/1504e73fe-fb25-4f06-b8f9-9b9d8e21ab60.png" alt="Pleated Mesh"></div>
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=500&q=80" alt="Pleated Mesh"></div>
       <div class="product-info">
         <h3>Pleated Mesh</h3>
-        <p>Premium quality retractable mesh for windows and doors, providing excellent insect protection.</p>
+        <p>Innovative retractable insect screens that are durable, easy to use, and almost invisible when not in use.</p>
         <a href="#contact" class="product-link">Inquire Now →</a>
       </div>
     </div>
     <div class="product-card fade-up">
-      <div class="product-img"><img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/1abb70666-fead-49c6-8081-1ae01f011c7a.png" alt="Honey Comb Partition"></div>
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=500&q=80" alt="Honeycomb Partition"></div>
       <div class="product-info">
         <h3>Honey Comb Partition</h3>
-        <p>Stylish and functional honeycomb partitions for modern interiors, offering privacy and light control.</p>
+        <p>Elegant and functional partitions that provide privacy and thermal insulation with a modern aesthetic.</p>
         <a href="#contact" class="product-link">Inquire Now →</a>
       </div>
     </div>
     <div class="product-card fade-up">
-      <div class="product-img"><img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/10d0ff845-07f4-46e8-b38f-ffb94cca9f65.png" alt="Invisible Grill"></div>
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500&q=80" alt="Invisible Grill"></div>
       <div class="product-info">
         <h3>Invisible Grill</h3>
-        <p>Maintain your view while ensuring maximum safety for your balconies and windows.</p>
+        <p>High-tensile safety cables that provide maximum protection for balconies and windows without blocking your view.</p>
         <a href="#contact" class="product-link">Inquire Now →</a>
       </div>
     </div>
     <div class="product-card fade-up">
-      <div class="product-img"><img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/1504e73fe-fb25-4f06-b8f9-9b9d8e21ab60.png" alt="Anti Bird Net"></div>
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=500&q=80" alt="Anti Bird Net"></div>
       <div class="product-info">
         <h3>Anti Bird Net</h3>
-        <p>Durable and nearly invisible netting solutions to keep birds away from your balconies.</p>
+        <p>Durable and aesthetic netting solutions to keep your balconies and premises free from birds and pests.</p>
         <a href="#contact" class="product-link">Inquire Now →</a>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features">
-  <div class="section-header fade-up">
-    <div class="section-label">Why Choose Us</div>
-    <h2>The New Tech Advantage</h2>
-    <p>We deliver more than just protection — we deliver peace of mind with every installation.</p>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card fade-up">
-      <div class="feature-icon">📏</div>
-      <h3>Perfect Fit</h3>
-      <p>Every solution is custom-manufactured to your exact measurements for a flawless fit.</p>
-    </div>
-    <div class="feature-card fade-up">
-      <div class="feature-icon">💎</div>
-      <h3>Premium Quality</h3>
-      <p>We use only the finest materials for superior durability and long-lasting performance.</p>
-    </div>
-    <div class="feature-card fade-up">
-      <div class="feature-icon">⚡</div>
-      <h3>Quick Installation</h3>
-      <p>Professional installation team ensures clean, fast fitting with zero damage to your property.</p>
     </div>
   </div>
 </section>
@@ -516,27 +505,21 @@
     <h2>Recent Installations</h2>
     <p>See our solutions in action across residential & commercial projects.</p>
   </div>
-  <div class="gallery-grid">
-    <div class="gallery-item fade-up">
-      <img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/1504e73fe-fb25-4f06-b8f9-9b9d8e21ab60.png" alt="Installation">
-      <div class="gallery-overlay"><h4>Residential Window Screen</h4></div>
-    </div>
-    <div class="gallery-item fade-up">
-      <img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/1abb70666-fead-49c6-8081-1ae01f011c7a.png" alt="Installation">
-      <div class="gallery-overlay"><h4>Sliding Door System</h4></div>
-    </div>
-    <div class="gallery-item fade-up">
-      <img src="https://image.qwenlm.ai/public_source/a9adada8-5a98-4894-9f2f-04d564115042/10d0ff845-07f4-46e8-b38f-ffb94cca9f65.png" alt="Installation">
-      <div class="gallery-overlay"><h4>Premium Invisible Grill</h4></div>
-    </div>
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- Dynamic Gallery Items -->
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section">
-  <h2>Ready to Protect Your Home?</h2>
-  <p>Get a free consultation & quote today. Our experts are just a call away!</p>
-  <a href="#contact" class="btn-primary">Request Free Quote →</a>
+<!-- CAREERS -->
+<section class="jobs-section" id="careers">
+  <div class="section-header fade-up">
+    <div class="section-label">Join Our Team</div>
+    <h2>Career <span>Opportunities</span></h2>
+    <p>We are always looking for talented individuals to join our growing family.</p>
+  </div>
+  <div class="jobs-grid" id="jobsGrid">
+    <!-- Dynamic Job Items -->
+  </div>
 </section>
 
 <!-- CONTACT -->
@@ -567,20 +550,20 @@
       <div class="form-row">
         <div class="form-group">
           <label>Full Name *</label>
-          <input type="text" required placeholder="Your Name">
+          <input type="text" id="leadName" required placeholder="Your Name">
         </div>
         <div class="form-group">
           <label>Phone Number *</label>
-          <input type="tel" required placeholder="+91 XXXXX XXXXX">
+          <input type="tel" id="leadPhone" required placeholder="+91 XXXXX XXXXX">
         </div>
       </div>
       <div class="form-group">
         <label>Email Address</label>
-        <input type="email" placeholder="your@email.com">
+        <input type="email" id="leadEmail" placeholder="your@email.com">
       </div>
       <div class="form-group">
         <label>Service Interested In *</label>
-        <select required>
+        <select id="leadService" required>
           <option value="">Select a service</option>
           <option>Pleated Mesh</option>
           <option>Honey Comb Partition</option>
@@ -591,9 +574,9 @@
       </div>
       <div class="form-group">
         <label>Your Message</label>
-        <textarea placeholder="Tell us about your requirements..."></textarea>
+        <textarea id="leadMessage" placeholder="Tell us about your requirements..."></textarea>
       </div>
-      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Send Message →</button>
+      <button type="submit" id="submitBtn" class="btn-primary" style="width:100%;justify-content:center;">Send Message →</button>
     </form>
   </div>
 </section>
@@ -610,9 +593,9 @@
       </div>
       <p>Providing premium home protection and interior solutions across Delhi and NCR.</p>
       <div class="social-links">
-        <a href="https://www.facebook.com/share/1BNHXkyEpx/?mibextid=wwXIfr" target="_blank" aria-label="Facebook">FB</a>
-        <a href="https://www.instagram.com/newtechhomesolutions?igsh=MXU3bjBjb3czNzk5OA==" target="_blank" aria-label="Instagram">IG</a>
-        <a href="https://wa.me/919354831931" target="_blank" aria-label="WhatsApp">WA</a>
+        <a href="https://www.facebook.com/share/1BNHXkyEpx/?mibextid=wwXIfr" target="_blank">FB</a>
+        <a href="https://www.instagram.com/newtechhomesolutions?igsh=MXU3bjBjb3czNzk5OA==" target="_blank">IG</a>
+        <a href="https://wa.me/919354831931" target="_blank">WA</a>
       </div>
     </div>
     <div class="footer-col">
@@ -621,6 +604,7 @@
       <a href="#about">About Us</a>
       <a href="#products">Services</a>
       <a href="#gallery">Gallery</a>
+      <a href="#careers">Careers</a>
       <a href="#contact">Contact</a>
     </div>
     <div class="footer-col">
@@ -643,6 +627,20 @@
 </footer>
 
 <script>
+  // Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyATvwM_0B9ibtD9MniIoiNuiirnC0mb2AY",
+    authDomain: "newtechhomesolutions-b6ab6.firebaseapp.com",
+    projectId: "newtechhomesolutions-b6ab6",
+    storageBucket: "newtechhomesolutions-b6ab6.firebasestorage.app",
+    messagingSenderId: "1015056454392",
+    appId: "1:1015056454352:web:2d764c7f4e0f769407e10d",
+    measurementId: "G-8HV2QWDK4W"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
   // Mobile menu
   const hamburger = document.getElementById('hamburger');
   const navLinks = document.getElementById('navLinks');
@@ -663,75 +661,93 @@
   },{threshold:0.1});
   document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
-  // Data Integration
-  const storageKey = 'newtech-admin-v2';
-  function getDB() {
-    const stored = localStorage.getItem(storageKey);
-    return stored ? JSON.parse(stored) : null;
-  }
-
-  function renderDynamicContent() {
-    const db = getDB();
-    if (!db) return;
-
-    // Render Services (from companies/products logic or specific products schema)
-    // For this demo, we'll keep the static services but wire the Leads form.
-  }
-
-  // Form submission wired to Admin Dashboard
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const db = getDB() || { leads: [] };
-    
-    const newLead = {
-      id: Math.random().toString(36).slice(2, 10),
-      name: this.querySelector('input[placeholder="Your Name"]').value,
-      phone: this.querySelector('input[placeholder="+91 XXXXX XXXXX"]').value,
-      email: this.querySelector('input[placeholder="your@email.com"]').value,
-      service: this.querySelector('select').value,
-      message: this.querySelector('textarea').value,
-      status: 'new',
-      createdAt: new Date().toISOString()
-    };
-
-    if (!db.leads) db.leads = [];
-    db.leads.unshift(newLead);
-    
-    // Add to activity log
-    if (db.activity) {
-      db.activity.unshift({
-        id: Math.random().toString(36).slice(2, 10),
-        action: `New Lead from ${newLead.name}`,
-        actor: 'Website Form',
-        type: 'activity',
-        createdAt: new Date().toISOString()
-      });
+  // Sync Gallery
+  db.collection('media').orderBy('createdAt', 'desc').onSnapshot(snap => {
+    const grid = document.getElementById('galleryGrid');
+    if (snap.empty) {
+      grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:#9ca3af;">No gallery items found.</p>';
+      return;
     }
-
-    localStorage.setItem(storageKey, JSON.stringify(db));
-
-    const btn = this.querySelector('button[type="submit"]');
-    const original = btn.innerHTML;
-    btn.innerHTML = '✓ Message Sent Successfully!';
-    btn.style.background = '#10b981';
-    setTimeout(() => {
-      btn.innerHTML = original;
-      btn.style.background = '';
-      this.reset();
-    }, 3000);
+    grid.innerHTML = snap.docs.map(doc => {
+      const item = doc.data();
+      return `
+        <div class="gallery-item fade-up visible">
+          ${item.type === 'video' ? 
+            `<video src="${item.url}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` : 
+            `<img src="${item.url}" alt="${item.title}">`}
+          <div class="gallery-overlay">
+            <div>
+              <span style="font-size:10px;text-transform:uppercase;color:var(--orange);font-weight:700;">${item.category || 'General'}</span>
+              <h4>${item.title}</h4>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
   });
 
-  window.addEventListener('DOMContentLoaded', renderDynamicContent);
+  // Sync Careers
+  db.collection('jobs').where('status', '==', 'active').onSnapshot(snap => {
+    const grid = document.getElementById('jobsGrid');
+    if (snap.empty) {
+      grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:#9ca3af;">No current job openings.</p>';
+      return;
+    }
+    grid.innerHTML = snap.docs.map(doc => {
+      const job = doc.data();
+      return `
+        <div class="job-card fade-up visible">
+          <span class="dept">${job.department}</span>
+          <h3>${job.title}</h3>
+          <p>${job.description}</p>
+          <span class="meta">Ends on: ${job.expiryDate || 'TBD'}</span>
+          <button onclick="applyJob('${job.title}')" class="btn-primary" style="padding:10px 20px;font-size:13px;">Apply Now →</button>
+        </div>
+      `;
+    }).join('');
+  });
 
-  // Navbar shadow on scroll
+  window.applyJob = (title) => {
+    const name = prompt('Enter your full name:');
+    const phone = prompt('Enter your phone number:');
+    if (name && phone) {
+      db.collection('applicants').add({
+        name, phone, jobTitle: title, status: 'new', createdAt: new Date().toISOString()
+      }).then(() => alert('Application submitted successfully!'));
+    }
+  };
+
+  // Submit Leads
+  document.getElementById('contactForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const original = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = 'Sending...';
+
+    try {
+      await db.collection('leads').add({
+        name: document.getElementById('leadName').value,
+        phone: document.getElementById('leadPhone').value,
+        email: document.getElementById('leadEmail').value,
+        service: document.getElementById('leadService').value,
+        message: document.getElementById('leadMessage').value,
+        status: 'new',
+        createdAt: new Date().toISOString()
+      });
+      btn.innerHTML = '✓ Message Sent!';
+      btn.style.background = '#10b981';
+      document.getElementById('contactForm').reset();
+      setTimeout(() => { btn.disabled = false; btn.innerHTML = original; btn.style.background = ''; }, 3000);
+    } catch (err) {
+      alert('Error: ' + err.message);
+      btn.disabled = false; btn.innerHTML = original;
+    }
+  };
+
   window.addEventListener('scroll',()=>{
     const nav = document.querySelector('.navbar');
-    if(window.scrollY > 50){
-      nav.style.boxShadow = '0 4px 30px rgba(0,0,0,0.1)';
-    } else {
-      nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.06)';
-    }
+    if(window.scrollY > 50){ nav.style.boxShadow = '0 4px 30px rgba(0,0,0,0.1)'; } 
+    else { nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.06)'; }
   });
 </script>
 </body>
