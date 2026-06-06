@@ -383,7 +383,7 @@
       <li><a href="#products">Services</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#products">New Exclusive</a></li>
-      <li><a href="admin.html#jobs">Career</a></li>
+      <li><a href="#careers">Career</a></li>
       <li><a href="#contact">Contact</a></li>
       <li class="mobile-only"><a href="admin.html">Admin Login</a></li>
     </ul>
@@ -539,6 +539,39 @@
   <a href="#contact" class="btn-primary">Request Free Quote →</a>
 </section>
 
+<!-- CAREERS -->
+<section id="careers" class="section" style="padding: 80px 0; background: #f8fafc;">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    <div class="section-header text-center fade-up" style="text-align:center; margin-bottom: 50px;">
+      <div class="section-label">Careers</div>
+      <h2 style="font-size: 36px; color: #1e3a8a; margin-bottom: 15px;">Join Our Team</h2>
+      <p style="color: #64748b; max-width: 600px; margin: 0 auto;">We are looking for talented individuals to join New Tech Home Solutions.</p>
+    </div>
+    <div id="jobsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+      <!-- Jobs will be loaded here -->
+    </div>
+    
+    <!-- Application Form (Hidden by default) -->
+    <div id="applicationModal" class="fade-up" style="display:none; margin-top: 50px; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+      <h3 id="applyingForTitle" style="margin-bottom: 25px; color: #1e3a8a; font-size: 24px;">Apply for Job</h3>
+      <form id="jobForm">
+        <input type="hidden" id="jobTitleInput">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="field"><label style="display:block; margin-bottom:8px; font-weight:600;">Your Name</label><input type="text" id="appName" required placeholder="Full Name" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:12px;"></div>
+          <div class="field"><label style="display:block; margin-bottom:8px; font-weight:600;">Phone Number</label><input type="tel" id="appPhone" required placeholder="+91 XXXXX XXXXX" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:12px;"></div>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <div class="field"><label style="display:block; margin-bottom:8px; font-weight:600;">Email Address</label><input type="email" id="appEmail" required placeholder="your@email.com" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:12px;"></div>
+        </div>
+        <div style="margin-bottom: 25px;">
+          <div class="field"><label style="display:block; margin-bottom:8px; font-weight:600;">Experience / Why should we hire you?</label><textarea id="appResume" required placeholder="Briefly describe your experience..." style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:12px; min-height:120px;"></textarea></div>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; border:none; cursor:pointer; font-size:16px;">Submit Application</button>
+      </form>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="contact-container">
@@ -674,9 +707,78 @@
     const db = getDB();
     if (!db) return;
 
-    // Render Services (from companies/products logic or specific products schema)
-    // For this demo, we'll keep the static services but wire the Leads form.
+    // Render Jobs
+    const jobsContainer = document.getElementById('jobsContainer');
+    if (jobsContainer && db.jobs) {
+      const activeJobs = db.jobs.filter(j => j.status === 'active');
+      if (activeJobs.length > 0) {
+        jobsContainer.innerHTML = activeJobs.map(job => `
+          <div class="card fade-up" style="background: white; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:20px;">
+              <div>
+                <h3 style="margin-bottom:8px; color: #1e3a8a;">${job.title}</h3>
+                <span style="background:#e0f2fe; color:#0369a1; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:600;">${job.department}</span>
+              </div>
+              <button class="btn-primary" onclick="openJobForm('${job.title}')" style="padding: 10px 20px; font-size: 14px; border:none; cursor:pointer;">Apply</button>
+            </div>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">${job.description}</p>
+            <div style="font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 15px;">Expires: ${job.expiryDate}</div>
+          </div>
+        `).join('');
+      } else {
+        jobsContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 60px; text-align: center; color: #94a3b8; background: white; border-radius: 20px; border: 1px dashed #cbd5e1;">No active job openings at the moment. Please check back later!</div>';
+      }
+    }
   }
+
+  window.openJobForm = function(title) {
+    document.getElementById('applicationModal').style.display = 'block';
+    document.getElementById('applyingForTitle').innerText = 'Apply for: ' + title;
+    document.getElementById('jobTitleInput').value = title;
+    document.getElementById('applicationModal').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Job Application Submission
+  document.getElementById('jobForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const db = getDB() || { applicants: [] };
+    
+    const newApplicant = {
+      id: Math.random().toString(36).slice(2, 10),
+      name: document.getElementById('appName').value,
+      phone: document.getElementById('appPhone').value,
+      email: document.getElementById('appEmail').value,
+      jobTitle: document.getElementById('jobTitleInput').value,
+      status: 'new',
+      resume: document.getElementById('appResume').value,
+      createdAt: new Date().toISOString()
+    };
+
+    if (!db.applicants) db.applicants = [];
+    db.applicants.unshift(newApplicant);
+    
+    if (db.activity) {
+      db.activity.unshift({
+        id: Math.random().toString(36).slice(2, 10),
+        action: `New Application from ${newApplicant.name} for ${newApplicant.jobTitle}`,
+        actor: 'Career Page',
+        type: 'activity',
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(db));
+
+    const btn = this.querySelector('button[type="submit"]');
+    btn.innerHTML = '✓ Application Submitted!';
+    btn.style.background = '#10b981';
+    setTimeout(() => {
+      document.getElementById('applicationModal').style.display = 'none';
+      this.reset();
+      btn.innerHTML = 'Submit Application';
+      btn.style.background = '';
+    }, 3000);
+  });
 
   // Form submission wired to Admin Dashboard
   document.getElementById('contactForm').addEventListener('submit', function(e) {
