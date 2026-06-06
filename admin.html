@@ -1,591 +1,437 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Admin Dashboard | New Tech Home Solutions</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>New Tech Admin | Modern Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <!-- Firebase SDKs (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1e3a8a',
+            secondary: '#f97316',
+            accent: '#3b82f6',
+            surface: '#f8fafc',
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
   <style>
-    :root{--bg:#f8fafc;--card:#ffffff;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;--navy:#1e3a8a;--navy-900:#172554;--orange:#f97316;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--shadow:0 4px 20px rgba(30,58,138,0.08);--radius:16px;color-scheme:light}body.dark{--bg:#0f172a;--card:#1e293b;--ink:#f8fafc;--muted:#94a3b8;--line:#334155;--navy:#3b82f6;--navy-900:#0f172a;--shadow:0 20px 50px rgba(0,0,0,0.3);color-scheme:dark}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.login-shell{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;background:linear-gradient(135deg,#f0f4ff 0%,#fff5eb 100%);}.login-brand{color:var(--navy-900);padding:64px;display:flex;flex-direction:column;justify-content:center}.login-brand h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.05em;margin:18px 0}.login-brand p{font-size:18px;line-height:1.75;color:var(--muted);max-width:680px}.security-list{display:grid;gap:12px;margin-top:24px}.security-list span{display:flex;gap:10px;align-items:center;color:var(--navy)}.login-panel{display:flex;align-items:center;justify-content:center;padding:28px}.login-card{width:100%;max-width:460px;background:var(--card);border:1px solid rgba(255,255,255,.16);box-shadow:var(--shadow);border-radius:28px;padding:32px}.logo{width:auto;height:58px;border-radius:0;background:none;display:flex;align-items:center;gap:10px;} .logo img{height:100%;}.login-card h2{font-size:30px;margin:18px 0 8px}.muted{color:var(--muted)}.field{display:grid;gap:8px;margin:14px 0}.field label{font-size:13px;font-weight:800}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--card);color:var(--ink)}.field textarea{min-height:96px;resize:vertical}.hint{font-size:12px;color:var(--muted);line-height:1.6}.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:800;display:inline-flex;gap:8px;align-items:center;justify-content:center}.btn-primary{background:var(--orange);color:white}.btn-navy{background:var(--navy);color:white}.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn-danger{background:#fee2e2;color:var(--red)}.login-card .btn{width:100%;margin-top:10px}.app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.sidebar{background:#1e3a8a;color:white;position:sticky;top:0;height:100vh;overflow:auto;padding:18px;box-shadow: 4px 0 15px rgba(0,0,0,0.05);}.side-head{display:flex;align-items:center;gap:12px;padding:8px 6px 22px;border-bottom:1px solid rgba(255,255,255,.12)}.side-head .logo{width:46px;height:46px}.role-chip{font-size:11px;background:rgba(249,115,22,.2);color:#fed7aa;border:1px solid rgba(249,115,22,.35);padding:4px 8px;border-radius:999px} .badge-notify{background:var(--red);color:white;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:auto;font-weight:800;}.nav-section{margin:20px 0 8px;color:#94a3b8;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.nav-item{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#cbd5e1;padding:12px;border-radius:12px;text-align:left;font-weight:700}.nav-item:hover,.nav-item.active{background:var(--orange);color:white;box-shadow: 0 4px 12px rgba(249,115,22,0.3);}.main{min-width:0}.topbar{height:72px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}.topbar-left{display:flex;align-items:center;gap:12px}.mobile-menu{display:none}.search{position:relative;min-width:min(440px,45vw)}.search input{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:11px 18px}.top-actions{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--orange));display:grid;place-items:center;color:#fff;font-weight:900}.content{padding:28px}.breadcrumbs{font-size:13px;color:var(--muted);margin-bottom:10px}.page-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.page-head h1{margin:0;font-size:30px;letter-spacing:-.03em}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition: transform 0.2s;} .stat:hover{transform: translateY(-5px);}.stat span{color:var(--muted);font-size:13px;font-weight:800}.stat strong{display:block;font-size:36px;margin-top:8px;color:var(--orange)}.grid{display:grid;grid-template-columns:1.5fr .9fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 24px rgba(16,24,40,.04);padding:18px}.card h2{font-size:18px;margin:0 0 14px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters input,.filters select{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px;background:var(--card)}th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--bg)}tr:last-child td{border-bottom:0}.badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800}.published,.active,.verified,.shortlisted{background:#dcfce7;color:#15803d}.draft,.pending,.scheduled,.reviewing,.in-progress{background:#fef3c7;color:#a16207}.inactive,.expired,.rejected,.cancelled{background:#fee2e2;color:#b91c1c}.quoted,.contacted,.closed{background:#dbeafe;color:#1d4ed8}.pagination{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px}.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}.media-tile{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}.media-thumb{height:110px;background:linear-gradient(135deg,#dbeafe,#ffedd5);display:grid;place-items:center;font-size:34px}.media-tile div:last-child{padding:10px}.activity{display:grid;gap:10px}.activity-item{display:flex;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px}.activity-dot{width:10px;height:10px;border-radius:50%;background:var(--orange);margin-top:5px;flex:0 0 auto}.modal{position:fixed;inset:0;background:rgba(2,6,23,.62);display:grid;place-items:center;padding:18px;z-index:100}.modal-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.toast-wrap{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:200}.toast{background:#101828;color:#fff;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow)}.danger-zone{border:1px dashed #fecaca;background:#fff7f7;border-radius:14px;padding:12px;color:#991b1b}.empty{text-align:center;color:var(--muted);padding:32px}.loading{opacity:.6;pointer-events:none}.firebase-badge{display:inline-flex;align-items:center;gap:5px;background:#fff3e0;color:#e65100;font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;border:1px solid #ffcc02;}@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:50;transform:translateX(-105%);transition:.2s;width:280px}.sidebar.open{transform:none}.mobile-menu{display:inline-flex}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr}.login-brand{display:none}}@media(max-width:640px){.content{padding:18px}.topbar{padding:0 14px}.search{display:none}.stats{grid-template-columns:1fr}.page-head{display:block}.form-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.filters,.filters input,.filters select,.toolbar .btn{width:100%}.filters{display:grid}.top-actions .muted{display:none}}
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #f97316;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .nav-item.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #e2e8f0;
+      border-radius: 10px;
+    }
+    .login-gradient {
+      background: radial-gradient(circle at top right, #1e3a8a, #1e293b);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary) !important;
+      ring: 2px;
+      ring-color: rgba(249, 115, 22, 0.2);
+    }
+    @media (max-width: 768px) {
+      .sidebar-mobile {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+      }
+      .sidebar-mobile.open {
+        transform: translateX(0);
+      }
+    }
   </style>
 </head>
-<body>
-  <section class="login-shell" id="loginScreen">
-    <div class="login-brand">
-      <div class="logo">NT</div>
-      <h1>Company administration, secured and centralized.</h1>
-      <p>Manage leads, quotes, contracts, careers, jobs, media, news, blogs and more from one centralized dashboard with Firebase real-time sync.</p>
-      <div class="security-list">
-        <span>✓ Firebase Auth + Role Based Access Control</span>
-        <span>✓ Real-time Firestore data sync</span>
-        <span>✓ Input validation and activity logs</span>
-        <span>✓ Careers, Quotes & Contracts management</span>
-      </div>
-    </div>
-    <div class="login-panel">
-      <form class="login-card" id="loginForm">
-        <div class="logo"><img src="assets/logo.png" alt="Logo"></div>
-        <h2>New Tech Admin Login</h2>
-        <p class="muted">Sign in to access the protected dashboard.</p>
-        <div class="field"><label for="email">Email</label><input id="email" type="email" required autocomplete="username" value="super@newtech.test"></div>
-        <div class="field"><label for="password">Password</label><input id="password" type="password" required autocomplete="current-password" value="Admin@12345"></div>
-        <button class="btn btn-primary" type="submit" id="loginBtn">Sign in securely</button>
-        <p class="hint">Demo: super@newtech.test / company@newtech.test / editor@newtech.test · Password: Admin@12345<br>Or use your Firebase Auth credentials.</p>
-        <a class="hint" href="index.html">← Back to website</a>
-      </form>
-    </div>
-  </section>
+<body class="bg-surface text-slate-900 custom-scrollbar">
 
-  <section class="app hidden" id="appShell">
-    <aside class="sidebar" id="sidebar">
-      <div class="side-head">
-        <div class="logo" style="height:40px;"><img src="assets/logo.png" alt="Logo"></div>
-        <div><strong>New Tech Home Solutions</strong><br><span class="role-chip" id="roleChip">Role</span></div>
+  <!-- Login Screen -->
+  <div id="loginSection" class="fixed inset-0 z-[2000] flex items-center justify-center p-4 login-gradient">
+    <div class="w-full max-w-md bg-white rounded-[2rem] p-8 md:p-10 shadow-2xl text-center transform transition-all">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-50 rounded-2xl mb-6 shadow-inner">
+        <img src="assets/logo.png" alt="Logo" class="h-12 w-auto">
       </div>
-      <div class="nav-section">Workspace</div>
-      <div id="navItems"></div>
-      <div class="nav-section">System</div>
-      <button class="nav-item" id="exportBtn">⬇ Export data</button>
-      <button class="nav-item" id="logoutBtn">↩ Logout</button>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
-          <div class="search"><input id="globalSearch" placeholder="Global search across records"></div>
+      <h2 class="text-3xl font-extrabold text-primary mb-2">Sofia Admin</h2>
+      <p class="text-slate-500 mb-8 font-medium">Secure access to your business portal</p>
+      
+      <form id="loginForm" class="space-y-5">
+        <div class="text-left">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 ml-1">Email Address</label>
+          <input type="email" id="loginEmail" required class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white transition-all" placeholder="admin@newtech.com" value="homesolutionsnewtech@gmail.com">
         </div>
-        <div class="top-actions">
-          <span class="firebase-badge" id="syncBadge">🔥 Syncing…</span>
-          <button class="icon-btn" id="darkToggle" title="Toggle dark mode">◐</button>
-          <span class="muted" id="currentUserName"></span>
-          <div class="avatar" id="avatar">SA</div>
+        <div class="text-left">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 ml-1">Password</label>
+          <input type="password" id="loginPass" required class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white transition-all" placeholder="••••••••">
+        </div>
+        <button type="submit" id="loginBtn" class="w-full py-4 bg-secondary hover:bg-orange-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-orange-200 transition-all transform hover:-translate-y-1 active:scale-95">
+          Sign In
+        </button>
+      </form>
+      <p class="mt-8 text-slate-400 text-sm">© 2026 New Tech Home Solutions</p>
+    </div>
+  </div>
+
+  <!-- Main App Shell -->
+  <div id="appSection" class="hidden flex min-h-screen">
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar-mobile fixed md:sticky top-0 left-0 h-screen w-72 bg-white border-r border-slate-100 p-6 flex flex-col z-[1000] md:translate-x-0">
+      <div class="flex items-center gap-3 mb-10 px-2">
+        <img src="assets/logo.png" alt="Logo" class="h-10 w-auto">
+        <span class="font-extrabold text-xl text-primary tracking-tight">New Tech</span>
+      </div>
+
+      <nav class="space-y-2 flex-1 overflow-y-auto custom-scrollbar" id="navItems">
+        <!-- Dynamic Nav Items -->
+      </nav>
+
+      <div class="pt-6 border-t border-slate-100 space-y-2">
+        <a href="index.html" class="flex items-center gap-4 px-5 py-3 rounded-xl font-bold text-slate-400 hover:text-accent transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+          Live Site
+        </a>
+        <button onclick="logout()" class="w-full flex items-center gap-4 px-5 py-3 rounded-xl font-bold text-red-400 hover:bg-red-50 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="flex-1 flex flex-col min-w-0">
+      <!-- Top Header -->
+      <header class="flex items-center justify-between p-4 md:p-6 bg-white border-b border-slate-100 sticky top-0 z-[900]">
+        <div class="flex items-center gap-4">
+          <button onclick="toggleMenu()" class="md:hidden p-2 bg-slate-50 rounded-xl text-primary">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+          </button>
+          <div class="hidden md:block">
+            <h1 id="pageTitle" class="text-2xl font-extrabold text-primary">Overview</h1>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <div class="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-2xl border border-slate-100">
+            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Firebase Live</span>
+          </div>
+          <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-blue-100">
+            SA
+          </div>
         </div>
       </header>
-      <div class="content" id="content"></div>
+
+      <!-- View Content -->
+      <div id="viewContainer" class="p-4 md:p-8 lg:p-10 max-w-7xl mx-auto w-full"></div>
     </main>
-  </section>
+  </div>
 
-  <div class="toast-wrap" id="toastWrap"></div>
-  <div class="modal hidden" id="modal"></div>
+  <!-- Global Modal -->
+  <div id="modal" class="hidden fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-8 border-b border-slate-50 flex items-center justify-between">
+        <h2 id="modalTitle" class="text-2xl font-extrabold text-primary">Edit Record</h2>
+        <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-full transition-all">
+          <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="p-8 overflow-y-auto custom-scrollbar flex-1">
+        <form id="recordForm" class="space-y-6"></form>
+      </div>
+      <div class="p-8 bg-slate-50/50 flex gap-4">
+        <button type="submit" form="recordForm" id="saveBtn" class="flex-1 py-4 bg-secondary text-white rounded-2xl font-bold shadow-lg shadow-orange-100 transition-all hover:-translate-y-0.5 active:scale-95">
+          Save Changes
+        </button>
+        <button onclick="closeModal()" class="px-8 py-4 bg-white border border-slate-200 text-slate-500 rounded-2xl font-bold hover:bg-slate-50 transition-all">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
 
-<script>
-// ─── Firebase Init ───────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey: "AIzaSyATvwM_0B9ibtD9MniIoiNuiirnC0mb2AY",
-  authDomain: "newtechhomesolutions-b6ab6.firebaseapp.com",
-  projectId: "newtechhomesolutions-b6ab6",
-  storageBucket: "newtechhomesolutions-b6ab6.firebasestorage.app",
-  messagingSenderId: "1015056454392",
-  appId: "1:1015056454352:web:2d764c7f4e0f769407e10d",
-  measurementId: "G-8HV2QWDK4W"
-};
-firebase.initializeApp(firebaseConfig);
-const fbAuth = firebase.auth();
-const fstore = firebase.firestore();
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyATvwM_0B9ibtD9MniIoiNuiirnC0mb2AY",
+      authDomain: "newtechhomesolutions-b6ab6.firebaseapp.com",
+      projectId: "newtechhomesolutions-b6ab6",
+      storageBucket: "newtechhomesolutions-b6ab6.firebasestorage.app",
+      messagingSenderId: "1015056454392",
+      appId: "1:1015056454352:web:2d764c7f4e0f769407e10d",
+      measurementId: "G-8HV2QWDK4W"
+    };
 
-// ─── Role & Account Config ────────────────────────────────────────
-const roles = {SUPER_ADMIN:'Super Admin',COMPANY_ADMIN:'Company Admin',EDITOR:'Editor',MODERATOR:'Moderator'};
-const permissions = {
-  'Super Admin':  ['overview','leads','quotes','contracts','careers','jobs','users','companies','media','news','blogs','ads','activity'],
-  'Company Admin':['overview','leads','quotes','contracts','careers','jobs','companies','media','news','blogs','ads','activity'],
-  'Editor':       ['overview','media','news','blogs'],
-  'Moderator':    ['overview','media','news','blogs','activity']
-};
-// Role map for Firebase Auth users (email → role)
-const roleMap = {
-  'super@newtech.test':    'Super Admin',
-  'company@newtech.test':  'Company Admin',
-  'editor@newtech.test':   'Editor',
-  'moderator@newtech.test':'Moderator',
-  'homesolutionsnewtech@gmail.com': 'Super Admin'
-};
-// Demo accounts fallback (works without Firebase Auth setup)
-const demoAccounts = [
-  {id:'u1',name:'Sofia Admin',      email:'super@newtech.test',     password:'Admin@12345',role:'Super Admin',   status:'active'},
-  {id:'u2',name:'Carl Company',     email:'company@newtech.test',   password:'Admin@12345',role:'Company Admin', status:'active'},
-  {id:'u3',name:'Esha Editor',      email:'editor@newtech.test',    password:'Admin@12345',role:'Editor',        status:'active'},
-  {id:'u4',name:'Mina Moderator',   email:'moderator@newtech.test', password:'Admin@12345',role:'Moderator',     status:'active'}
-];
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
 
-// ─── Schemas ──────────────────────────────────────────────────────
-const schemas = {
-  users:{
-    label:'Users',singular:'User',icon:'👥',roles:['Super Admin'],firestore:false,
-    fields:[['name','Name','text'],['email','Email','email'],['role','Role','select',['Super Admin','Company Admin','Editor','Moderator']],['status','Status','select',['active','inactive']]],
-    seed:demoAccounts.map(({password,...u})=>u)
-  },
-  leads:{
-    label:'Leads Manager',singular:'Lead',icon:'📥',roles:['Super Admin','Company Admin'],firestore:true,
-    fields:[['name','Customer Name','text'],['phone','Phone','tel'],['email','Email','email'],['service','Service','text'],['status','Status','select',['new','contacted','closed','junk']],['message','Message','textarea']],
-    seed:[{id:'l1',name:'Demo Lead',phone:'+91 0000000000',email:'demo@example.com',service:'Pleated Mesh',status:'new',message:'I need a quote for 5 windows.'}]
-  },
-  quotes:{
-    label:'Quote Requests',singular:'Quote',icon:'💰',roles:['Super Admin','Company Admin'],firestore:true,
-    fields:[['name','Customer Name','text'],['phone','Phone','tel'],['email','Email','email'],['service','Service Required','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['location','Location / Address','text'],['status','Status','select',['new','in-progress','quoted','closed']],['message','Requirements','textarea']],
-    seed:[]
-  },
-  contracts:{
-    label:'Contracts',singular:'Contract',icon:'📋',roles:['Super Admin','Company Admin'],firestore:true,
-    fields:[['customerName','Customer Name','text'],['phone','Phone','tel'],['service','Service','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['startDate','Start Date','date'],['endDate','End Date','date'],['amount','Amount (₹)','number'],['status','Status','select',['active','pending','expired','cancelled']],['notes','Notes','textarea']],
-    seed:[]
-  },
-  careers:{
-    label:'Career Applications',singular:'Application',icon:'🎓',roles:['Super Admin','Company Admin'],firestore:true,
-    fields:[['name','Applicant Name','text'],['email','Email','email'],['phone','Phone','tel'],['position','Position Applied For','text'],['resumeUrl','Resume URL','url'],['status','Status','select',['new','reviewing','shortlisted','rejected']],['message','Cover Letter / Message','textarea']],
-    seed:[]
-  },
-  jobs:{
-    label:'Job Vacancies',singular:'Job',icon:'💼',roles:['Super Admin','Company Admin'],firestore:true,
-    fields:[['title','Job Title','text'],['department','Department','text'],['status','Status','select',['active','expired','draft']],['expiryDate','Expiry Date','date'],['applications','Applications Count','number'],['description','Description','textarea']],
-    seed:[{id:'j1',title:'Installation Technician',department:'Operations',status:'active',expiryDate:'2026-08-15',applications:0,description:'Install and service screens at customer sites.'}]
-  },
-  companies:{
-    label:'Companies',singular:'Company',icon:'🏢',roles:['Super Admin','Company Admin'],firestore:false,
-    fields:[['name','Company Name','text'],['category','Category','text'],['status','Verification Status','select',['verified','pending','rejected']],['contact','Contact Email','email'],['phone','Phone','text'],['logo','Logo URL','url'],['cover','Cover Image URL','url'],['social','Social Links','text']],
-    seed:[{id:'c1',name:'NewTech HQ',category:'Manufacturing',status:'verified',contact:'homesolutionsnewtech@gmail.com',phone:'+91 9315739299',logo:'',cover:'',social:''}]
-  },
-  media:{
-    label:'Media Manager',singular:'Media',icon:'🖼',roles:['Super Admin','Company Admin','Editor','Moderator'],firestore:false,
-    fields:[['title','Title','text'],['type','Type','select',['photo','video']],['category','Category','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['status','Status','select',['active','inactive']],['url','Secure URL','url'],['metadata','Metadata','textarea']],
-    seed:[{id:'m1',title:'Pleated Door Demo',type:'video',category:'Pleated Mesh',status:'active',url:'',metadata:''}]
-  },
-  news:{
-    label:'News Manager',singular:'News',icon:'📰',roles:['Super Admin','Company Admin','Editor','Moderator'],firestore:false,
-    fields:[['title','Title','text'],['status','Status','select',['draft','published','scheduled']],['publishAt','Publish Date','date'],['category','Category','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['content','Content','textarea']],
-    seed:[{id:'n1',title:'New commercial screen range launched',status:'published',publishAt:'2026-06-01',category:'Pleated Mesh',content:'Launch announcement.'}]
-  },
-  blogs:{
-    label:'Blog Manager',singular:'Blog',icon:'✍️',roles:['Super Admin','Company Admin','Editor','Moderator'],firestore:false,
-    fields:[['title','Title','text'],['status','Status','select',['draft','published','scheduled']],['category','Category','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['tags','Tags','text'],['seoTitle','SEO Title','text'],['seoDescription','SEO Description','textarea'],['content','Content','textarea']],
-    seed:[{id:'b1',title:'How to choose fly screens',status:'draft',category:'Pleated Mesh',tags:'screens,home',seoTitle:'Fly Screen Guide',seoDescription:'Choosing screens',content:'Guide content'}]
-  },
-  ads:{
-    label:'Advertisements',singular:'Ad',icon:'📣',roles:['Super Admin','Company Admin'],firestore:false,
-    fields:[['title','Title','text'],['status','Status','select',['active','inactive']],['banner','Banner URL','url'],['startDate','Start Date','date'],['endDate','End Date','date'],['analytics','Analytics Notes','textarea']],
-    seed:[{id:'a1',title:'Summer Installation Offer',status:'active',banner:'',startDate:'2026-06-01',endDate:'2026-07-31',analytics:''}]
-  }
-};
+    let currentView = 'overview';
+    let data = {};
 
-// ─── App State ────────────────────────────────────────────────────
-let state = {session:null,view:'overview',query:'',page:{},filter:{},selected:new Set()};
-const storageKey = 'newtech-admin-v3';
-let firestoreListeners = [];
-let fsConnected = false;
+    const schemas = {
+      overview: { label: 'Overview', icon: '📊' },
+      leads: { label: 'Inquiries', singular: 'Inquiry', icon: '📥', fields: [['name','Full Name','text'],['phone','Phone Number','tel'],['email','Email','email'],['service','Service Interest','text'],['status','Lead Status','select',['new','contacted','closed','junk']],['message','Customer Message','textarea']] },
+      applicants: { label: 'Job Applicants', singular: 'Applicant', icon: '👨‍💼', fields: [['name','Applicant Name','text'],['phone','Contact Number','tel'],['jobTitle','Applied For','text'],['status','Review Status','select',['new','reviewed','hired','rejected']],['resume','Internal Notes','textarea']] },
+      jobs: { label: 'Job Vacancies', singular: 'Vacancy', icon: '💼', fields: [['title','Job Title','text'],['department','Department','text'],['status','Vacancy Status','select',['active','expired']],['expiryDate','Expiry Date','date'],['description','Job Description','textarea']] },
+      media: { label: 'Media Gallery', singular: 'Media Asset', icon: '🖼', fields: [['title','Asset Title','text'],['type','Asset Type','select',['photo','video']],['category','Category','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['file','Upload File','file'],['url','Direct URL (Optional)','url']] },
+      blogs: { label: 'Blogs', singular: 'Blog Post', icon: '✍️', fields: [['title','Title','text'],['author','Author','text'],['status','Status','select',['draft','published']],['content','Content','textarea']] }
+    };
 
-// ─── Local Storage ────────────────────────────────────────────────
-function loadData(){
-  const stored = localStorage.getItem(storageKey);
-  if(stored) return JSON.parse(stored);
-  const data = {};
-  Object.entries(schemas).forEach(([k,s]) => data[k] = [...s.seed]);
-  data.activity = [{id:uid(),action:'System initialized',actor:'System',type:'activity',createdAt:new Date().toISOString()}];
-  return data;
-}
-let db = loadData();
-function save(){localStorage.setItem(storageKey,JSON.stringify(db));}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-function allowed(view){return state.session && permissions[state.session.role]?.includes(view);}
+    // Auth Logic
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('appSection').classList.remove('hidden');
+        renderSidebar();
+        initSync();
+      } else {
+        document.getElementById('loginSection').classList.remove('hidden');
+        document.getElementById('appSection').classList.add('hidden');
+      }
+    });
 
-// ─── Firebase Firestore Sync ──────────────────────────────────────
-const firestoreCollections = Object.entries(schemas).filter(([,s])=>s.firestore).map(([k])=>k);
+    document.getElementById('loginForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true; btn.innerHTML = '<span class="animate-spin inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full mr-2"></span> Authenticating...';
+      try {
+        await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
+      } catch (err) {
+        alert('Login Failed: ' + err.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Sign In';
+      }
+    };
 
-function setupFirestoreListeners(){
-  // Teardown old listeners
-  firestoreListeners.forEach(u=>u());
-  firestoreListeners = [];
+    window.logout = () => auth.signOut();
+    window.toggleMenu = () => document.getElementById('sidebar').classList.toggle('open');
 
-  firestoreCollections.forEach(key=>{
-    const unsub = fstore.collection(key).orderBy('createdAt','desc').limit(200)
-      .onSnapshot(snap=>{
-        const docs = snap.docs.map(d=>({id:d.id,...d.data()}));
-        // Merge: Firestore is source of truth for these collections
-        db[key] = docs.length > 0 ? docs : db[key];
-        save();
-        if(state.view === key || state.view === 'overview') renderContent();
-        updateSyncBadge(true);
-      }, err=>{
-        updateSyncBadge(false);
+    function renderSidebar() {
+      const nav = document.getElementById('navItems');
+      nav.innerHTML = Object.keys(schemas).map(key => `
+        <button onclick="showView('${key}', this)" class="nav-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all relative ${currentView === key ? 'active' : ''}">
+          <span class="text-xl">${schemas[key].icon}</span>
+          ${schemas[key].label}
+          ${key === 'leads' ? `<span id="leadsBadge" class="hidden absolute right-4 top-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">0</span>` : ''}
+          ${key === 'applicants' ? `<span id="appsBadge" class="hidden absolute right-4 top-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">0</span>` : ''}
+        </button>
+      `).join('');
+    }
+
+    function initSync() {
+      Object.keys(schemas).forEach(key => {
+        if (key === 'overview') return;
+        db.collection(key).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+          data[key] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          updateBadges();
+          if (currentView === key || currentView === 'overview') renderView();
+        });
       });
-    firestoreListeners.push(unsub);
-  });
-}
-
-function updateSyncBadge(ok){
-  fsConnected = ok;
-  const el = document.getElementById('syncBadge');
-  if(!el) return;
-  el.textContent = ok ? '🔥 Live' : '⚠ Offline';
-  el.style.background = ok ? '#e8f5e9' : '#fff3e0';
-  el.style.color = ok ? '#2e7d32' : '#e65100';
-}
-
-async function fsCreate(key, obj){
-  if(!schemas[key]?.firestore) return;
-  try {
-    const docRef = await fstore.collection(key).add({...obj, createdAt: obj.createdAt || new Date().toISOString()});
-    // Update local id to match Firestore id
-    const idx = db[key].findIndex(r=>r.id===obj.id);
-    if(idx>-1) db[key][idx].id = docRef.id;
-    save();
-  } catch(e){ console.warn('Firestore create failed:', e.message); }
-}
-
-async function fsUpdate(key, id, obj){
-  if(!schemas[key]?.firestore) return;
-  try { await fstore.collection(key).doc(id).set(obj, {merge:true}); }
-  catch(e){ console.warn('Firestore update failed:', e.message); }
-}
-
-async function fsDelete(key, id){
-  if(!schemas[key]?.firestore) return;
-  try { await fstore.collection(key).doc(id).delete(); }
-  catch(e){ console.warn('Firestore delete failed:', e.message); }
-}
-
-// ─── Auth ─────────────────────────────────────────────────────────
-function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;document.getElementById('toastWrap').appendChild(el);setTimeout(()=>el.remove(),3200);}
-function log(action,type='activity'){db.activity.unshift({id:uid(),action,actor:state.session?.name||'System',type,createdAt:new Date().toISOString()});db.activity=db.activity.slice(0,100);save();}
-
-async function login(email, password){
-  const btn = document.getElementById('loginBtn');
-  if(btn){ btn.textContent='Signing in…'; btn.disabled=true; }
-
-  // Try Firebase Auth first
-  try {
-    const cred = await fbAuth.signInWithEmailAndPassword(email, password);
-    const role = roleMap[cred.user.email] || 'Editor';
-    const name = cred.user.displayName || cred.user.email.split('@')[0];
-    state.session = {id:cred.user.uid, name, email:cred.user.email, role, provider:'firebase'};
-    sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
-    return true;
-  } catch(firebaseErr){
-    // Fallback: demo accounts
-    const account = demoAccounts.find(a=>a.email.toLowerCase()===email.toLowerCase()&&a.password===password&&a.status==='active');
-    if(!account){
-      if(btn){ btn.textContent='Sign in securely'; btn.disabled=false; }
-      return false;
     }
-    state.session = {id:account.id, name:account.name, email:account.email, role:account.role, provider:'demo'};
-    sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
-    return true;
-  }
-}
 
-function boot(){
-  if(localStorage.getItem('newtech-dark')==='true') document.body.classList.add('dark');
-  // Check Firebase Auth session
-  fbAuth.onAuthStateChanged(user=>{
-    if(user && !state.session){
-      const role = roleMap[user.email] || 'Editor';
-      const name = user.displayName || user.email.split('@')[0];
-      state.session = {id:user.uid, name, email:user.email, role, provider:'firebase'};
-      sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
-      showApp();
+    function updateBadges() {
+      const leadsCount = (data.leads || []).filter(l => l.status === 'new').length;
+      const appsCount = (data.applicants || []).filter(a => a.status === 'new').length;
+      const lB = document.getElementById('leadsBadge');
+      const aB = document.getElementById('appsBadge');
+      if (lB) { if (leadsCount > 0) { lB.textContent = leadsCount; lB.classList.remove('hidden'); } else { lB.classList.add('hidden'); } }
+      if (aB) { if (appsCount > 0) { aB.textContent = appsCount; aB.classList.remove('hidden'); } else { aB.classList.add('hidden'); } }
     }
-  });
-  // Check demo session
-  const session = sessionStorage.getItem('newtech-session');
-  if(session && !state.session){
-    state.session = JSON.parse(session);
-    showApp();
-  } else if(!state.session){
-    showLogin();
-  }
-}
 
-function showLogin(){document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('appShell').classList.add('hidden');}
-function showApp(){
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('appShell').classList.remove('hidden');
-  document.getElementById('roleChip').textContent = state.session.role;
-  document.getElementById('currentUserName').textContent = state.session.name;
-  document.getElementById('avatar').textContent = state.session.name.split(' ').map(x=>x[0]).join('');
-  setupFirestoreListeners();
-  renderNav();
-  navigate('overview');
-}
+    window.showView = (view, btn) => {
+      currentView = view;
+      document.getElementById('pageTitle').textContent = schemas[view].label;
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (window.innerWidth < 768) toggleMenu();
+      renderView();
+    };
 
-// ─── Navigation ───────────────────────────────────────────────────
-function renderNav(){
-  const items = [
-    ['overview',  'Overview',            '📊'],
-    ['leads',     'Leads Manager',       '📥', 'badge'],
-    ['quotes',    'Quote Requests',      '💰', 'badge'],
-    ['contracts', 'Contracts',           '📋'],
-    ['careers',   'Career Applications', '🎓', 'badge'],
-    ['jobs',      'Job Vacancies',       '💼'],
-    ['users',     'Users',               '👥'],
-    ['companies', 'Companies',           '🏢'],
-    ['media',     'Media Manager',       '🖼'],
-    ['news',      'News Manager',        '📰'],
-    ['blogs',     'Blog Manager',        '✍️'],
-    ['ads',       'Advertisements',      '📣'],
-    ['activity',  'Activity Logs',       '🧾']
-  ];
-  document.getElementById('navItems').innerHTML = items
-    .filter(([id])=>allowed(id))
-    .map(([id,label,icon,badge])=>`<button class="nav-item ${state.view===id?'active':''}" data-view="${id}">${icon} ${label}${badge&&getBadge(id)?`<span class="badge-notify">${getBadge(id)}</span>`:''}</button>`)
-    .join('');
-  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.view));
-}
+    function renderView() {
+      const container = document.getElementById('viewContainer');
+      if (currentView === 'overview') {
+        container.innerHTML = `
+          <div class="mb-10">
+            <h1 class="text-4xl font-extrabold text-primary mb-2">Hello, Sofia!</h1>
+            <p class="text-slate-500 font-medium">Your business dashboard is synced and ready.</p>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-50 relative overflow-hidden group hover:shadow-xl transition-all">
+              <span class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 relative">Total Inquiries</span>
+              <h2 class="text-4xl font-extrabold text-primary relative">${(data.leads||[]).length}</h2>
+            </div>
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-50 relative overflow-hidden group hover:shadow-xl transition-all">
+              <span class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 relative">Applicants</span>
+              <h2 class="text-4xl font-extrabold text-secondary relative">${(data.applicants||[]).length}</h2>
+            </div>
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-50 relative overflow-hidden group hover:shadow-xl transition-all">
+              <span class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 relative">Live Jobs</span>
+              <h2 class="text-4xl font-extrabold text-indigo-600 relative">${(data.jobs||[]).filter(j=>j.status==='active').length}</h2>
+            </div>
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-50 relative overflow-hidden group hover:shadow-xl transition-all">
+              <span class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 relative">Media</span>
+              <h2 class="text-4xl font-extrabold text-slate-700 relative">${(data.media||[]).length}</h2>
+            </div>
+          </div>
+        `;
+      } else {
+        const schema = schemas[currentView];
+        container.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
+            <div>
+              <h1 class="text-4xl font-extrabold text-primary mb-2">${schema.label}</h1>
+              <p class="text-slate-500 font-medium">Manage your ${schema.label.toLowerCase()} efficiently.</p>
+            </div>
+            <button onclick="openModal()" class="px-8 py-4 bg-secondary text-white rounded-2xl font-bold shadow-lg shadow-orange-100 flex items-center justify-center gap-2 hover:-translate-y-1 transition-all">
+              <span>+</span> Add New ${schema.singular}
+            </button>
+          </div>
 
-function getBadge(id){
-  if(id==='leads')    return db.leads?.filter(l=>l.status==='new').length||0;
-  if(id==='quotes')   return db.quotes?.filter(q=>q.status==='new').length||0;
-  if(id==='careers')  return db.careers?.filter(c=>c.status==='new').length||0;
-  return 0;
-}
+          <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-50 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="bg-slate-50/50">
+                    <th class="px-8 py-6 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">Content</th>
+                    <th class="px-8 py-6 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">Status</th>
+                    <th class="px-8 py-6 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                  ${(data[currentView] || []).map(item => `
+                    <tr class="hover:bg-slate-50/50 transition-all group">
+                      <td class="px-8 py-6">
+                        <div class="flex items-center gap-4">
+                          <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary font-bold">
+                            ${(item.name || item.title || 'X')[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <p class="font-bold text-slate-800">${item.name || item.title}</p>
+                            <p class="text-xs text-slate-400 font-medium">${item.phone || item.department || item.category || ''}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-8 py-6">
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${item.status === 'new' || item.status === 'active' ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500'}">
+                          ${item.status || 'Standard'}
+                        </span>
+                      </td>
+                      <td class="px-8 py-6 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                          <button onclick="openModal('${item.id}')" class="p-2 hover:bg-white hover:shadow-md rounded-lg text-slate-400 hover:text-accent transition-all">Edit</button>
+                          <button onclick="deleteRecord('${item.id}')" class="p-2 hover:bg-white hover:shadow-md rounded-lg text-slate-400 hover:text-red-500 transition-all">Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('') || '<tr><td colspan="3" class="px-8 py-20 text-center text-slate-400 font-medium">No records found.</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+    }
 
-function navigate(view){
-  if(!allowed(view)){toast('Access denied for your role');return;}
-  state.view=view; state.selected.clear(); renderNav(); renderContent();
-  document.getElementById('sidebar').classList.remove('open');
-}
+    window.openModal = (id = null) => {
+      const schema = schemas[currentView];
+      const item = id ? data[currentView].find(i => i.id === id) : null;
+      document.getElementById('modalTitle').textContent = id ? `Edit ${schema.singular}` : `Add New ${schema.singular}`;
+      const form = document.getElementById('recordForm');
+      form.innerHTML = `<input type="hidden" name="id" value="${id || ''}">`;
+      
+      schema.fields.forEach(([key, label, type, options]) => {
+        let input = '';
+        const val = item ? item[key] || '' : '';
+        if (type === 'select') {
+          input = `<select name="${key}" class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white transition-all">
+            ${options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+          </select>`;
+        } else if (type === 'textarea') {
+          input = `<textarea name="${key}" rows="4" class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white transition-all">${val}</textarea>`;
+        } else if (type === 'file') {
+          input = `<input type="file" name="${key}" class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl">`;
+        } else {
+          input = `<input type="${type}" name="${key}" value="${val}" class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white transition-all">`;
+        }
+        form.innerHTML += `<div class="space-y-2"><label class="block text-xs font-extrabold uppercase tracking-widest text-slate-400 ml-1">${label}</label>${input}</div>`;
+      });
+      document.getElementById('modal').classList.remove('hidden');
+    };
 
-function renderContent(){
-  if(state.view==='overview') return renderOverview();
-  if(state.view==='activity') return renderActivity();
-  return renderManager(state.view);
-}
+    window.closeModal = () => document.getElementById('modal').classList.add('hidden');
 
-// ─── Overview ─────────────────────────────────────────────────────
-function head(title,sub,action=''){return `<div class="breadcrumbs">Dashboard / ${title}</div><div class="page-head"><div><h1>${title}</h1><p class="muted">${sub}</p></div>${action}</div>`;}
+    document.getElementById('recordForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      const fd = new FormData(e.target);
+      const id = fd.get('id');
+      const payload = { updatedAt: new Date().toISOString() };
+      
+      for (let [key, value] of fd.entries()) {
+        if (key === 'id') continue;
+        if (value instanceof File && value.size > 0) {
+          const sRef = storage.ref(`uploads/${Date.now()}_${value.name}`);
+          await sRef.put(value);
+          payload.url = await sRef.getDownloadURL();
+        } else if (!(value instanceof File)) {
+          payload[key] = value;
+        }
+      }
 
-function renderOverview(){
-  const totals = {
-    Leads:     db.leads?.length    || 0,
-    Quotes:    db.quotes?.length   || 0,
-    Contracts: db.contracts?.length|| 0,
-    Careers:   db.careers?.length  || 0,
-    Jobs:      db.jobs?.length     || 0,
-    Media:     db.media?.length    || 0,
-    Blogs:     db.blogs?.length    || 0,
-    'Storage': `${Math.max(1,Math.round(JSON.stringify(db).length/1024))} KB`
-  };
-  const newLeads     = db.leads?.filter(l=>l.status==='new').length||0;
-  const newQuotes    = db.quotes?.filter(q=>q.status==='new').length||0;
-  const newCareers   = db.careers?.filter(c=>c.status==='new').length||0;
-  const activeJobs   = db.jobs?.filter(j=>j.status==='active').length||0;
-  const activeContracts = db.contracts?.filter(c=>c.status==='active').length||0;
+      try {
+        if (id) {
+          await db.collection(currentView).doc(id).update(payload);
+        } else {
+          payload.createdAt = new Date().toISOString();
+          await db.collection(currentView).add(payload);
+        }
+        closeModal();
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save Changes';
+      }
+    };
 
-  document.getElementById('content').innerHTML =
-    head('Overview','Real-time operational summary from Firebase Firestore.')+
-    `<div class="stats">${Object.entries(totals).map(([k,v])=>`<div class="stat"><span>Total ${k}</span><strong>${v}</strong></div>`).join('')}</div>`+
-    `<div class="stats" style="grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:20px">
-      <div class="stat"><span>🔴 New Leads</span><strong style="color:var(--red)">${newLeads}</strong></div>
-      <div class="stat"><span>🟡 New Quotes</span><strong style="color:var(--yellow)">${newQuotes}</strong></div>
-      <div class="stat"><span>🎓 New Applications</span><strong style="color:var(--navy)">${newCareers}</strong></div>
-      <div class="stat"><span>💼 Active Jobs</span><strong style="color:var(--green)">${activeJobs}</strong></div>
-      <div class="stat"><span>📋 Active Contracts</span><strong style="color:var(--green)">${activeContracts}</strong></div>
-    </div>`+
-    `<div class="grid">
-      <div class="card"><h2>Recent Activity</h2><div class="activity">${activityHtml(db.activity.slice(0,8))}</div></div>
-      <div class="card"><h2>Security & RBAC</h2>
-        <p class="muted">Current role: <strong>${state.session.role}</strong></p>
-        <p class="muted">Auth provider: <strong>${state.session.provider||'demo'}</strong></p>
-        <div class="danger-zone" style="margin-top:12px">Firebase real-time sync is active for: Leads, Quotes, Contracts, Careers, Jobs. Other sections use local storage.</div>
-      </div>
-    </div>`;
-}
-
-// ─── Activity ─────────────────────────────────────────────────────
-function renderActivity(){
-  document.getElementById('content').innerHTML =
-    head('Activity Logs','Audit trail of authentication, CRUD and bulk actions.')+
-    `<div class="card"><div class="activity">${activityHtml(db.activity)}</div></div>`;
-}
-function activityHtml(items){
-  return items.map(a=>`<div class="activity-item"><span class="activity-dot"></span><div><strong>${escapeHtml(a.action)}</strong><br><span class="muted">${escapeHtml(a.actor)} • ${new Date(a.createdAt).toLocaleString()}</span></div></div>`).join('')||'<div class="empty">No activity yet.</div>';
-}
-
-// ─── Manager (generic CRUD) ───────────────────────────────────────
-function renderManager(key){
-  const schema = schemas[key];
-  const canEdit = schema.roles.includes(state.session.role);
-  const action = canEdit ? `<button class="btn btn-primary" onclick="openForm('${key}')">+ Create ${schema.singular}</button>` : '';
-  document.getElementById('content').innerHTML = head(schema.label, managerSub(key), action) + managerTable(key);
-}
-
-function managerSub(key){
-  const map = {
-    leads:     'Manage customer inquiries, track follow-ups, and close deals. Synced with Firebase.',
-    quotes:    'Quote requests from customers. Track status from new → quoted → closed. Synced with Firebase.',
-    contracts: 'Service contracts with customers. Track active, pending and expired contracts. Synced with Firebase.',
-    careers:   'Job applications submitted by candidates. Review, shortlist or reject. Synced with Firebase.',
-    jobs:      'Manage job vacancies, set expiry dates and track applications. Synced with Firebase.',
-    users:     'Role-based account administration.',
-    companies: 'Company information, logo, contact and verification.',
-    media:     'Upload photos/videos, manage categories and metadata.',
-    news:      'Create, draft, publish, schedule and manage news articles.',
-    blogs:     'Rich text content with categories, tags, SEO and publishing workflow.',
-    ads:       'Create banners, set start/end dates and track analytics.'
-  };
-  return map[key]||'CRUD management with search, filters and pagination.';
-}
-
-function managerTable(key){
-  const schema = schemas[key];
-  const rows = filteredRows(key);
-  const page = state.page[key]||1, per = 8;
-  const total = Math.max(1,Math.ceil(rows.length/per));
-  const slice = rows.slice((page-1)*per, page*per);
-  const cols = schema.fields.slice(0,4);
-  const fsTag = schema.firestore ? ' <span class="firebase-badge">🔥 Live</span>' : '';
-  return `<div class="card">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="font-size:13px;color:var(--muted)">${rows.length} records${fsTag}</span></div>
-    <div class="toolbar">
-      <div class="filters">
-        <input placeholder="Search ${schema.label}" value="${escapeAttr(state.query)}" oninput="state.query=this.value;state.page['${key}']=1;renderContent()">
-        <select onchange="state.filter['${key}']=this.value;state.page['${key}']=1;renderContent()">
-          <option value="">All statuses</option>${statusOptions(key)}
-        </select>
-      </div>
-      <button class="btn btn-danger" onclick="bulkDelete('${key}')">Bulk Delete</button>
-    </div>
-    ${key==='media'?mediaGrid(slice):tableHtml(key,cols,slice)}
-    <div class="pagination">
-      <button class="icon-btn" onclick="state.page['${key}']=Math.max(1,${page}-1);renderContent()">Prev</button>
-      <span class="muted">Page ${page} of ${total}</span>
-      <button class="icon-btn" onclick="state.page['${key}']=Math.min(${total},${page}+1);renderContent()">Next</button>
-    </div>
-  </div>`;
-}
-
-function statusOptions(key){
-  const sf = schemas[key].fields.find(f=>f[0]==='status');
-  return sf ? sf[3].map(s=>`<option ${state.filter[key]===s?'selected':''} value="${s}">${s}</option>`).join('') : '';
-}
-
-function filteredRows(key){
-  let rows = [...(db[key]||[])];
-  const q = state.query.toLowerCase();
-  if(q) rows = rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
-  if(state.filter[key]) rows = rows.filter(r=>r.status===state.filter[key]);
-  return rows;
-}
-
-function tableHtml(key,cols,rows){
-  return `<div class="table-wrap"><table>
-    <thead><tr><th><input type="checkbox" onchange="toggleAll('${key}',this.checked)"></th>${cols.map(c=>`<th>${c[1]}</th>`).join('')}<th>Actions</th></tr></thead>
-    <tbody>${rows.map(r=>`<tr><td><input type="checkbox" ${state.selected.has(r.id)?'checked':''} onchange="toggleOne('${r.id}',this.checked)"></td>${cols.map(c=>`<td>${formatCell(r[c[0]])}</td>`).join('')}<td><button class="icon-btn" onclick="openForm('${key}','${r.id}')">Edit</button> <button class="icon-btn" onclick="confirmDelete('${key}','${r.id}')">Delete</button></td></tr>`).join('')||`<tr><td colspan="${cols.length+2}" class="empty">No records found.</td></tr>`}
-    </tbody></table></div>`;
-}
-
-function mediaGrid(rows){
-  return `<div class="media-grid">${rows.map(r=>`<div class="media-tile"><div class="media-thumb">${r.type==='video'?'▶':'▧'}</div><div><input type="checkbox" onchange="toggleOne('${r.id}',this.checked)"> <strong>${escapeHtml(r.title)}</strong><br><span class="muted">${escapeHtml(r.category||'')} • ${escapeHtml(r.status)}</span><br><button class="icon-btn" onclick="openForm('media','${r.id}')">Metadata</button> <button class="icon-btn" onclick="confirmDelete('media','${r.id}')">Delete</button></div></div>`).join('')||'<div class="empty">No media found.</div>'}</div>`;
-}
-
-function formatCell(value){
-  const v = escapeHtml(String(value??''));
-  const greenList  = ['active','published','verified','shortlisted','quoted','contacted'];
-  const yellowList = ['draft','pending','scheduled','reviewing','in-progress','new'];
-  const redList    = ['inactive','expired','rejected','cancelled','junk'];
-  const blueList   = ['closed'];
-  if(greenList.includes(v))  return `<span class="badge ${v}">${v}</span>`;
-  if(yellowList.includes(v)) return `<span class="badge ${v}">${v}</span>`;
-  if(redList.includes(v))    return `<span class="badge ${v}">${v}</span>`;
-  if(blueList.includes(v))   return `<span class="badge closed">${v}</span>`;
-  return v;
-}
-
-// ─── Form (Create / Edit) ─────────────────────────────────────────
-function openForm(key,id){
-  const schema = schemas[key];
-  if(!schema.roles.includes(state.session.role)){toast('You do not have permission to change this module');return;}
-  const record = id ? (db[key]||[]).find(r=>r.id===id) : {};
-  document.getElementById('modal').classList.remove('hidden');
-  document.getElementById('modal').innerHTML=`<div class="modal-card">
-    <div class="modal-head"><div><h2>${id?'Edit':'Create'} ${schema.singular}</h2><p class="muted">${schema.label}</p></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
-    <form id="recordForm"><div class="form-grid">${schema.fields.map(f=>fieldHtml(f,record?.[f[0]])).join('')}</div><button class="btn btn-primary" type="submit" style="margin-top:12px">Save ${schema.singular}</button></form>
-  </div>`;
-  document.getElementById('recordForm').onsubmit = e=>{e.preventDefault();saveRecord(key,id,new FormData(e.currentTarget));};
-}
-
-function fieldHtml([name,label,type,options],value=''){
-  if(type==='select') return `<div class="field"><label>${label}</label><select name="${name}">${options.map(o=>`<option ${value===o?'selected':''} value="${o}">${o}</option>`).join('')}</select></div>`;
-  if(type==='textarea') return `<div class="field" style="grid-column:1/-1"><label>${label}</label><textarea name="${name}">${escapeHtml(value??'')}</textarea></div>`;
-  return `<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${escapeAttr(value??'')}"></div>`;
-}
-
-function saveRecord(key,id,form){
-  const obj = {};
-  for(const [k,v] of form.entries()) obj[k] = sanitize(v);
-  if(id){
-    const i = db[key].findIndex(r=>r.id===id);
-    const updated = {...db[key][i],...obj, updatedAt:new Date().toISOString()};
-    db[key][i] = updated;
-    fsUpdate(key, id, updated);
-    log(`Updated ${schemas[key].singular}: ${obj.title||obj.name||obj.customerName||id}`,key);
-  } else {
-    const newRec = {id:uid(),...obj, createdAt:new Date().toISOString()};
-    db[key].unshift(newRec);
-    fsCreate(key, newRec);
-    log(`Created ${schemas[key].singular}: ${obj.title||obj.name||obj.customerName||''}`,key);
-  }
-  save(); closeModal(); renderContent(); toast('Record saved ✓');
-}
-
-function confirmDelete(key,id){
-  if(confirm('Delete this record? This action is logged.')){
-    db[key] = db[key].filter(r=>r.id!==id);
-    fsDelete(key, id);
-    log(`Deleted ${schemas[key].singular}`,key);
-    save(); renderContent(); toast('Deleted');
-  }
-}
-
-function bulkDelete(key){
-  if(!state.selected.size){toast('Select records first');return;}
-  if(confirm(`Delete ${state.selected.size} selected records?`)){
-    state.selected.forEach(id=>fsDelete(key,id));
-    db[key] = db[key].filter(r=>!state.selected.has(r.id));
-    log(`Bulk deleted ${state.selected.size} ${schemas[key].label}`,key);
-    state.selected.clear(); save(); renderContent(); toast('Bulk delete complete');
-  }
-}
-
-function toggleOne(id,on){on?state.selected.add(id):state.selected.delete(id);}
-function toggleAll(key,on){filteredRows(key).forEach(r=>on?state.selected.add(r.id):state.selected.delete(r.id));renderContent();}
-function closeModal(){document.getElementById('modal').classList.add('hidden');document.getElementById('modal').innerHTML='';}
-
-function sanitize(v){return String(v).trim().replace(/[<>]/g,'');}
-function escapeHtml(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function escapeAttr(v){return escapeHtml(v).replace(/'/g,'&#39;');}
-
-// ─── Event Handlers ───────────────────────────────────────────────
-document.getElementById('loginForm').onsubmit = async e=>{
-  e.preventDefault();
-  const ok = await login(document.getElementById('email').value, document.getElementById('password').value);
-  if(ok){ log('Signed in to dashboard','security'); showApp(); toast('Welcome back!'); }
-  else { toast('Invalid credentials'); const btn=document.getElementById('loginBtn'); if(btn){btn.textContent='Sign in securely';btn.disabled=false;} }
-};
-
-document.getElementById('logoutBtn').onclick = ()=>{
-  log('Signed out','security');
-  fbAuth.signOut().catch(()=>{});
-  sessionStorage.removeItem('newtech-session');
-  state.session = null;
-  firestoreListeners.forEach(u=>u()); firestoreListeners=[];
-  showLogin();
-};
-
-document.getElementById('mobileMenu').onclick = ()=>document.getElementById('sidebar').classList.toggle('open');
-document.getElementById('darkToggle').onclick = ()=>{document.body.classList.toggle('dark');localStorage.setItem('newtech-dark',document.body.classList.contains('dark'));};
-document.getElementById('globalSearch').oninput = e=>{state.query=e.target.value;renderContent();};
-document.getElementById('exportBtn').onclick = ()=>{
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='newtech-admin-export.json';a.click();URL.revokeObjectURL(a.href);
-  log('Exported admin data','security');
-};
-
-boot();
-</script>
+    window.deleteRecord = async (id) => {
+      if (confirm('Delete permanently?')) await db.collection(currentView).doc(id).delete();
+    };
+  </script>
 </body>
 </html>
