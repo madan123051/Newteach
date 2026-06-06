@@ -249,27 +249,30 @@ function updateSyncBadge(ok){
 }
 
 async function fsCreate(key, obj){
-  if(!schemas[key]?.firestore) return obj.id;
+  if(!schemas[key]?.firestore) return;
   await ensureFirebaseUser();
-  const {id, upload, ...firestoreObj} = obj;
-  const docRef = await fstore.collection(key).add({...firestoreObj, createdAt: obj.createdAt || new Date().toISOString()});
-  // Update local id to match Firestore id so edits/deletes hit the live document.
-  const idx = db[key].findIndex(r=>r.id===obj.id);
-  if(idx>-1) db[key][idx].id = docRef.id;
-  save();
-  return docRef.id;
+  try {
+    const {id, upload, ...firestoreObj} = obj;
+    const docRef = await fstore.collection(key).add({...firestoreObj, createdAt: obj.createdAt || new Date().toISOString()});
+    // Update local id to match Firestore id
+    const idx = db[key].findIndex(r=>r.id===obj.id);
+    if(idx>-1) db[key][idx].id = docRef.id;
+    save();
+  } catch(e){ console.warn('Firestore create failed:', e.message); }
 }
 
 async function fsUpdate(key, id, obj){
   if(!schemas[key]?.firestore) return;
   await ensureFirebaseUser();
-  await fstore.collection(key).doc(id).set(obj, {merge:true});
+  try { await fstore.collection(key).doc(id).set(obj, {merge:true}); }
+  catch(e){ console.warn('Firestore update failed:', e.message); }
 }
 
 async function fsDelete(key, id){
   if(!schemas[key]?.firestore) return;
   await ensureFirebaseUser();
-  await fstore.collection(key).doc(id).delete();
+  try { await fstore.collection(key).doc(id).delete(); }
+  catch(e){ console.warn('Firestore delete failed:', e.message); }
 }
 
 // ─── Auth ─────────────────────────────────────────────────────────

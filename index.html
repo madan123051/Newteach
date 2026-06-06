@@ -728,11 +728,6 @@
     }
   }
 
-  function firebaseErrorMessage(err){
-    const code = err && err.code ? ` (${err.code})` : '';
-    return `${err.message || 'Firebase request failed'}${code}`;
-  }
-
   function withTimeout(promise, ms, label){
     let timeoutId;
     const timeout = new Promise((_, reject) => {
@@ -841,19 +836,16 @@
         status: 'new',
         createdAt: new Date().toISOString()
       };
-      const quoteWrite = await withTimeout(
+      await withTimeout(Promise.all([
         db.collection('quotes').add({ ...payload, location: '', source: 'website-get-quote' }),
-        12000,
-        'Quote request'
-      );
-      db.collection('leads').add({ ...payload, quoteId: quoteWrite.id, source: 'website-get-quote' })
-        .catch(err => console.warn('Lead mirror write failed:', firebaseErrorMessage(err)));
+        db.collection('leads').add({ ...payload, source: 'website-get-quote' })
+      ]), 12000, 'Quote request');
       btn.innerHTML = '✓ Message Sent!';
       btn.style.background = '#10b981';
       e.target.reset();
       setTimeout(() => { btn.disabled = false; btn.innerHTML = original; btn.style.background = ''; }, 3000);
     } catch (err) {
-      alert('Message could not be sent to admin: ' + firebaseErrorMessage(err));
+      alert('Message could not be sent to admin: ' + err.message);
       btn.disabled = false; btn.innerHTML = original;
     }
   };
