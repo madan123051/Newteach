@@ -55,7 +55,7 @@
     <div class="login-brand">
       <div class="logo">NT</div>
       <h1>Company administration, secured and centralized.</h1>
-      <p>Manage leads, quote requests, career applications, job vacancies, and media from one centralized dashboard with Firebase real-time sync.</p>
+      <p>Manage quote requests, career applications, job vacancies, and media from one centralized dashboard with Firebase real-time sync.</p>
       <div class="security-list">
         <span>✓ Firebase Auth + Role Based Access Control</span>
         <span>✓ Real-time Firestore data sync</span>
@@ -128,10 +128,10 @@ const fstorage = firebase.storage();
 // ─── Role & Account Config ────────────────────────────────────────
 const roles = {SUPER_ADMIN:'Super Admin',COMPANY_ADMIN:'Company Admin',EDITOR:'Editor',MODERATOR:'Moderator'};
 const permissions = {
-  'Super Admin':  ['leads','quotes','careers','jobs','media'],
-  'Company Admin':['leads','quotes','careers','jobs','media'],
-  'Editor':       ['leads','quotes','careers','jobs','media'],
-  'Moderator':    ['leads','quotes','careers','jobs','media']
+  'Super Admin':  ['quotes','careers','jobs','media'],
+  'Company Admin':['quotes','careers','jobs','media'],
+  'Editor':       ['quotes','careers','jobs','media'],
+  'Moderator':    ['quotes','careers','jobs','media']
 };
 // Role map for Firebase Auth users (email → role)
 // Add your admin emails here
@@ -144,10 +144,7 @@ const schemas = {
     label:'Users',singular:'User',icon:'👥',roles:['Super Admin'],firestore:false,
     fields:[['name','Name','text'],['email','Email','email'],['role','Role','select',['Super Admin','Company Admin','Editor','Moderator']],['status','Status','select',['active','inactive']]],
     seed:[]},
-  leads:{
-    label:'Leads Manager',singular:'Lead',icon:'📥',roles:['Super Admin','Company Admin','Editor'],firestore:true,
-    fields:[['name','Customer Name','text'],['phone','Phone','tel'],['email','Email','email'],['service','Service','text'],['status','Status','select',['new','contacted','closed','junk']],['message','Message','textarea']],
-    seed:[{id:'l1',name:'Demo Lead',phone:'+91 0000000000',email:'demo@example.com',service:'Pleated Mesh',status:'new',message:'I need a quote for 5 windows.'}]
+]
   },
   quotes:{
     label:'Quote Requests',singular:'Quote',icon:'💰',roles:['Super Admin','Company Admin','Editor'],firestore:true,
@@ -177,7 +174,7 @@ const schemas = {
 };
 
 // ─── App State ────────────────────────────────────────────────────
-let state = {session:null,view:'leads',query:'',page:{},filter:{},selected:new Set()};
+let state = {session:null,view:query:'',page:{},filter:{},selected:new Set()};
 const storageKey = 'newtech-admin-v3';
 let firestoreListeners = [];
 let fsConnected = false;
@@ -326,13 +323,12 @@ function showApp(){
 
   setupFirestoreListeners();
   renderNav();
-  navigate('leads');
+  navigate('quotes');
 }
 
 // ─── Navigation ───────────────────────────────────────────────────
 function renderNav(){
   const items = [
-    ['leads',     'Leads Manager',       '📥', 'badge'],
     ['quotes',    'Quote Requests',      '💰', 'badge'],
     ['careers',   'Career Applications', '🎓', 'badge'],
     ['jobs',      'Job Vacancies',       '💼'],
@@ -346,7 +342,6 @@ function renderNav(){
 }
 
 function getBadge(id){
-  if(id==='leads')    return db.leads?.filter(l=>l.status==='new').length||0;
   if(id==='quotes')   return db.quotes?.filter(q=>q.status==='new').length||0;
   if(id==='careers')  return db.careers?.filter(c=>c.status==='new').length||0;
   return 0;
@@ -380,7 +375,6 @@ function renderManager(key){
 
 function managerSub(key){
   const map = {
-    leads:   'Manage customer inquiries, track follow-ups, and close deals. Synced with Firebase.',
     quotes:  'Quote requests from customers. Track status from new → quoted → closed. Synced with Firebase.',
     careers: 'Job applications submitted by candidates. Review, shortlist or reject. Synced with Firebase.',
     jobs:    'Manage job vacancies, set expiry dates and track applications. Synced with Firebase.',
