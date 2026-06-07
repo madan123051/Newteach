@@ -14,7 +14,38 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
   <style>
-    :root{--bg:#f8fafc;--card:#ffffff;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;--navy:#1e3a8a;--navy-900:#172554;--orange:#f97316;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--shadow:0 4px 20px rgba(30,58,138,0.08);--radius:16px;color-scheme:light}body.dark{--bg:#0f172a;--card:#1e293b;--ink:#f8fafc;--muted:#94a3b8;--line:#334155;--navy:#3b82f6;--navy-900:#0f172a;--shadow:0 20px 50px rgba(0,0,0,0.3);color-scheme:dark}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.login-shell{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;background:linear-gradient(135deg,#f0f4ff 0%,#fff5eb 100%);}.login-brand{color:var(--navy-900);padding:64px;display:flex;flex-direction:column;justify-content:center}.login-brand h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.05em;margin:18px 0}.login-brand p{font-size:18px;line-height:1.75;color:var(--muted);max-width:680px}.security-list{display:grid;gap:12px;margin-top:24px}.security-list span{display:flex;gap:10px;align-items:center;color:var(--navy)}.login-panel{display:flex;align-items:center;justify-content:center;padding:28px}.login-card{width:100%;max-width:460px;background:var(--card);border:1px solid rgba(255,255,255,.16);box-shadow:var(--shadow);border-radius:28px;padding:32px}.logo{width:auto;height:58px;border-radius:0;background:none;display:flex;align-items:center;gap:10px;} .logo img{height:100%;}.login-card h2{font-size:30px;margin:18px 0 8px}.muted{color:var(--muted)}.field{display:grid;gap:8px;margin:14px 0}.field label{font-size:13px;font-weight:800}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--card);color:var(--ink)}.field textarea{min-height:96px;resize:vertical}.hint{font-size:12px;color:var(--muted);line-height:1.6}.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:800;display:inline-flex;gap:8px;align-items:center;justify-content:center}.btn-primary{background:var(--orange);color:white}.btn-navy{background:var(--navy);color:white}.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn-danger{background:#fee2e2;color:var(--red)}.login-card .btn{width:100%;margin-top:10px}.app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.sidebar{background:#1e3a8a;color:white;position:sticky;top:0;height:100vh;overflow:auto;padding:18px;box-shadow: 4px 0 15px rgba(0,0,0,0.05);}.side-head{display:flex;align-items:center;gap:12px;padding:8px 6px 22px;border-bottom:1px solid rgba(255,255,255,.12)}.side-head .logo{width:46px;height:46px}.role-chip{font-size:11px;background:rgba(249,115,22,.2);color:#fed7aa;border:1px solid rgba(249,115,22,.35);padding:4px 8px;border-radius:999px} .badge-notify{background:var(--red);color:white;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:auto;font-weight:800;}.nav-section{margin:20px 0 8px;color:#94a3b8;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.nav-item{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#cbd5e1;padding:12px;border-radius:12px;text-align:left;font-weight:700}.nav-item:hover,.nav-item.active{background:var(--orange);color:white;box-shadow: 0 4px 12px rgba(249,115,22,0.3);}.main{min-width:0}.topbar{height:72px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}.topbar-left{display:flex;align-items:center;gap:12px}.mobile-menu{display:none}.search{position:relative;min-width:min(440px,45vw)}.search input{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:11px 18px}.top-actions{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--orange));display:grid;place-items:center;color:#fff;font-weight:900}.content{padding:28px}.breadcrumbs{font-size:13px;color:var(--muted);margin-bottom:10px}.page-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.page-head h1{margin:0;font-size:30px;letter-spacing:-.03em}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition: transform 0.2s;} .stat:hover{transform: translateY(-5px);}.stat span{color:var(--muted);font-size:13px;font-weight:800}.stat strong{display:block;font-size:36px;margin-top:8px;color:var(--orange)}.grid{display:grid;grid-template-columns:1.5fr .9fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 24px rgba(16,24,40,.04);padding:18px}.card h2{font-size:18px;margin:0 0 14px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters input,.filters select{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px;background:var(--card)}th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--bg)}tr:last-child td{border-bottom:0}.badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800}.published,.active,.verified,.shortlisted{background:#dcfce7;color:#15803d}.draft,.pending,.scheduled,.reviewing,.in-progress{background:#fef3c7;color:#a16207}.inactive,.expired,.rejected,.cancelled{background:#fee2e2;color:#b91c1c}.quoted,.contacted,.closed{background:#dbeafe;color:#1d4ed8}.pagination{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px}.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}.media-tile{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}.media-thumb{height:110px;background:linear-gradient(135deg,#dbeafe,#ffedd5);display:grid;place-items:center;font-size:34px}.media-thumb img,.media-thumb video{width:100%;height:100%;object-fit:cover}.media-tile div:last-child{padding:10px}.activity{display:grid;gap:10px}.activity-item{display:flex;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px}.activity-dot{width:10px;height:10px;border-radius:50%;background:var(--orange);margin-top:5px;flex:0 0 auto}.modal{position:fixed;inset:0;background:rgba(2,6,23,.62);display:grid;place-items:center;padding:18px;z-index:100}.modal-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.toast-wrap{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:200}.toast{background:#101828;color:#fff;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow)}.danger-zone{border:1px dashed #fecaca;background:#fff7f7;border-radius:14px;padding:12px;color:#991b1b}.empty{text-align:center;color:var(--muted);padding:32px}.loading{opacity:.6;pointer-events:none}.firebase-badge{display:inline-flex;align-items:center;gap:5px;background:#fff3e0;color:#e65100;font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;border:1px solid #ffcc02;}@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:50;transform:translateX(-105%);transition:.2s;width:280px}.sidebar.open{transform:none}.mobile-menu{display:inline-flex}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr}.login-brand{display:none}}@media(max-width:640px){.content{padding:18px}.topbar{padding:0 14px}.search{display:none}.stats{grid-template-columns:1fr}.page-head{display:block}.form-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.filters,.filters input,.filters select,.toolbar .btn{width:100%}.filters{display:grid}.top-actions .muted{display:none}}
+    :root{--bg:#f8fafc;--card:#ffffff;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;--navy:#1e3a8a;--navy-900:#172554;--orange:#f97316;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--shadow:0 4px 20px rgba(30,58,138,0.08);--radius:16px;color-scheme:light}body.dark{--bg:#0f172a;--card:#1e293b;--ink:#f8fafc;--muted:#94a3b8;--line:#334155;--navy:#3b82f6;--navy-900:#0f172a;--shadow:0 20px 50px rgba(0,0,0,0.3);color-scheme:dark}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.login-shell{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;background:linear-gradient(135deg,#f0f4ff 0%,#fff5eb 100%);}.login-brand{color:var(--navy-900);padding:64px;display:flex;flex-direction:column;justify-content:center}.login-brand h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.05em;margin:18px 0}.login-brand p{font-size:18px;line-height:1.75;color:var(--muted);max-width:680px}.security-list{display:grid;gap:12px;margin-top:24px}.security-list span{display:flex;gap:10px;align-items:center;color:var(--navy)}.login-panel{display:flex;align-items:center;justify-content:center;padding:28px}.login-card{width:100%;max-width:460px;background:var(--card);border:1px solid rgba(255,255,255,.16);box-shadow:var(--shadow);border-radius:28px;padding:32px}.logo{width:auto;height:58px;border-radius:0;background:none;display:flex;align-items:center;gap:10px;} .logo img{height:100%;}.login-card h2{font-size:30px;margin:18px 0 8px}.muted{color:var(--muted)}.field{display:grid;gap:8px;margin:14px 0}.field label{font-size:13px;font-weight:800}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--card);color:var(--ink)}.field textarea{min-height:96px;resize:vertical}.hint{font-size:12px;color:var(--muted);line-height:1.6}.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:800;display:inline-flex;gap:8px;align-items:center;justify-content:center}.btn-primary{background:var(--orange);color:white}.btn-navy{background:var(--navy);color:white}.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn-danger{background:#fee2e2;color:var(--red)}.login-card .btn{width:100%;margin-top:10px}.app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.sidebar{background:#1e3a8a;color:white;position:sticky;top:0;height:100vh;overflow:auto;padding:18px;box-shadow: 4px 0 15px rgba(0,0,0,0.05);}.side-head{display:flex;align-items:center;gap:12px;padding:8px 6px 22px;border-bottom:1px solid rgba(255,255,255,.12)}.side-head .logo{width:46px;height:46px}.role-chip{font-size:11px;background:rgba(249,115,22,.2);color:#fed7aa;border:1px solid rgba(249,115,22,.35);padding:4px 8px;border-radius:999px} .badge-notify{background:var(--red);color:white;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:auto;font-weight:800;}.nav-section{margin:20px 0 8px;color:#94a3b8;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.nav-item{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#cbd5e1;padding:12px;border-radius:12px;text-align:left;font-weight:700}.nav-item:hover,.nav-item.active{background:var(--orange);color:white;box-shadow: 0 4px 12px rgba(249,115,22,0.3);}.main{min-width:0}.topbar{height:72px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}.topbar-left{display:flex;align-items:center;gap:12px}.mobile-menu{display:none}.search{position:relative;min-width:min(440px,45vw)}.search input{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:11px 18px}.top-actions{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--orange));display:grid;place-items:center;color:#fff;font-weight:900}.content{padding:28px}.breadcrumbs{font-size:13px;color:var(--muted);margin-bottom:10px}.page-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.page-head h1{margin:0;font-size:30px;letter-spacing:-.03em}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition: transform 0.2s;} .stat:hover{transform: translateY(-5px);}.stat span{color:var(--muted);font-size:13px;font-weight:800}.stat strong{display:block;font-size:36px;margin-top:8px;color:var(--orange)}.grid{display:grid;grid-template-columns:1.5fr .9fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 24px rgba(16,24,40,.04);padding:18px}.card h2{font-size:18px;margin:0 0 14px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters input,.filters select{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px;background:var(--card)}th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--bg)}tr:last-child td{border-bottom:0}.badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800}.published,.active,.verified,.shortlisted{background:#dcfce7;color:#15803d}.draft,.pending,.scheduled,.reviewing,.in-progress{background:#fef3c7;color:#a16207}.inactive,.expired,.rejected,.cancelled{background:#fee2e2;color:#b91c1c}.quoted,.contacted,.closed{background:#dbeafe;color:#1d4ed8}.pagination{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px}.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}.media-tile{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}.media-thumb{height:110px;background:linear-gradient(135deg,#dbeafe,#ffedd5);display:grid;place-items:center;font-size:34px}.media-thumb img,.media-thumb video{width:100%;height:100%;object-fit:cover}.media-tile div:last-child{padding:10px}.activity{display:grid;gap:10px}.activity-item{display:flex;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px}.activity-dot{width:10px;height:10px;border-radius:50%;background:var(--orange);margin-top:5px;flex:0 0 auto}.modal{position:fixed;inset:0;background:rgba(2,6,23,.62);display:grid;place-items:center;padding:18px;z-index:100}.modal-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.toast-wrap{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:200}.toast{background:#101828;color:#fff;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow)}.danger-zone{border:1px dashed #fecaca;background:#fff7f7;border-radius:14px;padding:12px;color:#991b1b}.empty{text-align:center;color:var(--muted);padding:32px}.loading{opacity:.6;pointer-events:none}.firebase-badge{display:inline-flex;align-items:center;gap:5px;background:#fff3e0;color:#e65100;font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;border:1px solid #ffcc02;}
+  /* ── Modern Media Upload Modal ────────────────────────── */
+  .media-upload-modal{width:min(920px,100%);}
+  .mu-two-col{display:grid;grid-template-columns:1.2fr .9fr;gap:24px;align-items:start;margin-top:20px;}
+  .upload-zone{border:2.5px dashed var(--line);border-radius:18px;padding:38px 24px;text-align:center;cursor:pointer;transition:all .3s;background:var(--bg);position:relative;}
+  .upload-zone.dragover,.upload-zone:hover{border-color:var(--orange);background:rgba(249,115,22,0.05);}
+  .upload-zone .uz-icon{font-size:52px;display:block;margin-bottom:12px;}
+  .upload-zone h3{font-size:17px;color:var(--ink);margin-bottom:6px;}
+  .upload-zone p{font-size:13px;color:var(--muted);}
+  .mu-preview-wrap .file-preview-inner{border-radius:14px;overflow:hidden;background:#000;max-height:260px;display:flex;align-items:center;justify-content:center;}
+  .mu-preview-wrap .file-preview-inner img,.mu-preview-wrap .file-preview-inner video{max-width:100%;max-height:260px;object-fit:contain;border-radius:14px;}
+  .mu-preview-wrap .change-btn{margin-top:8px;font-size:12px;color:var(--orange);cursor:pointer;font-weight:700;text-align:center;display:block;}
+  .progress-bar-wrap{height:7px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px 0;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--navy));border-radius:999px;transition:width .25s;}
+  .cat-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .cat-chip{border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:var(--card);color:var(--muted);}
+  .cat-chip:hover{border-color:var(--orange);color:var(--orange);}
+  .cat-chip.sel{border-color:var(--orange);background:rgba(249,115,22,0.1);color:var(--orange);}
+  .mu-status-row{display:flex;gap:10px;margin-top:8px;}
+  .mu-status-row label{display:flex;align-items:center;gap:7px;cursor:pointer;padding:8px 14px;border:2px solid var(--line);border-radius:12px;font-weight:700;font-size:13px;transition:all .2s;flex:1;justify-content:center;}
+  .mu-status-row label:has(input:checked){border-color:var(--orange);background:rgba(249,115,22,0.1);color:var(--orange);}
+  .mu-save-btn{width:100%;margin-top:10px;padding:14px;font-size:15px;border-radius:14px;letter-spacing:.01em;}
+  .mu-delete-btn{width:100%;margin-top:8px;padding:11px;border-radius:14px;font-size:13px;}
+  @media(max-width:660px){.mu-two-col{grid-template-columns:1fr;}}
+  /* Media tile improvements */
+  .media-tile{transition:transform .2s,box-shadow .2s;}.media-tile:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(30,58,138,0.12);}
+  .media-tile .tile-footer{padding:12px;}
+  .media-tile .tile-title{font-weight:700;font-size:14px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .media-tile .tile-meta{font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .media-tile .tile-actions{display:flex;gap:6px;}
+  .media-tile .tile-actions button{flex:1;font-size:12px;padding:6px 8px;}
+@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:50;transform:translateX(-105%);transition:.2s;width:280px}.sidebar.open{transform:none}.mobile-menu{display:inline-flex}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr}.login-brand{display:none}}@media(max-width:640px){.content{padding:18px}.topbar{padding:0 14px}.search{display:none}.stats{grid-template-columns:1fr}.page-head{display:block}.form-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.filters,.filters input,.filters select,.toolbar .btn{width:100%}.filters{display:grid}.top-actions .muted{display:none}}
   </style>
 </head>
 <body>
@@ -329,7 +360,11 @@ function head(title,sub,action=''){return `<div class="breadcrumbs">Dashboard / 
 function renderManager(key){
   const schema = schemas[key];
   const canEdit = schema.roles.includes(state.session.role);
-  const action = canEdit ? `<button class="btn btn-primary" onclick="openForm('${key}')">+ Create ${schema.singular}</button>` : '';
+  const action = canEdit
+    ? (key === 'media'
+        ? `<button class="btn btn-primary" onclick="openMediaModal(null)">📤 Upload New Media</button>`
+        : `<button class="btn btn-primary" onclick="openForm('${key}')">+ Create ${schema.singular}</button>`)
+    : '';
   document.getElementById('content').innerHTML = head(schema.label, managerSub(key), action) + managerTable(key);
 }
 
@@ -393,7 +428,27 @@ function tableHtml(key,cols,rows){
 }
 
 function mediaGrid(rows){
-  return `<div class="media-grid">${rows.map(r=>`<div class="media-tile"><div class="media-thumb">${mediaPreview(r)}</div><div><input type="checkbox" ${state.selected.has(r.id)?'checked':''} onchange="toggleOne('${r.id}',this.checked)"> <strong>${escapeHtml(r.title)}</strong><br><span class="muted">${escapeHtml(r.category||'')} • ${escapeHtml(r.status)}</span><br><button class="icon-btn" onclick="openForm('media','${r.id}')">Edit / Upload</button> <button class="icon-btn" onclick="confirmDelete('media','${r.id}')">Delete</button></div></div>`).join('')||'<div class="empty">No media found.</div>'}</div>`;
+  const statusBadge = s => s === 'active'
+    ? '<span class="badge active" style="font-size:11px;">✅ Live on Site</span>'
+    : '<span class="badge inactive" style="font-size:11px;">🚫 Hidden</span>';
+  return `<div class="media-grid">${rows.map(r=>`
+    <div class="media-tile">
+      <div class="media-thumb" style="position:relative;">
+        ${mediaPreview(r)}
+        <input type="checkbox" ${state.selected.has(r.id)?'checked':''} onchange="toggleOne('${r.id}',this.checked)"
+          style="position:absolute;top:8px;left:8px;width:16px;height:16px;cursor:pointer;">
+        ${r.type==='video'?'<span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">▶ VIDEO</span>':''}
+      </div>
+      <div class="tile-footer">
+        <div class="tile-title">${escapeHtml(r.title||'Untitled')}</div>
+        <div class="tile-meta">${escapeHtml(r.category||'—')}</div>
+        ${statusBadge(r.status)}
+        <div class="tile-actions" style="margin-top:8px;">
+          <button class="icon-btn" onclick="openMediaModal('${r.id}')">✏️ Edit</button>
+          <button class="icon-btn" onclick="confirmDelete('media','${r.id}')">🗑️ Delete</button>
+        </div>
+      </div>
+    </div>`).join('')||'<div class="empty">No media found. Click "Upload New Media" to add photos/videos.</div>'}</div>`;
 }
 
 function mediaPreview(r){
@@ -558,6 +613,205 @@ async function sendPasswordReset(){
     const msg = e.code==='auth/user-not-found'?'No account found for that email.':
                 e.code==='auth/invalid-email'?'Invalid email address.':e.message;
     toast('Reset failed: '+msg);
+  }
+}
+
+
+// ─── Modern Media Upload Modal ────────────────────────────────────
+let _muFile = null;
+
+function openMediaModal(id) {
+  if (!schemas['media'].roles.includes(state.session.role)) { toast('Access denied'); return; }
+  const rec = id ? (db['media'] || []).find(r => r.id === id) || {} : {};
+  const cats = ['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other'];
+  const modal = document.getElementById('modal');
+  modal.classList.remove('hidden');
+  _muFile = null;
+
+  modal.innerHTML = `
+    <div class="modal-card media-upload-modal">
+      <div class="modal-head">
+        <div>
+          <h2>${id ? '✏️ Edit Media' : '📤 Upload New Media'}</h2>
+          <p class="muted">Upload to Firebase Storage → instantly shows in <strong>Recent Installations</strong> on the live site</p>
+        </div>
+        <button class="icon-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="mu-two-col">
+
+        <!-- LEFT: Upload Zone / Preview -->
+        <div>
+          <div class="mu-preview-wrap" id="muPreviewWrap">
+            ${rec.url
+              ? `<div class="file-preview-inner">${rec.type==='video'
+                  ? `<video src="${escapeAttr(rec.url)}" controls></video>`
+                  : `<img src="${escapeAttr(rec.url)}" alt="current media">`}
+                </div>
+                <span class="change-btn" onclick="document.getElementById('muFileInput').click()">🔄 Click to replace file</span>`
+              : `<div class="upload-zone" id="muDropZone"
+                  onclick="document.getElementById('muFileInput').click()"
+                  ondrop="muHandleDrop(event)"
+                  ondragover="event.preventDefault();this.classList.add('dragover')"
+                  ondragleave="this.classList.remove('dragover')">
+                  <span class="uz-icon">☁️</span>
+                  <h3>Click or Drag & Drop</h3>
+                  <p>JPG • PNG • WEBP • MP4 • MOV &nbsp;|&nbsp; Max 50 MB</p>
+                </div>`
+            }
+          </div>
+          <input type="file" id="muFileInput" accept="image/*,video/*" style="display:none" onchange="muPreviewFile(this.files[0])">
+          <div class="progress-bar-wrap hidden" id="muProgressWrap">
+            <div class="progress-bar-fill" id="muProgressBar" style="width:0%"></div>
+          </div>
+          <div id="muStatus" style="font-size:13px;color:var(--muted);margin-top:4px;min-height:18px;"></div>
+        </div>
+
+        <!-- RIGHT: Details Form -->
+        <div>
+          <div class="field">
+            <label style="font-size:13px;font-weight:800;">📝 Title *</label>
+            <input id="muTitle" type="text" placeholder="e.g. 3BHK Invisible Grill – South Delhi" value="${escapeAttr(rec.title||'')}">
+          </div>
+
+          <div class="field">
+            <label style="font-size:13px;font-weight:800;">🏷️ Category *</label>
+            <div class="cat-chips" id="muCatChips">
+              ${cats.map(c=>`<span class="cat-chip${rec.category===c?' sel':''}" onclick="muPickCat('${c}',this)">${c}</span>`).join('')}
+            </div>
+            <input type="hidden" id="muCat" value="${escapeAttr(rec.category||'')}">
+          </div>
+
+          <div class="field">
+            <label style="font-size:13px;font-weight:800;">👁️ Visibility on Site</label>
+            <div class="mu-status-row">
+              <label><input type="radio" name="muStatus" value="active" ${(!rec.status||rec.status==='active')?'checked':''}> ✅ Live (Show in Gallery)</label>
+              <label><input type="radio" name="muStatus" value="inactive" ${rec.status==='inactive'?'checked':''}> 🚫 Hidden</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label style="font-size:13px;font-weight:800;">📄 Notes (optional)</label>
+            <textarea id="muMeta" placeholder="Location, project details, client notes...">${escapeHtml(rec.metadata||'')}</textarea>
+          </div>
+
+          <button class="btn btn-primary mu-save-btn" id="muSaveBtn" onclick="muSave('${id||''}')">
+            ${id ? '💾 Save Changes' : '🚀 Upload & Publish to Site'}
+          </button>
+          ${id ? `<button class="btn btn-danger mu-delete-btn" onclick="confirmDelete('media','${id}');closeModal()">🗑️ Delete This Media</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function muPickCat(cat, el) {
+  document.querySelectorAll('#muCatChips .cat-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('muCat').value = cat;
+}
+
+function muPreviewFile(file) {
+  if (!file) return;
+  _muFile = file;
+  const wrap = document.getElementById('muPreviewWrap');
+  const url = URL.createObjectURL(file);
+  const isVideo = file.type.startsWith('video/');
+  wrap.innerHTML = `
+    <div class="file-preview-inner">
+      ${isVideo ? `<video src="${url}" controls></video>` : `<img src="${url}" alt="preview">`}
+    </div>
+    <span class="change-btn" onclick="document.getElementById('muFileInput').click()">🔄 Change file</span>`;
+}
+
+function muHandleDrop(e) {
+  e.preventDefault();
+  const dz = document.getElementById('muDropZone');
+  if(dz) dz.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) muPreviewFile(file);
+}
+
+async function muSave(id) {
+  const title    = (document.getElementById('muTitle')?.value || '').trim();
+  const category = document.getElementById('muCat')?.value || '';
+  const status   = document.querySelector('input[name="muStatus"]:checked')?.value || 'active';
+  const metadata = (document.getElementById('muMeta')?.value || '').trim();
+  const saveBtn  = document.getElementById('muSaveBtn');
+
+  if (!title)    { toast('⚠️ Please enter a title'); return; }
+  if (!category) { toast('⚠️ Please select a category'); return; }
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = _muFile ? '⬆️ Uploading…' : '💾 Saving…';
+
+  const existing = id ? (db['media'] || []).find(r => r.id === id) || {} : {};
+  let url  = existing.url  || '';
+  let type = existing.type || 'photo';
+
+  if (_muFile) {
+    try {
+      const progressWrap = document.getElementById('muProgressWrap');
+      const progressBar  = document.getElementById('muProgressBar');
+      const statusEl     = document.getElementById('muStatus');
+      progressWrap.classList.remove('hidden');
+
+      await ensureFirebaseUser();
+      const safeName   = _muFile.name.replace(/[^a-z0-9._-]/gi, '-').toLowerCase();
+      const recId      = id || uid();
+      const path       = `site-media/${recId}-${Date.now()}-${safeName}`;
+      const ref        = fstorage.ref().child(path);
+      const uploadTask = ref.put(_muFile, {
+        contentType: _muFile.type,
+        customMetadata: { uploadedBy: state.session?.email || 'admin', title, category }
+      });
+
+      await new Promise((resolve, reject) => {
+        uploadTask.on('state_changed',
+          snap => {
+            const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+            progressBar.style.width = pct + '%';
+            statusEl.textContent = `⬆️ Uploading… ${pct}%`;
+          },
+          reject,
+          async () => {
+            url  = await uploadTask.snapshot.ref.getDownloadURL();
+            type = _muFile.type.startsWith('video/') ? 'video' : 'photo';
+            statusEl.textContent = '✅ Upload complete!';
+            resolve();
+          }
+        );
+      });
+    } catch(e) {
+      toast('Upload failed: ' + e.message);
+      saveBtn.disabled = false;
+      saveBtn.textContent = id ? '💾 Save Changes' : '🚀 Upload & Publish to Site';
+      return;
+    }
+  }
+
+  if (!url) { toast('⚠️ Please select a file to upload'); saveBtn.disabled = false; return; }
+
+  const obj = { title, category, status, metadata, url, type };
+
+  try {
+    if (id) {
+      const i = db['media'].findIndex(r => r.id === id);
+      const updated = { ...db['media'][i], ...obj, updatedAt: new Date().toISOString() };
+      await fsUpdate('media', id, updated);
+      db['media'][i] = updated;
+    } else {
+      const newRec = { id: uid(), ...obj, createdAt: new Date().toISOString() };
+      const liveId = await fsCreate('media', newRec);
+      newRec.id = liveId || newRec.id;
+      db['media'].unshift(newRec);
+    }
+    save(); closeModal(); renderContent(); _muFile = null;
+    toast(status === 'active'
+      ? '✅ Published! Visible in Recent Installations on live site.'
+      : '💾 Saved as hidden (not visible on site).');
+  } catch(e) {
+    toast('Save failed: ' + e.message);
+    saveBtn.disabled = false;
+    saveBtn.textContent = id ? '💾 Save Changes' : '🚀 Upload & Publish to Site';
   }
 }
 

@@ -747,30 +747,50 @@
     return escapeHtml(value).replace(/'/g, '&#39;');
   }
 
-  // Sync Gallery from the admin Media Manager. Static project images stay visible when Firestore has no active media.
-  db.collection('media').orderBy('createdAt', 'desc').onSnapshot(snap => {
-    const grid = document.getElementById('galleryGrid');
-    const items = snap.docs.map(doc => doc.data()).filter(item => item.status === 'active' && item.url);
-    if (!items.length) return;
-    grid.innerHTML = items.map(item => {
-      const title = escapeHtml(item.title || 'Project installation');
-      const category = escapeHtml(item.category || 'General');
-      const url = escapeAttr(item.url);
-      return `
-        <div class="gallery-item fade-up visible">
-          ${item.type === 'video' ?
-            `<video src="${url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>` :
-            `<img src="${url}" alt="${escapeAttr(item.title || 'Project installation')}">`}
-          <div class="gallery-overlay">
-            <div>
-              <span style="font-size:10px;text-transform:uppercase;color:var(--orange);font-weight:700;">${category}</span>
-              <h4>${title}</h4>
+  // ── Sync Gallery from Admin Media Manager ──
+  // Active media uploaded by admin instantly replaces static images in Recent Installations.
+  const staticGalleryHTML = document.getElementById('galleryGrid').innerHTML;
+
+  db.collection('media')
+    .where('status', '==', 'active')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+      const grid = document.getElementById('galleryGrid');
+      const items = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(i => i.url);
+
+      if (!items.length) {
+        // No Firebase media — keep static showcase images
+        grid.innerHTML = staticGalleryHTML;
+        return;
+      }
+
+      grid.innerHTML = items.map(item => {
+        const title    = escapeHtml(item.title    || 'Project Installation');
+        const category = escapeHtml(item.category || 'Our Work');
+        const url      = escapeAttr(item.url);
+        const isVideo  = item.type === 'video';
+        return `
+          <div class="gallery-item fade-up visible">
+            ${isVideo
+              ? `<video src="${url}" muted loop playsinline
+                   onmouseover="this.play()" onmouseout="this.pause()"></video>`
+              : `<img src="${url}" alt="${escapeAttr(title)}" loading="lazy">`}
+            <div class="gallery-overlay">
+              <div>
+                <span style="font-size:10px;text-transform:uppercase;color:var(--orange);font-weight:700;letter-spacing:.06em;">${category}</span>
+                <h4>${title}</h4>
+              </div>
             </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  });
+          </div>`;
+      }).join('');
+
+      // Re-observe new elements for fade-up animation
+      document.querySelectorAll('.gallery-item.fade-up').forEach(el => observer.observe(el));
+    }, err => {
+      console.warn('Gallery sync error:', err.message);
+      // Keep static fallback on error
+      grid.innerHTML = staticGalleryHTML;
+    });
 
   // Sync Careers
   db.collection('jobs').where('status', '==', 'active').onSnapshot(snap => {
