@@ -47,6 +47,33 @@
   .media-tile .tile-meta{font-size:12px;color:var(--muted);margin-bottom:8px;}
   .media-tile .tile-actions{display:flex;gap:6px;}
   .media-tile .tile-actions button{flex:1;font-size:12px;padding:6px 8px;}
+
+  /* ── Modern Create / Edit Job Modal ───────────────────────────── */
+  .job-modal{width:min(700px,100%);}
+  .job-modal-hero{background:linear-gradient(135deg,var(--navy),var(--navy-900));border-radius:18px;padding:24px 28px;margin-bottom:22px;color:#fff;display:flex;align-items:center;gap:16px;}
+  .job-modal-icon{width:56px;height:56px;border-radius:16px;background:rgba(249,115,22,.2);border:2px solid rgba(249,115,22,.4);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+  .job-modal-hero h2{margin:0 0 4px;font-size:22px;font-weight:800;letter-spacing:-.02em;}
+  .job-modal-hero p{margin:0;font-size:13px;opacity:.75;}
+  .job-section-label{font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin:18px 0 10px;display:flex;align-items:center;gap:6px;}
+  .job-section-label::after{content:'';flex:1;height:1px;background:rgba(249,115,22,.2);}
+  .job-field{display:grid;gap:6px;margin-bottom:14px;}
+  .job-field label{font-size:13px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:5px;}
+  .job-field input,.job-field select,.job-field textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;background:var(--card);color:var(--ink);font-size:14px;transition:all .2s;outline:none;}
+  .job-field input:focus,.job-field select:focus,.job-field textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.12);}
+  .job-field textarea{min-height:120px;resize:vertical;line-height:1.6;}
+  .job-two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .job-status-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  .job-status-chip{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:8px 16px;border:1.5px solid var(--line);border-radius:999px;font-size:12px;font-weight:700;transition:all .2s;background:var(--card);color:var(--muted);user-select:none;}
+  .job-status-chip:hover{border-color:var(--orange);color:var(--orange);}
+  .job-status-chip.active-chip{border-color:#10b981;background:rgba(16,185,129,.1);color:#059669;}
+  .job-status-chip.expired-chip{border-color:var(--red);background:#fee2e2;color:var(--red);}
+  .job-status-chip.draft-chip{border-color:var(--yellow);background:#fef3c7;color:#a16207;}
+  .job-status-chip.sel{border-color:var(--orange) !important;background:rgba(249,115,22,.12) !important;color:var(--orange) !important;box-shadow:0 0 0 3px rgba(249,115,22,.12);}
+  .job-save-btn{width:100%;margin-top:18px;padding:14px;font-size:15px;border-radius:14px;letter-spacing:.01em;box-shadow:0 4px 14px rgba(249,115,22,.35);}
+  .job-delete-btn{width:100%;margin-top:8px;padding:11px;border-radius:14px;font-size:13px;}
+  .job-char-count{font-size:11px;color:var(--muted);text-align:right;margin-top:2px;}
+  @media(max-width:560px){.job-two-col{grid-template-columns:1fr;}.job-modal-hero{flex-direction:column;text-align:center;}}
+
 @media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:50;transform:translateX(-105%);transition:.2s;width:280px}.sidebar.open{transform:none}.mobile-menu{display:inline-flex}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr}.login-brand{display:none}}@media(max-width:640px){.content{padding:18px}.topbar{padding:0 14px}.search{display:none}.stats{grid-template-columns:1fr}.page-head{display:block}.form-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.filters,.filters input,.filters select,.toolbar .btn{width:100%}.filters{display:grid}.top-actions .muted{display:none}}
   </style>
 </head>
@@ -369,7 +396,9 @@ function renderManager(key){
         ? `<button class="btn btn-primary" onclick="openMediaModal(null)">📤 Upload New Media</button>`
         : (key === 'quotes' || key === 'careers')
           ? ''
-          : `<button class="btn btn-primary" onclick="openForm('${key}')">+ Create ${schema.singular}</button>`)
+          : key === 'jobs'
+            ? `<button class="btn btn-primary" onclick="openJobModal(null)">💼 Post New Job</button>`
+            : `<button class="btn btn-primary" onclick="openForm('${key}')">+ Create ${schema.singular}</button>`)
     : '';
   document.getElementById('content').innerHTML = head(schema.label, managerSub(key), action) + managerTable(key);
 }
@@ -478,6 +507,7 @@ function formatCell(value){
 
 // ─── Form (Create / Edit) ─────────────────────────────────────────
 function openForm(key,id){
+  if(key === 'jobs'){ openJobModal(id); return; }
   const schema = schemas[key];
   if(!schema.roles.includes(state.session.role)){toast('You do not have permission to change this module');return;}
   const record = id ? (db[key]||[]).find(r=>r.id===id) : {};
@@ -721,6 +751,150 @@ function openMediaModal(id) {
         </div>
       </div>
     </div>`;
+}
+
+
+// ─── Modern Create / Edit Job Modal ──────────────────────────────
+function openJobModal(id) {
+  if (!schemas['jobs'].roles.includes(state.session.role)) { toast('Access denied'); return; }
+  const rec = id ? (db['jobs'] || []).find(r => r.id === id) || {} : {};
+  const modal = document.getElementById('modal');
+  modal.classList.remove('hidden');
+
+  const statusList = [
+    {val:'active',   label:'✅ Active',   cls:'active-chip'},
+    {val:'expired',  label:'❌ Expired',  cls:'expired-chip'},
+    {val:'draft',    label:'📝 Draft',    cls:'draft-chip'},
+  ];
+  const depts = ['Operations','Sales','Technical','Customer Support','Management','HR','Other'];
+  const curStatus = rec.status || 'active';
+
+  modal.innerHTML = `
+    <div class="modal-card job-modal">
+      <!-- Hero Header -->
+      <div class="job-modal-hero">
+        <div class="job-modal-icon">💼</div>
+        <div>
+          <h2>${id ? 'Edit Job Vacancy' : 'Post New Job Vacancy'}</h2>
+          <p>${id ? 'Update the details below and save changes.' : 'Fill in the details to post this role on the live careers page.'}</p>
+        </div>
+        <button class="icon-btn" onclick="closeModal()" style="margin-left:auto;background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);color:#fff;flex-shrink:0;">✕</button>
+      </div>
+
+      <!-- Section: Role Details -->
+      <div class="job-section-label">📋 Role Details</div>
+      <div class="job-two-col">
+        <div class="job-field">
+          <label>💼 Job Title *</label>
+          <input id="jbTitle" type="text" placeholder="e.g. Installation Technician" value="${escapeAttr(rec.title||'')}">
+        </div>
+        <div class="job-field">
+          <label>🏢 Department *</label>
+          <select id="jbDept">
+            ${depts.map(d=>`<option value="${d}" ${rec.department===d?'selected':''}>${d}</option>`).join('')}
+            <option value="__custom" ${!depts.includes(rec.department)&&rec.department?'selected':''}>Other (type below)</option>
+          </select>
+        </div>
+      </div>
+      <div class="job-field" id="jbDeptCustomWrap" style="${!depts.includes(rec.department)&&rec.department?'':'display:none'}">
+        <label>✏️ Custom Department</label>
+        <input id="jbDeptCustom" type="text" placeholder="Enter department name" value="${escapeAttr(!depts.includes(rec.department)?rec.department||'':'')}">
+      </div>
+
+      <!-- Section: Scheduling -->
+      <div class="job-section-label">📅 Scheduling</div>
+      <div class="job-two-col">
+        <div class="job-field">
+          <label>📆 Expiry Date *</label>
+          <input id="jbExpiry" type="date" value="${escapeAttr(rec.expiryDate||'')}">
+        </div>
+        <div class="job-field">
+          <label>👥 Applications Count</label>
+          <input id="jbApps" type="number" min="0" placeholder="0" value="${escapeAttr(String(rec.applications??'0'))}">
+        </div>
+      </div>
+
+      <!-- Section: Status -->
+      <div class="job-section-label">🚦 Job Status</div>
+      <div class="job-status-row" id="jbStatusRow">
+        ${statusList.map(s=>`<span class="job-status-chip ${s.cls}${curStatus===s.val?' sel':''}" data-val="${s.val}" onclick="jbPickStatus(this)">${s.label}</span>`).join('')}
+      </div>
+      <input type="hidden" id="jbStatus" value="${escapeAttr(curStatus)}">
+
+      <!-- Section: Description -->
+      <div class="job-section-label">📝 Job Description</div>
+      <div class="job-field">
+        <label>Describe the role, responsibilities & requirements</label>
+        <textarea id="jbDesc" placeholder="e.g. We are looking for a skilled technician to install pleated mesh, invisible grills and anti-bird nets at customer sites across Delhi NCR..." oninput="document.getElementById('jbDescCount').textContent=this.value.length+' characters'">${escapeHtml(rec.description||'')}</textarea>
+        <div class="job-char-count" id="jbDescCount">${(rec.description||'').length} characters</div>
+      </div>
+
+      <!-- Actions -->
+      <button class="btn btn-primary job-save-btn" id="jbSaveBtn" onclick="jbSave('${id||''}')">
+        ${id ? '💾 Save Changes' : '🚀 Post Job to Careers Page'}
+      </button>
+      ${id ? `<button class="btn btn-danger job-delete-btn" onclick="confirmDelete('jobs','${id}');closeModal()">🗑️ Delete This Job</button>` : ''}
+    </div>`;
+
+  // Show/hide custom dept field
+  document.getElementById('jbDept').onchange = function() {
+    document.getElementById('jbDeptCustomWrap').style.display = this.value === '__custom' ? '' : 'none';
+  };
+}
+
+function jbPickStatus(el) {
+  document.querySelectorAll('#jbStatusRow .job-status-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('jbStatus').value = el.dataset.val;
+}
+
+async function jbSave(id) {
+  const title = (document.getElementById('jbTitle')?.value || '').trim();
+  const deptSel = document.getElementById('jbDept')?.value || '';
+  const dept = deptSel === '__custom'
+    ? (document.getElementById('jbDeptCustom')?.value || '').trim()
+    : deptSel;
+  const expiry = document.getElementById('jbExpiry')?.value || '';
+  const apps = parseInt(document.getElementById('jbApps')?.value || '0', 10) || 0;
+  const status = document.getElementById('jbStatus')?.value || 'active';
+  const desc = (document.getElementById('jbDesc')?.value || '').trim();
+
+  if (!title) { toast('Job Title is required'); return; }
+  if (!dept)  { toast('Department is required'); return; }
+  if (!expiry){ toast('Expiry Date is required'); return; }
+
+  const btn = document.getElementById('jbSaveBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  const obj = {
+    title: sanitize(title),
+    department: sanitize(dept),
+    expiryDate: sanitize(expiry),
+    applications: apps,
+    status: sanitize(status),
+    description: sanitize(desc)
+  };
+
+  try {
+    if (id) {
+      const i = db['jobs'].findIndex(r => r.id === id);
+      const updated = { ...db['jobs'][i], ...obj, updatedAt: new Date().toISOString() };
+      if (schemas['jobs']?.firestore) await fsUpdate('jobs', id, updated);
+      db['jobs'][i] = updated;
+    } else {
+      const newRec = { id: uid(), ...obj, createdAt: new Date().toISOString() };
+      if (schemas['jobs']?.firestore) {
+        const liveId = await fsCreate('jobs', newRec);
+        newRec.id = liveId || newRec.id;
+      }
+      db['jobs'].unshift(newRec);
+    }
+    save(); closeModal(); renderContent();
+    toast(id ? 'Job updated ✓' : 'Job posted to live site ✓');
+  } catch (e) {
+    toast('Save failed: ' + e.message);
+    if (btn) { btn.disabled = false; btn.textContent = id ? '💾 Save Changes' : '🚀 Post Job'; }
+  }
 }
 
 function muPickCat(cat, el) {
