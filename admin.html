@@ -741,6 +741,40 @@ async function sendPasswordReset(){
 
 
 // ─── Modern Media Upload Modal ────────────────────────────────────
+
+// Extract YouTube ID from URL
+function muExtractYouTubeId(url) {
+  const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/)\|youtu\.be\/)([^"&?\s]{11})/);
+  return match ? match[1] : null;
+}
+
+// Extract Instagram post ID
+function muExtractInstagramId(url) {
+  const match = url.match(/instagram\.com\/p\/([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : null;
+}
+
+// Extract TikTok video ID
+function muExtractTikTokId(url) {
+  const match = url.match(/tiktok\.com\/.*video\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+function muPickSource(source, el) {
+  document.querySelectorAll('#muSourceChips .cat-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  _muSourceType = source;
+  document.getElementById('muSourceType').value = source;
+  
+  // Toggle URL field visibility
+  const urlField = document.getElementById('muExtUrlField');
+  if (source === 'file') {
+    urlField.style.display = 'none';
+  } else {
+    urlField.style.display = 'block';
+  }
+}
+
 let _muFile = null;
 
 function openMediaModal(id) {
@@ -1002,10 +1036,13 @@ async function muSave(id) {
   const category = document.getElementById('muCat')?.value || '';
   const status   = document.querySelector('input[name="muStatus"]:checked')?.value || 'active';
   const metadata = (document.getElementById('muMeta')?.value || '').trim();
+  const sourceType = document.getElementById('muSourceType')?.value || 'file';
+  const extUrl = (document.getElementById('muExtUrl')?.value || '').trim();
   const saveBtn  = document.getElementById('muSaveBtn');
 
   if (!title)    { toast('⚠️ Please enter a title'); return; }
   if (!category) { toast('⚠️ Please select a category'); return; }
+  if (sourceType !== 'file' && !extUrl) { toast('⚠️ Please enter a URL for ' + sourceType); return; }
 
   saveBtn.disabled = true;
   saveBtn.textContent = _muFile ? '⬆️ Uploading…' : '💾 Saving…';
@@ -1014,7 +1051,11 @@ async function muSave(id) {
   let url  = existing.url  || '';
   let type = existing.type || 'photo';
 
-  if (_muFile) {
+  // Handle external sources (YouTube, Instagram, TikTok)
+  if (sourceType !== 'file') {
+    url = extUrl;
+    type = sourceType;
+  } else if (_muFile) {
     try {
       const progressWrap = document.getElementById('muProgressWrap');
       const progressBar  = document.getElementById('muProgressBar');
@@ -1068,9 +1109,9 @@ async function muSave(id) {
     }
   }
 
-  if (!url) { toast('⚠️ Please select a file to upload'); saveBtn.disabled = false; return; }
+  if (!url) { toast('⚠️ Please select a file or URL'); saveBtn.disabled = false; return; }
 
-  const obj = { title, category, status, metadata, url, type };
+  const obj = { title, category, status, metadata, url, type, sourceType };
 
   try {
     if (id) {
