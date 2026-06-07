@@ -551,7 +551,7 @@
 <section class="about" id="about">
   <div class="about-container">
     <div class="about-image fade-up">
-      <img src="assets/services/pleated-mesh.jpg" alt="New Tech team installed pleated mesh screen work">
+      <img id="aboutImg" src="assets/services/pleated-mesh.jpg" alt="New Tech team installed pleated mesh screen work">
     </div>
     <div class="about-content fade-up">
       <div class="section-label">Who We Are</div>
@@ -1165,6 +1165,12 @@
           if (el) el.src = data.categoryImages[key].url;
         }
       });
+    }
+
+    // About section image
+    if (data.aboutImage?.url) {
+      const el = document.getElementById('aboutImg');
+      if (el) el.src = data.aboutImage.url;
     }
   }, err => console.warn('siteSettings error:', err.message));
 
