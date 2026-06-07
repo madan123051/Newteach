@@ -446,7 +446,70 @@
     .stat-item h3{font-size:24px;}
     .form-row{grid-template-columns:1fr;}
     .footer-container{grid-template-columns:1fr;}
-    section{padding:60px 20px;}
+    section{padding:40px 16px;}
+    
+    /* Compact Gallery Filters for Mobile */
+    .gallery-filters {
+      display: flex;
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding: 5px 4px 15px;
+      gap: 8px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      margin-bottom: 20px;
+    }
+    .gallery-filters::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      flex: 0 0 auto;
+      padding: 6px 14px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    /* Compact Gallery Grid for Mobile */
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0;
+    }
+    .gallery-card {
+      border-radius: 12px;
+    }
+    .gallery-card-media {
+      height: 140px;
+    }
+    .gallery-card-body {
+      padding: 10px;
+    }
+    .gallery-card-category {
+      font-size: 9px;
+      margin-bottom: 2px;
+    }
+    .gallery-card-title {
+      font-size: 12px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .media-type-badge {
+      font-size: 9px;
+      padding: 2px 8px;
+      top: 8px;
+      left: 8px;
+    }
+    .play-btn {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+    
+    /* Reduce spacing in other sections for mobile */
+    .section-header { margin-bottom: 30px; }
+    .section-header h2 { font-size: 26px; }
+    .section-header p { font-size: 14px; }
   }
 
   .fade-up{opacity:0;transform:translateY(30px);transition:all .8s ease;}
