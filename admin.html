@@ -35,11 +35,11 @@
         <div class="logo"><img src="assets/logo.png" alt="Logo"></div>
         <h2>New Tech Admin Login</h2>
         <p class="muted">Sign in to access the protected dashboard.</p>
-        <div class="field"><label for="email">Email</label><input id="email" type="email" required autocomplete="username" value="super@newtech.test"></div>
-        <div class="field"><label for="password">Password</label><input id="password" type="password" required autocomplete="current-password" value="Admin@12345"></div>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" required autocomplete="username" placeholder="your@email.com"></div>
+        <div class="field"><label for="password">Password</label><input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password"></div>
         <button class="btn btn-primary" type="submit" id="loginBtn">Sign in securely</button>
-        <p class="hint">Demo: super@newtech.test / company@newtech.test / editor@newtech.test · Password: Admin@12345<br>Or use your Firebase Auth credentials.</p>
-        <a class="hint" href="index.html">← Back to website</a>
+        <a class="hint" href="#" onclick="sendPasswordReset();return false;" style="cursor:pointer;color:var(--orange);display:block;margin-top:10px;">Forgot password? Send reset email →</a>
+        <a class="hint" href="index.html" style="display:block;margin-top:8px;">← Back to website</a>
       </form>
     </div>
   </section>
@@ -662,6 +662,20 @@ document.getElementById('exportBtn').onclick = ()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='newtech-admin-export.json';a.click();URL.revokeObjectURL(a.href);
   log('Exported admin data','security');
 };
+
+async function sendPasswordReset(){
+  const email = document.getElementById('email').value.trim();
+  if(!email){toast('Enter your email address first.');return;}
+  const btn = document.getElementById('loginBtn');
+  try{
+    await fbAuth.sendPasswordResetEmail(email);
+    toast('✉ Password reset email sent! Check your inbox.');
+  } catch(e){
+    const msg = e.code==='auth/user-not-found'?'No account found for that email.':
+                e.code==='auth/invalid-email'?'Invalid email address.':e.message;
+    toast('Reset failed: '+msg);
+  }
+}
 
 boot();
 </script>
