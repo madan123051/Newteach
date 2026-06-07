@@ -1370,10 +1370,17 @@ function renderThumbUI(s){
   const cats=s.categoryImages||{};
   const aboutImg=s.aboutImage||{};
   const catList=[
-    {key:'pleatedMesh',   label:'Pleated Mesh',        fallback:'assets/services/pleated-mesh.jpg'},
-    {key:'honeyComb',     label:'Honey Comb Partition', fallback:'assets/services/honeycomb.jpg'},
     {key:'invisibleGrill',label:'Invisible Grill',      fallback:'assets/services/invisible-grill.jpg'},
-    {key:'antiBirdNet',   label:'Anti Bird Net',         fallback:'assets/services/bird-net.jpg'}
+    {key:'blinds',        label:'Premium Blinds',       fallback:'assets/hero-fallback.jpg'},
+    {key:'polysterMesh',  label:'Polyster Pleated Mesh', fallback:'assets/services/pleated-mesh.jpg'},
+    {key:'ssMesh',        label:'SS 304 Pleated Mesh',  fallback:'assets/hero-fallback.jpg'},
+    {key:'honeycombBlackout', label:'Honeycomb Blackout', fallback:'assets/services/honeycomb.jpg'},
+    {key:'2in1',          label:'2in1 Mesh + Honeycomb', fallback:'assets/hero-fallback.jpg'},
+    {key:'pvcPartition',  label:'PVC Partition',        fallback:'assets/hero-fallback.jpg'},
+    {key:'antiBirdNet',   label:'Anti Bird Net',         fallback:'assets/services/bird-net.jpg'},
+    {key:'securityMesh',  label:'Security Mesh',        fallback:'assets/hero-fallback.jpg'},
+    {key:'crystalDoor',   label:'Crystal Partition Door', fallback:'assets/hero-fallback.jpg'},
+    {key:'other',         label:'Other Interior Work',  fallback:'assets/hero-fallback.jpg'}
   ];
 
   document.getElementById('thumbWrap').innerHTML=`
