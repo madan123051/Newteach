@@ -1434,34 +1434,43 @@
       }
 
       grid.innerHTML = snap.docs.map(doc => {
-        const r = doc.data();
-        const date = new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-        const initial = r.name.charAt(0).toUpperCase();
-        
-        return `
-          <div class="review-card">
-            <div class="review-card-header">
-              <div class="review-avatar">${initial}</div>
-              <div class="review-author-info">
-                <p class="review-author">${escapeHtml(r.name)}</p>
-                <p class="review-meta">${date}</p>
-              </div>
-            </div>
-            <div class="review-stars">${stars}</div>
-            <div class="review-card-body">
-              <p class="review-text">"${escapeHtml(r.text)}"</p>
-            </div>
-            ${r.photo ? `
-              <div class="review-card-footer">
-                <div class="review-photo-thumb" onclick="window.open('${escapeAttr(r.photo)}', '_blank')">
-                  <img src="${escapeAttr(r.photo)}" alt="Customer Photo">
+        try {
+          const r = doc.data();
+          const name = r.name || 'Valued Customer';
+          const text = r.text || '';
+          const rating = Math.min(Math.max(parseInt(r.rating) || 5, 1), 5);
+          const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently';
+          
+          const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+          const initial = name.charAt(0).toUpperCase();
+          
+          return `
+            <div class="review-card">
+              <div class="review-card-header">
+                <div class="review-avatar">${initial}</div>
+                <div class="review-author-info">
+                  <p class="review-author">${escapeHtml(name)}</p>
+                  <p class="review-meta">${dateStr}</p>
                 </div>
-                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Customer Photo</span>
               </div>
-            ` : ''}
-          </div>
-        `;
+              <div class="review-stars">${stars}</div>
+              <div class="review-card-body">
+                <p class="review-text">"${escapeHtml(text)}"</p>
+              </div>
+              ${r.photo ? `
+                <div class="review-card-footer">
+                  <div class="review-photo-thumb" onclick="window.open('${escapeAttr(r.photo)}', '_blank')">
+                    <img src="${escapeAttr(r.photo)}" alt="Customer Photo">
+                  </div>
+                  <span style="font-size:11px; color:#94a3b8; font-weight:600;">Customer Photo</span>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        } catch (e) {
+          console.error('Error rendering single review:', e);
+          return '';
+        }
       }).join('');
     });
 
