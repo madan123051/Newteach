@@ -22,7 +22,7 @@
     <div class="login-brand">
       <div class="logo">NT</div>
       <h1>Company administration, secured and centralized.</h1>
-      <p>Manage leads, quotes, contracts, careers, jobs, media, news, blogs and more from one centralized dashboard with Firebase real-time sync.</p>
+      <p>Manage leads, quote requests, career applications, job vacancies, and media from one centralized dashboard with Firebase real-time sync.</p>
       <div class="security-list">
         <span>✓ Firebase Auth + Role Based Access Control</span>
         <span>✓ Real-time Firestore data sync</span>
@@ -54,8 +54,7 @@
       <div id="navItems"></div>
       <div class="nav-section">System</div>
       <a class="nav-item" href="index.html" target="_blank" rel="noopener" style="text-decoration:none">🌐 Visit site</a>
-      <button class="nav-item" id="exportBtn">⬇ Export data</button>
-      <button class="nav-item" id="logoutBtn">↩ Logout</button>
+<button class="nav-item" id="logoutBtn">↩ Logout</button>
     </aside>
     <main class="main">
       <header class="topbar">
@@ -67,8 +66,7 @@
           <a class="btn btn-navy" href="index.html" target="_blank" rel="noopener" style="text-decoration:none;padding:8px 12px">🌐 Site</a>
           <span class="firebase-badge" id="syncBadge">🔥 Syncing…</span>
           <button class="icon-btn" id="darkToggle" title="Toggle dark mode">◐</button>
-          <span class="muted" id="currentUserName"></span>
-          <div class="avatar" id="avatar">SA</div>
+
         </div>
       </header>
       <div class="content" id="content"></div>
@@ -97,10 +95,10 @@ const fstorage = firebase.storage();
 // ─── Role & Account Config ────────────────────────────────────────
 const roles = {SUPER_ADMIN:'Super Admin',COMPANY_ADMIN:'Company Admin',EDITOR:'Editor',MODERATOR:'Moderator'};
 const permissions = {
-  'Super Admin':  ['overview','leads','quotes','contracts','careers','jobs','users','companies','media','news','blogs','ads','activity'],
-  'Company Admin':['overview','leads','quotes','contracts','careers','jobs','companies','media','news','blogs','ads','activity'],
-  'Editor':       ['overview','leads','quotes','careers','jobs','media','news','blogs'],
-  'Moderator':    ['overview','media','news','blogs','activity']
+  'Super Admin':  ['leads','quotes','careers','jobs','media'],
+  'Company Admin':['leads','quotes','careers','jobs','media'],
+  'Editor':       ['leads','quotes','careers','jobs','media'],
+  'Moderator':    ['leads','quotes','careers','jobs','media']
 };
 // Role map for Firebase Auth users (email → role)
 const roleMap = {
@@ -135,11 +133,6 @@ const schemas = {
     fields:[['name','Customer Name','text'],['phone','Phone','tel'],['email','Email','email'],['service','Service Required','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['location','Location / Address','text'],['status','Status','select',['new','in-progress','quoted','closed']],['message','Requirements','textarea']],
     seed:[]
   },
-  contracts:{
-    label:'Contracts',singular:'Contract',icon:'📋',roles:['Super Admin','Company Admin'],firestore:true,
-    fields:[['customerName','Customer Name','text'],['phone','Phone','tel'],['service','Service','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['startDate','Start Date','date'],['endDate','End Date','date'],['amount','Amount (₹)','number'],['status','Status','select',['active','pending','expired','cancelled']],['notes','Notes','textarea']],
-    seed:[]
-  },
   careers:{
     label:'Career Applications',singular:'Application',icon:'🎓',roles:['Super Admin','Company Admin','Editor'],firestore:true,
     fields:[['name','Applicant Name','text'],['email','Email','email'],['phone','Phone','tel'],['position','Position Applied For','text'],['resumeUrl','Resume URL','url'],['status','Status','select',['new','reviewing','shortlisted','rejected']],['message','Cover Letter / Message','textarea']],
@@ -150,11 +143,6 @@ const schemas = {
     fields:[['title','Job Title','text'],['department','Department','text'],['status','Status','select',['active','expired','draft']],['expiryDate','Expiry Date','date'],['applications','Applications Count','number'],['description','Description','textarea']],
     seed:[{id:'j1',title:'Installation Technician',department:'Operations',status:'active',expiryDate:'2026-08-15',applications:0,description:'Install pleated mesh, invisible grills, honeycomb partitions, and anti-bird nets at customer homes and sites.'}]
   },
-  companies:{
-    label:'Companies',singular:'Company',icon:'🏢',roles:['Super Admin','Company Admin'],firestore:false,
-    fields:[['name','Company Name','text'],['category','Category','text'],['status','Verification Status','select',['verified','pending','rejected']],['contact','Contact Email','email'],['phone','Phone','text'],['logo','Logo URL','url'],['cover','Cover Image URL','url'],['social','Social Links','text']],
-    seed:[{id:'c1',name:'NewTech HQ',category:'Manufacturing',status:'verified',contact:'homesolutionsnewtech@gmail.com',phone:'+91 9315739299',logo:'',cover:'',social:''}]
-  },
   media:{
     label:'Media Manager',singular:'Media',icon:'🖼',roles:['Super Admin','Company Admin','Editor','Moderator'],firestore:true,
     fields:[['title','Title','text'],['type','Type','select',['photo','video']],['category','Category','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['status','Status','select',['active','inactive']],['upload','Upload Photo / Video','file'],['url','Secure URL','url'],['metadata','Metadata','textarea']],
@@ -164,26 +152,11 @@ const schemas = {
       {id:'m3',title:'Invisible Grill Balcony Safety',type:'photo',category:'Invisible Grill',status:'active',url:'assets/services/invisible-grill.jpg',metadata:'Invisible grill safety installation reference.'},
       {id:'m4',title:'Anti Bird Net Balcony Protection',type:'photo',category:'Anti Bird Net',status:'active',url:'assets/services/bird-net.jpg',metadata:'Anti bird net installation reference.'}
     ]
-  },
-  news:{
-    label:'News Manager',singular:'News',icon:'📰',roles:['Super Admin','Company Admin','Editor','Moderator'],firestore:false,
-    fields:[['title','Title','text'],['status','Status','select',['draft','published','scheduled']],['publishAt','Publish Date','date'],['category','Category','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['content','Content','textarea']],
-    seed:[{id:'n1',title:'New commercial screen range launched',status:'published',publishAt:'2026-06-01',category:'Pleated Mesh',content:'Launch announcement.'}]
-  },
-  blogs:{
-    label:'Blog Manager',singular:'Blog',icon:'✍️',roles:['Super Admin','Company Admin','Editor','Moderator'],firestore:false,
-    fields:[['title','Title','text'],['status','Status','select',['draft','published','scheduled']],['category','Category','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['tags','Tags','text'],['seoTitle','SEO Title','text'],['seoDescription','SEO Description','textarea'],['content','Content','textarea']],
-    seed:[{id:'b1',title:'How to choose fly screens',status:'draft',category:'Pleated Mesh',tags:'screens,home',seoTitle:'Fly Screen Guide',seoDescription:'Choosing screens',content:'Guide content'}]
-  },
-  ads:{
-    label:'Advertisements',singular:'Ad',icon:'📣',roles:['Super Admin','Company Admin'],firestore:false,
-    fields:[['title','Title','text'],['status','Status','select',['active','inactive']],['banner','Banner URL','url'],['startDate','Start Date','date'],['endDate','End Date','date'],['analytics','Analytics Notes','textarea']],
-    seed:[{id:'a1',title:'Summer Installation Offer',status:'active',banner:'',startDate:'2026-06-01',endDate:'2026-07-31',analytics:''}]
   }
 };
 
 // ─── App State ────────────────────────────────────────────────────
-let state = {session:null,view:'overview',query:'',page:{},filter:{},selected:new Set()};
+let state = {session:null,view:'leads',query:'',page:{},filter:{},selected:new Set()};
 const storageKey = 'newtech-admin-v3';
 let firestoreListeners = [];
 let fsConnected = false;
@@ -194,7 +167,6 @@ function loadData(){
   if(stored) return JSON.parse(stored);
   const data = {};
   Object.entries(schemas).forEach(([k,s]) => data[k] = [...s.seed]);
-  data.activity = [{id:uid(),action:'System initialized',actor:'System',type:'activity',createdAt:new Date().toISOString()}];
   return data;
 }
 let db = loadData();
@@ -284,7 +256,7 @@ async function fsDelete(key, id){
 
 // ─── Auth ─────────────────────────────────────────────────────────
 function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;document.getElementById('toastWrap').appendChild(el);setTimeout(()=>el.remove(),3200);}
-function log(action,type='activity'){db.activity.unshift({id:uid(),action,actor:state.session?.name||'System',type,createdAt:new Date().toISOString()});db.activity=db.activity.slice(0,100);save();}
+function log(action,type='activity'){/* activity logging removed */}
 
 async function login(email, password){
   const btn = document.getElementById('loginBtn');
@@ -339,29 +311,20 @@ function showApp(){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('roleChip').textContent = state.session.role;
-  document.getElementById('currentUserName').textContent = state.session.name;
-  document.getElementById('avatar').textContent = state.session.name.split(' ').map(x=>x[0]).join('');
+
   setupFirestoreListeners();
   renderNav();
-  navigate('overview');
+  navigate('leads');
 }
 
 // ─── Navigation ───────────────────────────────────────────────────
 function renderNav(){
   const items = [
-    ['overview',  'Overview',            '📊'],
     ['leads',     'Leads Manager',       '📥', 'badge'],
     ['quotes',    'Quote Requests',      '💰', 'badge'],
-    ['contracts', 'Contracts',           '📋'],
     ['careers',   'Career Applications', '🎓', 'badge'],
     ['jobs',      'Job Vacancies',       '💼'],
-    ['users',     'Users',               '👥'],
-    ['companies', 'Companies',           '🏢'],
-    ['media',     'Media Manager',       '🖼'],
-    ['news',      'News Manager',        '📰'],
-    ['blogs',     'Blog Manager',        '✍️'],
-    ['ads',       'Advertisements',      '📣'],
-    ['activity',  'Activity Logs',       '🧾']
+    ['media',     'Media Manager',       '🖼']
   ];
   document.getElementById('navItems').innerHTML = items
     .filter(([id])=>allowed(id))
@@ -384,60 +347,12 @@ function navigate(view){
 }
 
 function renderContent(){
-  if(state.view==='overview') return renderOverview();
-  if(state.view==='activity') return renderActivity();
   return renderManager(state.view);
 }
 
-// ─── Overview ─────────────────────────────────────────────────────
+// ─── Page Head ────────────────────────────────────────────────────
 function head(title,sub,action=''){return `<div class="breadcrumbs">Dashboard / ${title}</div><div class="page-head"><div><h1>${title}</h1><p class="muted">${sub}</p></div>${action}</div>`;}
 
-function renderOverview(){
-  const totals = {
-    Leads:     db.leads?.length    || 0,
-    Quotes:    db.quotes?.length   || 0,
-    Contracts: db.contracts?.length|| 0,
-    Careers:   db.careers?.length  || 0,
-    Jobs:      db.jobs?.length     || 0,
-    Media:     db.media?.length    || 0,
-    Blogs:     db.blogs?.length    || 0,
-    'Storage': `${Math.max(1,Math.round(JSON.stringify(db).length/1024))} KB`
-  };
-  const newLeads     = db.leads?.filter(l=>l.status==='new').length||0;
-  const newQuotes    = db.quotes?.filter(q=>q.status==='new').length||0;
-  const newCareers   = db.careers?.filter(c=>c.status==='new').length||0;
-  const activeJobs   = db.jobs?.filter(j=>j.status==='active').length||0;
-  const activeContracts = db.contracts?.filter(c=>c.status==='active').length||0;
-
-  document.getElementById('content').innerHTML =
-    head('Overview','Real-time operational summary from Firebase Firestore.')+
-    `<div class="stats">${Object.entries(totals).map(([k,v])=>`<div class="stat"><span>Total ${k}</span><strong>${v}</strong></div>`).join('')}</div>`+
-    `<div class="stats" style="grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:20px">
-      <div class="stat"><span>🔴 New Leads</span><strong style="color:var(--red)">${newLeads}</strong></div>
-      <div class="stat"><span>🟡 New Quotes</span><strong style="color:var(--yellow)">${newQuotes}</strong></div>
-      <div class="stat"><span>🎓 New Applications</span><strong style="color:var(--navy)">${newCareers}</strong></div>
-      <div class="stat"><span>💼 Active Jobs</span><strong style="color:var(--green)">${activeJobs}</strong></div>
-      <div class="stat"><span>📋 Active Contracts</span><strong style="color:var(--green)">${activeContracts}</strong></div>
-    </div>`+
-    `<div class="grid">
-      <div class="card"><h2>Recent Activity</h2><div class="activity">${activityHtml(db.activity.slice(0,8))}</div></div>
-      <div class="card"><h2>Security & RBAC</h2>
-        <p class="muted">Current role: <strong>${state.session.role}</strong></p>
-        <p class="muted">Auth provider: <strong>${state.session.provider||'demo'}</strong></p>
-        <div class="danger-zone" style="margin-top:12px">Firebase real-time sync is active for: Leads, Quotes, Contracts, Careers, Jobs, and Media. Users, company profile, news, blogs, and ads use browser storage.</div>
-      </div>
-    </div>`;
-}
-
-// ─── Activity ─────────────────────────────────────────────────────
-function renderActivity(){
-  document.getElementById('content').innerHTML =
-    head('Activity Logs','Audit trail of authentication, CRUD and bulk actions.')+
-    `<div class="card"><div class="activity">${activityHtml(db.activity)}</div></div>`;
-}
-function activityHtml(items){
-  return items.map(a=>`<div class="activity-item"><span class="activity-dot"></span><div><strong>${escapeHtml(a.action)}</strong><br><span class="muted">${escapeHtml(a.actor)} • ${new Date(a.createdAt).toLocaleString()}</span></div></div>`).join('')||'<div class="empty">No activity yet.</div>';
-}
 
 // ─── Manager (generic CRUD) ───────────────────────────────────────
 function renderManager(key){
@@ -449,17 +364,11 @@ function renderManager(key){
 
 function managerSub(key){
   const map = {
-    leads:     'Manage customer inquiries, track follow-ups, and close deals. Synced with Firebase.',
-    quotes:    'Quote requests from customers. Track status from new → quoted → closed. Synced with Firebase.',
-    contracts: 'Service contracts with customers. Track active, pending and expired contracts. Synced with Firebase.',
-    careers:   'Job applications submitted by candidates. Review, shortlist or reject. Synced with Firebase.',
-    jobs:      'Manage job vacancies, set expiry dates and track applications. Synced with Firebase.',
-    users:     'Role-based account administration.',
-    companies: 'Company information, logo, contact and verification.',
-    media:     'Upload photos/videos to Firebase Storage and publish them to the live gallery.',
-    news:      'Create, draft, publish, schedule and manage news articles.',
-    blogs:     'Rich text content with categories, tags, SEO and publishing workflow.',
-    ads:       'Create banners, set start/end dates and track analytics.'
+    leads:   'Manage customer inquiries, track follow-ups, and close deals. Synced with Firebase.',
+    quotes:  'Quote requests from customers. Track status from new → quoted → closed. Synced with Firebase.',
+    careers: 'Job applications submitted by candidates. Review, shortlist or reject. Synced with Firebase.',
+    jobs:    'Manage job vacancies, set expiry dates and track applications. Synced with Firebase.',
+    media:   'Upload photos/videos to Firebase Storage and publish them to the live gallery.'
   };
   return map[key]||'CRUD management with search, filters and pagination.';
 }
@@ -665,11 +574,7 @@ document.getElementById('logoutBtn').onclick = ()=>{
 document.getElementById('mobileMenu').onclick = ()=>document.getElementById('sidebar').classList.toggle('open');
 document.getElementById('darkToggle').onclick = ()=>{document.body.classList.toggle('dark');localStorage.setItem('newtech-dark',document.body.classList.contains('dark'));};
 document.getElementById('globalSearch').oninput = e=>{state.query=e.target.value;renderContent();};
-document.getElementById('exportBtn').onclick = ()=>{
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='newtech-admin-export.json';a.click();URL.revokeObjectURL(a.href);
-  log('Exported admin data','security');
-};
+
 
 async function sendPasswordReset(){
   const email = document.getElementById('email').value.trim();
