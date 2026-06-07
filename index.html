@@ -1423,19 +1423,25 @@
 
   // Sync and Render Reviews
   db.collection('reviews')
-    .where('status', '==', 'active')
-    .orderBy('createdAt', 'desc')
     .onSnapshot(snap => {
-      console.log('Reviews snapshot received, count:', snap.size);
+      console.log('Reviews snapshot received, total docs:', snap.size);
       const grid = document.getElementById('reviewsGrid');
-      if (snap.empty) {
+      
+      // Filter for active reviews and sort by date locally
+      const activeReviews = snap.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(r => r.status === 'active')
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      console.log('Active reviews after filtering:', activeReviews.length);
+
+      if (activeReviews.length === 0) {
         grid.innerHTML = '<div class="review-empty">✨ No reviews yet. Be the first to share your experience!</div>';
         return;
       }
 
-      grid.innerHTML = snap.docs.map(doc => {
+      grid.innerHTML = activeReviews.map(r => {
         try {
-          const r = doc.data();
           const name = r.name || 'Valued Customer';
           const text = r.text || '';
           const rating = Math.min(Math.max(parseInt(r.rating) || 5, 1), 5);
