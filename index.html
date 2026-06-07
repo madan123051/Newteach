@@ -494,19 +494,32 @@
 
 
   /* REVIEWS - MOBILE STYLE CARDS ────────────────────────────────────────── */
-  .reviews-section { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 80px 0; }
-  .reviews-grid {
-    max-width: 1280px; margin: 0 auto 60px; padding: 0 20px;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;
+  .reviews-section { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 80px 0; position: relative; }
+  
+  /* Horizontal Scroll Container */
+  .reviews-wrapper {
+    max-width: 1280px; margin: 0 auto 40px; padding: 0 20px;
+    position: relative;
   }
+  .reviews-grid {
+    display: flex; gap: 24px; overflow-x: auto; padding: 20px 5px 40px;
+    scroll-snap-type: x mandatory; scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+  }
+  .reviews-grid::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
+  
   .review-card {
+    flex: 0 0 320px; scroll-snap-align: start;
     background: #fff; border-radius: 20px; padding: 0; overflow: hidden;
     box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative; border: 1px solid rgba(249, 115, 22, 0.1);
   }
+  @media(max-width: 480px) {
+    .review-card { flex: 0 0 280px; }
+  }
   .review-card:hover {
-    transform: translateY(-12px);
+    transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(30, 58, 138, 0.15);
     border-color: var(--orange);
   }
@@ -525,12 +538,12 @@
   .review-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin: 2px 0 0; }
   .review-stars {
     font-size: 16px; color: #f59e0b; letter-spacing: 2px;
-    padding: 0 20px; margin-top: 8px;
+    padding: 0 20px; margin-top: 15px;
   }
-  .review-card-body { padding: 20px; }
+  .review-card-body { padding: 15px 20px 20px; }
   .review-text {
     font-size: 14px; color: #475569; line-height: 1.7;
-    margin: 0; font-weight: 500;
+    margin: 0; font-weight: 500; font-style: italic;
   }
   .review-card-footer {
     padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0;
@@ -544,18 +557,19 @@
     width: 100%; height: 100%; object-fit: cover;
   }
   .review-photo-thumb:hover { transform: scale(1.1); }
-  .review-actions {
-    display: flex; gap: 8px;
+  
+  /* Scroll Indicators */
+  .reviews-nav {
+    display: flex; justify-content: center; gap: 15px; margin-top: 10px;
   }
-  .review-action-btn {
-    background: transparent; border: 1px solid #e2e8f0; color: #64748b;
-    padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
-    transition: all 0.2s;
+  .review-nav-btn {
+    width: 45px; height: 45px; border-radius: 50%; border: 2px solid #e2e8f0;
+    background: #fff; color: var(--navy); cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
   }
-  .review-action-btn:hover {
-    background: #f1f5f9; color: var(--orange); border-color: var(--orange);
-  }
-  .review-form { max-width: 600px; margin: 40px auto; background: #fff; padding: 32px; border-radius: 20px; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08); border: 1px solid rgba(249, 115, 22, 0.1); }
+  .review-nav-btn:hover { background: var(--orange); border-color: var(--orange); color: #fff; transform: scale(1.1); }
+
+  .review-form { max-width: 600px; margin: 60px auto 0; background: #fff; padding: 32px; border-radius: 20px; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08); border: 1px solid rgba(249, 115, 22, 0.1); }
   .review-form-group { margin-bottom: 20px; }
   .review-form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #1e3a8a; font-size: 14px; }
   .review-form-group input, .review-form-group textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 14px; transition: all 0.2s; }
@@ -566,14 +580,11 @@
   .review-stars-input span:hover { color: #f59e0b; transform: scale(1.2); }
   .review-stars-input span.active { color: #f59e0b; transform: scale(1.15); }
   .review-stars-input span.active ~ span { color: #cbd5e1; }
-  /* Ensure the clicked star and those before it are orange */
   #starsInput span.active { color: #f59e0b; }
   .review-submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--orange), #ea580c); color: #fff; border: 0; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 15px; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35); }
   .review-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45); }
   .review-submit-btn:active { transform: translateY(0); }
-  .review-empty { text-align: center; padding: 60px 20px; color: #94a3b8; }
-  .review-empty-icon { font-size: 48px; margin-bottom: 16px; }
-
+  .review-empty { text-align: center; padding: 60px 20px; color: #94a3b8; width: 100%; }
 
   </style>
 </head>
@@ -597,12 +608,10 @@
       <li><a href="#careers">Careers</a></li>
       <li><a href="#contact">Contact</a></li>
       <li class="mobile-only" style="margin-top:8px;">
-        <a href="admin.html" style="display:block;background:var(--navy);color:#fff;text-align:center;padding:10px 18px;border-radius:8px;font-weight:700;font-size:14px;letter-spacing:0.5px;text-decoration:none;">
-          🔐 Admin Login
-        </a>
+        <a href="admin.html" style="display:block;background:var(--navy);color:#fff;text-align:center;padding:10px 18px;border-radius:8px;font-weight:700;font-size:14px;letter-spacing:0.5px;text-decoration:none;">Admin Login</a>
       </li>
     </ul>
-    <div style="display:flex;gap:12px;align-items:center;">
+    <div style="display:flex;align-items:center;gap:15px;">
       <a href="#contact" class="nav-cta">Get Quote</a>
       <a href="admin.html" class="company-login">Admin Login</a>
       <button class="hamburger" id="hamburger">
@@ -615,35 +624,27 @@
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-container">
-    <div class="hero-content">
-      <div class="section-label">Best in Delhi NCR</div>
-      <h1>Complete <span>Home Protection</span> & Interior Solutions</h1>
-      <p class="hero-tagline">Providing quality solutions for a safer and more comfortable home.</p>
-      <p>We specialize in premium pleated mesh, honeycomb partitions, invisible grills, and anti-bird nets to keep your living space secure and elegant.</p>
+    <div class="hero-content fade-up">
+      <div class="section-label">Premium Home Solutions</div>
+      <h1>Protect Your Home With <span>Modern Technology</span></h1>
+      <p class="hero-tagline">Serving premium home protection and interior solutions across Delhi NCR.</p>
+      <p>Specializing in Invisible Grills, Pleated Mosquito Nets, Anti-Bird Nets, and Honey Comb Partitions. We combine safety with aesthetics to give your home the perfect finish it deserves.</p>
       <div class="hero-btns">
-        <a href="#products" class="btn-primary">View Services →</a>
-        <a href="#contact" class="btn-secondary">Get Free Quote</a>
+        <a href="#contact" class="btn-primary">Get Free Quote</a>
+        <a href="#products" class="btn-secondary">Explore Services</a>
       </div>
       <div class="hero-stats">
-        <div class="stat-item"><h3>8+</h3><p>Years Exp</p></div>
-        <div class="stat-item"><h3>1000+</h3><p>Happy Homes</p></div>
-        <div class="stat-item"><h3>100%</h3><p>Quality</p></div>
+        <div class="stat-item"><h3>10+</h3><p>Years Experience</p></div>
+        <div class="stat-item"><h3>2k+</h3><p>Happy Clients</p></div>
+        <div class="stat-item"><h3>100%</h3><p>Quality Guarantee</p></div>
       </div>
     </div>
-    <div class="hero-image" style="position:relative;">
+    <div class="hero-image fade-up">
       <div class="hero-slider" id="heroSlider">
-        <div class="hero-slide active" id="hSlide0">
-          <img src="assets/hero-fallback.jpg" alt="Modern Home Solutions">
-        </div>
-        <div class="hero-arrows">
-          <button class="hero-arrow-btn" onclick="heroArrow(-1)" aria-label="Previous slide">&#8592;</button>
-          <button class="hero-arrow-btn" onclick="heroArrow(1)" aria-label="Next slide">&#8594;</button>
-        </div>
+        <img src="assets/hero-fallback.jpg" alt="Home Solutions" id="heroFallbackImg">
       </div>
-      <div class="hero-slider-nav" id="heroSliderNav">
-        <button class="hero-dot active" onclick="heroGoTo(0)" aria-label="Slide 1"></button>
-      </div>
-      <div class="hero-badge">BEST QUALITY GUARANTEED</div>
+      <div class="hero-slider-nav" id="heroSliderNav"></div>
+      <div class="hero-badge">BEST<br>QUALITY<br>SERVICES</div>
     </div>
   </div>
 </section>
@@ -652,60 +653,65 @@
 <section class="about" id="about">
   <div class="about-container">
     <div class="about-image fade-up">
-      <img id="aboutImg" src="assets/services/pleated-mesh.jpg" alt="New Tech team installed pleated mesh screen work">
+      <img src="assets/services/invisible-grill.jpg" alt="About New Tech Home Solutions" id="aboutImg">
     </div>
     <div class="about-content fade-up">
       <div class="section-label">Who We Are</div>
-      <h2>Your Trusted Partner in <span>Home Safety</span></h2>
-      <p>New Tech Home Solutions is a leader in providing innovative safety and interior solutions. With over 8 years of experience, we have helped over 1000+ homeowners in Delhi NCR protect their families while maintaining the beauty of their homes.</p>
+      <h2>Trusted Partner for <span>Home Safety & Interiors</span></h2>
+      <p>New Tech Home Solutions is a leading provider of innovative home protection systems in Delhi NCR. We understand that your home is your sanctuary, and we're dedicated to making it safer and more beautiful.</p>
+      <p>Our team of experts uses high-grade materials and precision installation techniques to ensure every project meets the highest standards of durability and aesthetics.</p>
       <ul class="about-features">
-        <li>Premium Quality Materials</li>
-        <li>Expert Installation Team</li>
+        <li>Premium Quality 316 Grade Stainless Steel</li>
+        <li>Expert Installation by Trained Professionals</li>
         <li>Customized Solutions for Every Home</li>
-        <li>Excellent After-Sales Support</li>
+        <li>Unmatched After-Sales Support</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- PRODUCTS -->
+<!-- PRODUCTS / SERVICES -->
 <section class="products" id="products">
   <div class="section-header fade-up">
     <div class="section-label">Our Expertise</div>
-    <h2>Premium <span>Solutions</span> for You</h2>
-    <p>Discover our range of high-quality products designed for safety, comfort, and style.</p>
+    <h2>Solutions We Provide</h2>
+    <p>Explore our range of premium products designed for modern homes.</p>
   </div>
   <div class="products-grid">
+    <!-- Pleated Mesh -->
     <div class="product-card fade-up">
-      <div class="product-img"><img src="assets/services/pleated-mesh.jpg" alt="Pleated Mesh" id="catImg-pleatedMesh"></div>
+      <div class="product-img"><img src="assets/services/pleated-mesh.jpg" alt="Pleated Mosquito Mesh" id="catImg-pleatedMesh"></div>
       <div class="product-info">
-        <h3>Pleated Mesh</h3>
-        <p>Innovative retractable insect screens that are durable, easy to use, and almost invisible when not in use.</p>
-        <a href="#contact" class="product-link">Inquire Now →</a>
+        <h3>Pleated Mosquito Mesh</h3>
+        <p>Elegant and space-saving mosquito protection for windows and doors. Easy to operate and maintain.</p>
+        <a href="#contact" class="product-link">Inquiry Now →</a>
       </div>
     </div>
+    <!-- Honey Comb -->
     <div class="product-card fade-up">
-      <div class="product-img"><img src="assets/services/honeycomb.jpg" alt="Honeycomb Partition" id="catImg-honeyComb"></div>
+      <div class="product-img"><img src="assets/services/honeycomb.jpg" alt="Honey Comb Partition" id="catImg-honeyComb"></div>
       <div class="product-info">
         <h3>Honey Comb Partition</h3>
-        <p>Elegant and functional partitions that provide privacy and thermal insulation with a modern aesthetic.</p>
-        <a href="#contact" class="product-link">Inquire Now →</a>
+        <p>Modern room dividers that offer privacy and style. Perfect for offices and contemporary homes.</p>
+        <a href="#contact" class="product-link">Inquiry Now →</a>
       </div>
     </div>
+    <!-- Invisible Grill -->
     <div class="product-card fade-up">
       <div class="product-img"><img src="assets/services/invisible-grill.jpg" alt="Invisible Grill" id="catImg-invisibleGrill"></div>
       <div class="product-info">
         <h3>Invisible Grill</h3>
-        <p>High-tensile safety cables that provide maximum protection for balconies and windows without blocking your view.</p>
-        <a href="#contact" class="product-link">Inquire Now →</a>
+        <p>High-tensile safety grills that don't block your view. Ideal for balconies and high-rise apartments.</p>
+        <a href="#contact" class="product-link">Inquiry Now →</a>
       </div>
     </div>
+    <!-- Anti Bird Net -->
     <div class="product-card fade-up">
       <div class="product-img"><img src="assets/services/bird-net.jpg" alt="Anti Bird Net" id="catImg-antiBirdNet"></div>
       <div class="product-info">
         <h3>Anti Bird Net</h3>
-        <p>Durable and aesthetic netting solutions to keep your balconies and premises free from birds and pests.</p>
-        <a href="#contact" class="product-link">Inquire Now →</a>
+        <p>Durable and nearly invisible nets to keep birds away from your balconies and open areas.</p>
+        <a href="#contact" class="product-link">Inquiry Now →</a>
       </div>
     </div>
   </div>
@@ -716,18 +722,22 @@
   <div class="features-grid">
     <div class="feature-card fade-up">
       <div class="feature-icon">🛡️</div>
-      <h3>Maximum Protection</h3>
-      <p>Engineered to provide top-tier security for your loved ones against pests and falls.</p>
+      <h3>Maximum Safety</h3>
+      <p>Using 316 grade stainless steel cables and high-quality materials for ultimate protection.</p>
     </div>
     <div class="feature-card fade-up">
-      <div class="feature-icon">💎</div>
-      <h3>Premium Quality</h3>
-      <p>We use only the finest materials for superior durability and long-lasting performance.</p>
+      <h3>Modern Design</h3>
+      <p>Sleek, nearly invisible solutions that complement your home's modern architecture.</p>
     </div>
     <div class="feature-card fade-up">
-      <div class="feature-icon">⚡</div>
-      <h3>Quick Installation</h3>
-      <p>Professional installation team ensures clean, fast fitting with zero damage to your property.</p>
+      <div class="feature-icon">🛠️</div>
+      <h3>Quick Install</h3>
+      <p>Our expert team ensures a clean, fast, and professional installation process.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-icon">📞</div>
+      <h3>24/7 Support</h3>
+      <p>We are always here to help you with any maintenance or queries you might have.</p>
     </div>
   </div>
 </section>
@@ -736,48 +746,40 @@
 <section class="gallery" id="gallery">
   <div class="section-header fade-up">
     <div class="section-label">Our Work</div>
-    <h2>Recent <span style="color:var(--orange)">Installations</span></h2>
-    <p>See our solutions in action across residential &amp; commercial projects.</p>
+    <h2>Project Showcase</h2>
+    <p>Take a look at some of our recent installations across Delhi NCR.</p>
   </div>
-  <!-- Category Filters -->
+  
   <div class="gallery-filters fade-up" id="galleryFilters">
     <button class="filter-btn active" data-filter="all">All Projects</button>
-    <button class="filter-btn" data-filter="Pleated Mesh">Pleated Mesh</button>
     <button class="filter-btn" data-filter="Invisible Grill">Invisible Grill</button>
+    <button class="filter-btn" data-filter="Pleated Mesh">Pleated Mesh</button>
+    <button class="filter-btn" data-filter="Anti Bird Net">Bird Net</button>
     <button class="filter-btn" data-filter="Honey Comb">Honey Comb</button>
-    <button class="filter-btn" data-filter="Anti Bird Net">Anti Bird Net</button>
   </div>
-  <div class="gallery-grid" id="galleryGrid">
-    <div class="gallery-skeleton"></div>
-    <div class="gallery-skeleton"></div>
-    <div class="gallery-skeleton"></div>
-  </div>
-</section>
 
-<!-- CTA -->
-<section class="cta-section">
-  <h2>Ready to Protect Your Home?</h2>
-  <p>Get a free consultation & quote today. Our experts are just a call away!</p>
-  <a href="#contact" class="btn-primary">Request Free Quote →</a>
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- Projects will be loaded from Firebase -->
+    <div class="gallery-skeleton"></div>
+    <div class="gallery-skeleton"></div>
+    <div class="gallery-skeleton"></div>
+  </div>
 </section>
 
 <!-- CAREERS -->
-<section id="careers" class="section" style="padding: 80px 0; background: #f8fafc;">
-  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-    <div class="section-header text-center fade-up" style="text-align:center; margin-bottom: 50px;">
-      <div class="section-label">Careers</div>
-      <h2 style="font-size: 36px; color: #1e3a8a; margin-bottom: 15px;">Join Our Team</h2>
-      <p style="color: #64748b; max-width: 600px; margin: 0 auto;">We are looking for talented individuals to join New Tech Home Solutions.</p>
-    </div>
-    <div id="jobsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-      <!-- Jobs will be loaded here -->
-    </div>
-
-    <!-- Application Modal Portal (rendered by JS) -->
-    <div id="appModalPortal"></div>
+<section class="careers" id="careers" style="background: #fff; padding: 90px 30px;">
+  <div class="section-header fade-up">
+    <div class="section-label">Join Our Team</div>
+    <h2>Work With Us</h2>
+    <p>We are always looking for talented individuals to join our growing family.</p>
+  </div>
+  <div id="jobsContainer" class="features-grid" style="max-width:1280px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:30px;">
+    <div class="review-empty">Loading current openings...</div>
   </div>
 </section>
 
+<!-- Modal Portal for Job Form -->
+<div id="appModalPortal"></div>
 
 <!-- REVIEWS -->
 <section class="reviews-section" id="reviews">
@@ -787,12 +789,22 @@
       <h2>What Our Happy Customers Say</h2>
       <p>Real reviews from homeowners who trust New Tech Home Solutions</p>
     </div>
-    <div class="reviews-grid" id="reviewsGrid">
-      <div class="review-empty">No reviews yet. Be the first to share your experience!</div>
+    
+    <!-- Review Carousel Wrapper -->
+    <div class="reviews-wrapper fade-up">
+      <div class="reviews-grid" id="reviewsGrid">
+        <div class="review-empty">No reviews yet. Be the first to share your experience!</div>
+      </div>
+      
+      <!-- Navigation Buttons -->
+      <div class="reviews-nav">
+        <button class="review-nav-btn" onclick="scrollReviews(-1)" aria-label="Previous Review">←</button>
+        <button class="review-nav-btn" onclick="scrollReviews(1)" aria-label="Next Review">→</button>
+      </div>
     </div>
     
     <!-- Review Submission Form -->
-    <div class="review-form">
+    <div class="review-form fade-up">
       <h3 style="text-align:center;margin-bottom:24px;color:#1e3a8a;">Share Your Experience</h3>
       <form id="reviewForm" onsubmit="submitReview(event)">
         <div class="review-form-group">
@@ -850,46 +862,49 @@
         <div><h4>Mobile</h4><p><a href="tel:+919315739299">+91 9315739299</a></p></div>
       </div>
       <div class="contact-item">
-        <div class="contact-icon">💬</div>
-        <div><h4>WhatsApp</h4><p><a href="https://wa.me/919354831931" target="_blank">+91 9354831931</a></p></div>
-      </div>
-      <div class="contact-item">
         <div class="contact-icon">✉️</div>
         <div><h4>Email</h4><p><a href="mailto:homesolutionsnewtech@gmail.com">homesolutionsnewtech@gmail.com</a></p></div>
       </div>
+      <div class="social-links">
+        <a href="#" style="background:#1877f2;"><img src="assets/facebook_3d.png" style="width:24px;"></a>
+        <a href="#" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);"><img src="assets/instagram_3d.png" style="width:24px;"></a>
+        <a href="#" style="background:#25d366;"><img src="assets/whatsapp_3d.png" style="width:24px;"></a>
+      </div>
     </div>
-    <form class="contact-form fade-up" id="contactForm">
-      <div class="form-row">
+    <div class="contact-form fade-up">
+      <form id="contactForm">
         <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" id="leadName" required placeholder="Your Name">
+          <label>Full Name</label>
+          <input type="text" id="leadName" placeholder="Your name" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="leadPhone" placeholder="Your phone" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="leadEmail" placeholder="Your email">
+          </div>
         </div>
         <div class="form-group">
-          <label>Phone Number *</label>
-          <input type="tel" id="leadPhone" required placeholder="+91 XXXXX XXXXX">
+          <label>Service Interested In</label>
+          <select id="leadService" required>
+            <option value="">Select Service</option>
+            <option value="Invisible Grill">Invisible Grill</option>
+            <option value="Pleated Mesh">Pleated Mosquito Mesh</option>
+            <option value="Anti Bird Net">Anti Bird Net</option>
+            <option value="Honey Comb">Honey Comb Partition</option>
+            <option value="Other">Other Interior Work</option>
+          </select>
         </div>
-      </div>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="leadEmail" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label>Service Interested In *</label>
-        <select id="leadService" required>
-          <option value="">Select a service</option>
-          <option>Pleated Mesh</option>
-          <option>Honey Comb Partition</option>
-          <option>Invisible Grill</option>
-          <option>Anti Bird Net</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Your Message</label>
-        <textarea id="leadMessage" placeholder="Tell us about your requirements..."></textarea>
-      </div>
-      <button type="submit" id="submitBtn" class="btn-primary" style="width:100%;justify-content:center;">Send Message →</button>
-    </form>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="leadMessage" placeholder="How can we help you?"></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Send Message Now</button>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -898,16 +913,14 @@
   <div class="footer-container">
     <div class="footer-col">
       <div class="footer-logo">
-        <div>
-          <div style="font-weight:800;font-size:22px;color:#fff;">New Tech <span style="color:var(--orange);">Home Solutions</span></div>
-          <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">COMPLETE PROTECTION</div>
-        </div>
+        <img src="assets/logo.png" alt="Logo">
+        <div style="font-weight:800;font-size:18px;">New Tech</div>
       </div>
       <p>Providing premium home protection and interior solutions across Delhi NCR.</p>
       <div class="social-links">
-        <a href="https://www.facebook.com/share/1BNHXkyEpx/?mibextid=wwXIfr" target="_blank" aria-label="Facebook" style="background:transparent;width:50px;height:50px;padding:0;"><img src="assets/facebook_3d.png" alt="Facebook" style="width:100%;height:100%;object-fit:contain;"></a>
-        <a href="https://www.instagram.com/newtechhomesolutions?igsh=MXU3bjBjb3czNzk5OA==" target="_blank" aria-label="Instagram" style="background:transparent;width:50px;height:50px;padding:0;"><img src="assets/instagram_3d.png" alt="Instagram" style="width:100%;height:100%;object-fit:contain;"></a>
-        <a href="https://wa.me/919354831931" target="_blank" aria-label="WhatsApp" style="background:transparent;width:50px;height:50px;padding:0;"><img src="assets/whatsapp_3d.png" alt="WhatsApp" style="width:100%;height:100%;object-fit:contain;"></a>
+        <a href="#"><img src="assets/facebook_3d.png" style="width:20px;"></a>
+        <a href="#"><img src="assets/instagram_3d.png" style="width:20px;"></a>
+        <a href="#"><img src="assets/whatsapp_3d.png" style="width:20px;"></a>
       </div>
     </div>
     <div class="footer-col">
@@ -916,15 +929,14 @@
       <a href="#about">About Us</a>
       <a href="#products">Services</a>
       <a href="#gallery">Gallery</a>
-      <a href="#careers">Careers</a>
       <a href="#contact">Contact</a>
     </div>
     <div class="footer-col">
-      <h4>Services</h4>
-      <a href="#products">Pleated Mesh</a>
-      <a href="#products">Honey Comb Partition</a>
-      <a href="#products">Invisible Grill</a>
-      <a href="#products">Anti Bird Net</a>
+      <h4>Our Services</h4>
+      <a href="#">Invisible Grill</a>
+      <a href="#">Pleated Mesh</a>
+      <a href="#">Anti Bird Net</a>
+      <a href="#">Honey Comb Partition</a>
     </div>
     <div class="footer-col">
       <h4>Contact Info</h4>
@@ -934,69 +946,51 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 New Tech Home Solutions. All Rights Reserved.</p>
+    &copy; 2026 New Tech Home Solutions. All Rights Reserved.
   </div>
 </footer>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="firebase-config.js"></script>
+
 <script>
-  // Firebase Config
-  const firebaseConfig = {
-    apiKey: "AIzaSyATvwM_0B9ibtD9MniIoiNuiirnC0mb2AY",
-    authDomain: "newtechhomesolutions-b6ab6.firebaseapp.com",
-    projectId: "newtechhomesolutions-b6ab6",
-    storageBucket: "newtechhomesolutions-b6ab6.firebasestorage.app",
-    messagingSenderId: "1015056454392",
-    appId: "1:1015056454392:web:2d764c7f4e0f769407e10d",
-    measurementId: "G-8HV2QWDK4W"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-  const storage = firebase.storage();
-
-  // Mobile menu
-  const hamburger = document.getElementById('hamburger');
-  const navLinks = document.getElementById('navLinks');
-  hamburger.addEventListener('click',()=>{
-    navLinks.classList.toggle('active');
-  });
-  document.querySelectorAll('.nav-links a').forEach(a=>{
-    a.addEventListener('click',()=>navLinks.classList.remove('active'));
-  });
-
-  // Scroll animations
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('visible');
+  // Intersection Observer for fade-up animation
+  const observerOptions = { threshold: 0.1 };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
       }
     });
-  },{threshold:0.1});
-  document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+  }, observerOptions);
 
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  async function ensureFirebaseWriteAccess(){
-    if (auth.currentUser) return auth.currentUser;
-    try {
-      const cred = await auth.signInAnonymously();
-      return cred.user;
-    } catch (err) {
-      console.warn('Anonymous auth failed; trying public Firestore write:', err.message);
-      return null;
+  // Mobile Nav
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+    hamburger.classList.toggle('active');
+  });
+
+  // Helper functions
+  async function ensureFirebaseWriteAccess() {
+    if (!firebase.auth().currentUser) {
+      try { await firebase.auth().signInAnonymously(); } 
+      catch (e) { console.warn('Auth error:', e.message); }
     }
   }
 
-  function withTimeout(promise, ms, label){
-    let timeoutId;
-    const timeout = new Promise((_, reject) => {
-      timeoutId = setTimeout(() => reject(new Error(label + ' timed out. Please check Firebase rules/network.')), ms);
+  function withTimeout(promise, ms, actionName) {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error(actionName + ' timed out after ' + ms + 'ms')), ms);
+      promise.then(res => { clearTimeout(timer); resolve(res); }).catch(err => { clearTimeout(timer); reject(err); });
     });
-    return Promise.race([promise, timeout]).finally(() => clearTimeout(timeoutId));
   }
 
   function escapeHtml(value){
@@ -1153,7 +1147,10 @@
   // Sync Careers
   db.collection('jobs').where('status', '==', 'active').onSnapshot(snap => {
     const grid = document.getElementById('jobsContainer');
-    if (snap.empty) return;
+    if (snap.empty) {
+      grid.innerHTML = '<div class="review-empty">No current openings. Check back later!</div>';
+      return;
+    }
     grid.innerHTML = snap.docs.map(doc => {
       const job = doc.data();
       return `
@@ -1320,19 +1317,17 @@
       <button class="hero-dot ${i === 0 ? 'active' : ''}" onclick="heroGoTo(${i})" aria-label="Slide ${i+1}"></button>`).join('');
 
     if (_sliderTimer) clearInterval(_sliderTimer);
-    if (slides.length > 1) {
-      _sliderTimer = setInterval(() => heroArrow(1), 4500);
-    }
+    _sliderTimer = setInterval(() => heroArrow(1), 5000);
   }
 
   window.heroGoTo = function(idx) {
-    _heroSlides.forEach((_, i) => {
-      const el = document.getElementById('hSlide' + i);
-      if (el) el.classList.toggle('active', i === idx);
-    });
-    document.querySelectorAll('#heroSliderNav .hero-dot').forEach((d, i) =>
-      d.classList.toggle('active', i === idx));
+    if (!_heroSlides.length) return;
+    document.querySelectorAll('.hero-slide').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.hero-dot').forEach(d => d.classList.remove('active'));
+    
     _currentSlide = idx;
+    document.getElementById(`hSlide${idx}`).classList.add('active');
+    document.querySelectorAll('.hero-dot')[idx].classList.add('active');
   };
 
   window.heroArrow = function(dir) {
@@ -1438,7 +1433,7 @@
         const initial = r.name.charAt(0).toUpperCase();
         
         return `
-          <div class="review-card fade-up visible">
+          <div class="review-card">
             <div class="review-card-header">
               <div class="review-avatar">${initial}</div>
               <div class="review-author-info">
@@ -1446,7 +1441,7 @@
                 <p class="review-meta">${date}</p>
               </div>
             </div>
-            <div class="review-stars" style="color:#f59e0b; padding:0 20px; margin-top:8px;">${stars}</div>
+            <div class="review-stars">${stars}</div>
             <div class="review-card-body">
               <p class="review-text">"${escapeHtml(r.text)}"</p>
             </div>
@@ -1462,6 +1457,13 @@
         `;
       }).join('');
     });
+
+  // Review Scroll Logic
+  window.scrollReviews = function(dir) {
+    const grid = document.getElementById('reviewsGrid');
+    const scrollAmount = 344; // card width + gap
+    grid.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
+  };
 
   // ── Site Settings (thumbnails) listener ─────────────────────
   db.collection('siteSettings').doc('thumbnails').onSnapshot(doc => {
@@ -1505,126 +1507,3 @@
 </script>
 </body>
 </html>
-
-  // ── Review System Logic ──────────────────────────────────────
-  let currentRating = 5;
-
-  window.setRating = function(rating) {
-    currentRating = rating;
-    document.getElementById('reviewRating').value = rating;
-    const stars = document.querySelectorAll('#starsInput span');
-    stars.forEach((s, i) => {
-      s.classList.toggle('active', i < rating);
-    });
-  };
-
-  window.handlePhotoPreview = function(input) {
-    const preview = document.getElementById('photoPreview');
-    const img = document.getElementById('previewImg');
-    const prompt = document.getElementById('uploadPrompt');
-    const zone = document.getElementById('photoUploadZone');
-    
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        img.src = e.target.result;
-        preview.style.display = 'block';
-        prompt.style.display = 'none';
-        zone.style.borderColor = 'var(--orange)';
-        zone.style.background = 'rgba(249, 115, 22, 0.05)';
-      }
-      reader.readAsDataURL(input.files[0]);
-    }
-  };
-
-  window.submitReview = async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('reviewSubmitBtn');
-    const originalText = btn.innerHTML;
-    const name = document.getElementById('reviewName').value.trim();
-    const text = document.getElementById('reviewText').value.trim();
-    const photoFile = document.getElementById('reviewPhotoFile').files[0];
-    
-    btn.disabled = true;
-    btn.innerHTML = '⏳ Submitting...';
-
-    try {
-      await ensureFirebaseWriteAccess();
-      let photoUrl = '';
-
-      if (photoFile) {
-        btn.innerHTML = '📤 Uploading Photo...';
-        const fileName = `${Date.now()}_${photoFile.name}`;
-        const storageRef = storage.ref().child(`reviews/${fileName}`);
-        const snapshot = await storageRef.put(photoFile);
-        photoUrl = await snapshot.ref.getDownloadURL();
-      }
-
-      await withTimeout(db.collection('reviews').add({
-        name: name,
-        text: text,
-        rating: currentRating,
-        photo: photoUrl,
-        status: 'pending', // Requires admin approval
-        createdAt: new Date().toISOString()
-      }), 12000, 'Review submission');
-
-      // Success UI
-      document.querySelector('.review-form').innerHTML = `
-        <div style="text-align:center; padding:40px 20px;">
-          <div style="font-size:50px; margin-bottom:20px;">🌟</div>
-          <h3 style="color:var(--navy); margin-bottom:12px;">Thank You, ${escapeHtml(name)}!</h3>
-          <p style="color:#64748b; line-height:1.6;">Your review has been submitted for moderation. It will appear on the site once approved by our team.</p>
-          <button onclick="location.reload()" style="margin-top:24px; padding:12px 30px; background:var(--navy); color:#fff; border:none; border-radius:12px; font-weight:700; cursor:pointer;">Submit Another Review</button>
-        </div>
-      `;
-    } catch (err) {
-      console.error('Review error:', err);
-      alert('Could not submit review: ' + err.message);
-      btn.disabled = false;
-      btn.innerHTML = originalText;
-    }
-  };
-
-  // Sync and Render Reviews
-  db.collection('reviews')
-    .where('status', '==', 'active')
-    .orderBy('createdAt', 'desc')
-    .onSnapshot(snap => {
-      const grid = document.getElementById('reviewsGrid');
-      if (snap.empty) {
-        grid.innerHTML = '<div class="review-empty">✨ No reviews yet. Be the first to share your experience!</div>';
-        return;
-      }
-
-      grid.innerHTML = snap.docs.map(doc => {
-        const r = doc.data();
-        const date = new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-        const initial = r.name.charAt(0).toUpperCase();
-        
-        return `
-          <div class="review-card fade-up visible">
-            <div class="review-card-header">
-              <div class="review-avatar">${initial}</div>
-              <div class="review-author-info">
-                <p class="review-author">${escapeHtml(r.name)}</p>
-                <p class="review-meta">${date}</p>
-              </div>
-            </div>
-            <div class="review-stars">${stars}</div>
-            <div class="review-card-body">
-              <p class="review-text">"${escapeHtml(r.text)}"</p>
-            </div>
-            ${r.photo ? `
-              <div class="review-card-footer">
-                <div class="review-photo-thumb" onclick="window.open('${escapeAttr(r.photo)}', '_blank')">
-                  <img src="${escapeAttr(r.photo)}" alt="Customer Photo">
-                </div>
-                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Customer Photo</span>
-              </div>
-            ` : ''}
-          </div>
-        `;
-      }).join('');
-    });
