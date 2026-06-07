@@ -209,7 +209,7 @@ const schemas = {
   },
   media:{
     label:'Media Manager',singular:'Media',icon:'🖼',roles:['Super Admin','Company Admin','Editor','Moderator'],firestore:true,
-    fields:[['title','Title','text'],['type','Type','select',['photo','video']],['category','Category','select',['Invisible Grill','Premium Blinds','Polyster Pleated Mesh','SS 304 Pleated Mesh','Honeycomb Blackout','2in1 Mesh + Honeycomb','PVC Partition','Anti Bird Net','Security Mesh','Crystal Partition Door','Other Interior Work']],['status','Status','select',['active','inactive']],['upload','Upload Photo / Video','file'],['url','Secure URL','url'],['metadata','Metadata','textarea']],
+    fields:[['title','Title','text'],['type','Type','select',['photo','video']],['category','Category','select',['Invisible Grill','Roller blinds','Zebra blinds','Wooden blinds','Printed blinds','Polyster pleated mesh','SS 304 pleated mesh','Honeycomb blackout','2in1 pleated mesh + honeycomb','Pvc partition','Security mesh','Crystal partition door','Other Interior Work']],['status','Status','select',['active','inactive']],['upload','Upload Photo / Video','file'],['url','Secure URL','url'],['metadata','Metadata','textarea']],
     seed:[
       {id:'m1',title:'Pleated Mesh Window Installation',type:'photo',category:'Pleated Mesh',status:'active',url:'assets/services/pleated-mesh.jpg',metadata:'Real pleated mesh installation reference.'},
       {id:'m2',title:'Honey Comb Partition Work',type:'photo',category:'Honey Comb Partition',status:'active',url:'assets/services/honeycomb.jpg',metadata:'Honeycomb partition service reference.'},
@@ -790,7 +790,7 @@ let _muSourceType = "file";
 function openMediaModal(id) {
   if (!schemas['media'].roles.includes(state.session.role)) { toast('Access denied'); return; }
   const rec = id ? (db['media'] || []).find(r => r.id === id) || {} : {};
-  const cats = ['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other'];
+  const cats = ['Invisible Grill','Roller blinds','Zebra blinds','Wooden blinds','Printed blinds','Polyster pleated mesh','SS 304 pleated mesh','Honeycomb blackout','2in1 pleated mesh + honeycomb','Pvc partition','Security mesh','Crystal partition door','Other Interior Work'];
   const modal = document.getElementById('modal');
   modal.classList.remove('hidden');
   _muFile = null;
@@ -873,8 +873,8 @@ function openMediaModal(id) {
           </div>
 
           <div class="field">
-            <label style="font-size:13px;font-weight:800;">📄 Notes (optional)</label>
-            <textarea id="muMeta" placeholder="Location, project details, client notes...">${escapeHtml(rec.metadata||'')}</textarea>
+            <label style="font-size:13px;font-weight:800;">🗒️ Internal Metadata / Custom Thumbnail</label>
+            <textarea id="muMeta" placeholder="Internal notes... For Instagram, paste an image URL here to use it as a thumbnail.">${escapeHtml(rec.metadata||'')}</textarea>
           </div>
 
           <button class="btn btn-primary mu-save-btn" id="muSaveBtn" onclick="muSave('${id||''}')">

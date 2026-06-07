@@ -820,12 +820,17 @@
   <div class="gallery-filters fade-up" id="galleryFilters">
     <button class="filter-btn active" data-filter="all">All Projects</button>
     <button class="filter-btn" data-filter="Invisible Grill">Invisible Grill</button>
-    <button class="filter-btn" data-filter="Blinds">Blinds</button>
-    <button class="filter-btn" data-filter="Pleated Mesh">Pleated Mesh</button>
-    <button class="filter-btn" data-filter="Honeycomb">Honeycomb</button>
-    <button class="filter-btn" data-filter="Partitions">Partitions</button>
-    <button class="filter-btn" data-filter="Bird Net">Bird Net</button>
-    <button class="filter-btn" data-filter="Security Mesh">Security Mesh</button>
+    <button class="filter-btn" data-filter="Roller blinds">Roller blinds</button>
+    <button class="filter-btn" data-filter="Zebra blinds">Zebra blinds</button>
+    <button class="filter-btn" data-filter="Wooden blinds">Wooden blinds</button>
+    <button class="filter-btn" data-filter="Printed blinds">Printed blinds</button>
+    <button class="filter-btn" data-filter="Polyster pleated mesh">Polyster pleated mesh</button>
+    <button class="filter-btn" data-filter="SS 304 pleated mesh">SS 304 pleated mesh</button>
+    <button class="filter-btn" data-filter="Honeycomb blackout">Honeycomb blackout</button>
+    <button class="filter-btn" data-filter="2in1 pleated mesh + honeycomb">2in1 mesh + honeycomb</button>
+    <button class="filter-btn" data-filter="Pvc partition">Pvc partition</button>
+    <button class="filter-btn" data-filter="Security mesh">Security mesh</button>
+    <button class="filter-btn" data-filter="Crystal partition door">Crystal partition door</button>
   </div>
 
   <div class="gallery-grid" id="galleryGrid">
@@ -1166,13 +1171,26 @@
       let mediaHtml = '';
       if (type === 'youtube') {
         const yid = getYouTubeId(item.url);
+        const thumbUrl = yid ? `https://img.youtube.com/vi/${yid}/hqdefault.jpg` : null;
         mediaHtml = yid 
-          ? `<iframe src="https://www.youtube.com/embed/${yid}" style="width:100%;height:100%;border:0;" allowfullscreen></iframe>`
+          ? `<div style="position:relative;height:100%;cursor:pointer;" onclick="this.innerHTML='<iframe src=\'https://www.youtube.com/embed/${yid}?autoplay=1\' style=\'width:100%;height:100%;border:0;\' allow=\'autoplay\' allowfullscreen></iframe>'">
+               <img src="${thumbUrl}" alt="${title}" style="width:100%;height:100%;object-fit:cover;">
+               <div class="media-type-badge">🎬 YouTube</div>
+               <div class="play-btn-overlay" style="opacity:1;"><div class="play-btn">&#9654;</div></div>
+             </div>`
           : `<div style="padding:20px;text-align:center;">Invalid YouTube Link</div>`;
       } else if (type === 'instagram') {
-        mediaHtml = `<div style="padding:20px;text-align:center;background:#f8fafc;height:100%;display:flex;flex-direction:column;justify-content:center;">
-                      <div style="font-size:24px;margin-bottom:10px;">📸</div>
-                      <a href="${url}" target="_blank" style="color:var(--orange);font-weight:700;text-decoration:none;">View on Instagram →</a>
+        // Use metadata as thumbnail if it looks like a URL, else show placeholder
+        const hasCustomThumb = item.metadata && (item.metadata.startsWith('http') || item.metadata.startsWith('assets/'));
+        mediaHtml = `<div style="position:relative;height:100%;background:#f8fafc;">
+                      ${hasCustomThumb ? `<img src="${escapeAttr(item.metadata)}" style="width:100%;height:100%;object-fit:cover;opacity:0.8;">` : 
+                      `<div style="height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                        <div style="font-size:32px;margin-bottom:10px;">📸</div>
+                      </div>`}
+                      <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.1);">
+                        <a href="${url}" target="_blank" style="background:var(--orange);color:#fff;padding:8px 16px;border-radius:20px;font-weight:700;text-decoration:none;font-size:13px;box-shadow:0 4px 12px rgba(249,115,22,0.3);">View on Instagram →</a>
+                      </div>
+                      <div class="media-type-badge">📸 Instagram</div>
                     </div>`;
       } else if (type === 'video') {
         mediaHtml = `<video src="${url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
