@@ -496,8 +496,8 @@
   /* REVIEWS - MOBILE STYLE CARDS ────────────────────────────────────────── */
   .reviews-section { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 80px 0; }
   .reviews-grid {
-    max-width: 1280px; margin: 0 auto; padding: 0 20px;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;
+    max-width: 1280px; margin: 0 auto 60px; padding: 0 20px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;
   }
   .review-card {
     background: #fff; border-radius: 20px; padding: 0; overflow: hidden;
@@ -565,6 +565,9 @@
   .review-stars-input span { cursor: pointer; color: #cbd5e1; transition: all 0.2s; transform: scale(1); }
   .review-stars-input span:hover { color: #f59e0b; transform: scale(1.2); }
   .review-stars-input span.active { color: #f59e0b; transform: scale(1.15); }
+  .review-stars-input span.active ~ span { color: #cbd5e1; }
+  /* Ensure the clicked star and those before it are orange */
+  #starsInput span.active { color: #f59e0b; }
   .review-submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--orange), #ea580c); color: #fff; border: 0; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 15px; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35); }
   .review-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45); }
   .review-submit-btn:active { transform: translateY(0); }
@@ -799,11 +802,11 @@
         <div class="review-form-group">
           <label>Rating *</label>
           <div class="review-stars-input" id="starsInput">
-            <span onclick="setRating(1)">★</span>
-            <span onclick="setRating(2)">★</span>
-            <span onclick="setRating(3)">★</span>
-            <span onclick="setRating(4)">★</span>
-            <span onclick="setRating(5)">★</span>
+            <span class="active" onclick="setRating(1)">★</span>
+            <span class="active" onclick="setRating(2)">★</span>
+            <span class="active" onclick="setRating(3)">★</span>
+            <span class="active" onclick="setRating(4)">★</span>
+            <span class="active" onclick="setRating(5)">★</span>
           </div>
           <input type="hidden" id="reviewRating" value="5">
         </div>
@@ -812,10 +815,19 @@
           <textarea id="reviewText" placeholder="Share your experience with us..." required></textarea>
         </div>
         <div class="review-form-group">
-          <label>Photo URL (optional)</label>
-          <input type="url" id="reviewPhoto" placeholder="https://example.com/photo.jpg">
+          <label>Upload Photo (optional)</label>
+          <div style="position:relative; border:2px dashed #e2e8f0; border-radius:12px; padding:20px; text-align:center; transition:all 0.3s;" id="photoUploadZone">
+            <input type="file" id="reviewPhotoFile" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer;" onchange="handlePhotoPreview(this)">
+            <div id="photoPreview" style="display:none; margin-bottom:10px;">
+              <img src="" id="previewImg" style="width:80px; height:80px; object-fit:cover; border-radius:10px; border:2px solid var(--orange);">
+            </div>
+            <div id="uploadPrompt">
+              <span style="font-size:24px; display:block; margin-bottom:8px;">📸</span>
+              <span style="font-size:13px; color:#64748b; font-weight:600;">Click or drag to upload a photo of our work</span>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="review-submit-btn">Submit Review</button>
+        <button type="submit" class="review-submit-btn" id="reviewSubmitBtn">🚀 Submit Your Review</button>
       </form>
     </div>
   </div>
@@ -929,6 +941,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 <script>
   // Firebase Config
   const firebaseConfig = {
@@ -944,6 +957,7 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const auth = firebase.auth();
+  const storage = firebase.storage();
 
   // Mobile menu
   const hamburger = document.getElementById('hamburger');
@@ -1326,6 +1340,129 @@
     heroGoTo((_currentSlide + dir + _heroSlides.length) % _heroSlides.length);
   };
 
+  // ── Review System Logic ──────────────────────────────────────
+  let currentRating = 5;
+
+  window.setRating = function(rating) {
+    currentRating = rating;
+    document.getElementById('reviewRating').value = rating;
+    const stars = document.querySelectorAll('#starsInput span');
+    stars.forEach((s, i) => {
+      s.classList.toggle('active', i < rating);
+    });
+  };
+
+  window.handlePhotoPreview = function(input) {
+    const preview = document.getElementById('photoPreview');
+    const img = document.getElementById('previewImg');
+    const prompt = document.getElementById('uploadPrompt');
+    const zone = document.getElementById('photoUploadZone');
+    
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        img.src = e.target.result;
+        preview.style.display = 'block';
+        prompt.style.display = 'none';
+        zone.style.borderColor = 'var(--orange)';
+        zone.style.background = 'rgba(249, 115, 22, 0.05)';
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
+  window.submitReview = async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('reviewSubmitBtn');
+    const originalText = btn.innerHTML;
+    const name = document.getElementById('reviewName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    const photoFile = document.getElementById('reviewPhotoFile').files[0];
+    
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Submitting...';
+
+    try {
+      await ensureFirebaseWriteAccess();
+      let photoUrl = '';
+
+      if (photoFile) {
+        btn.innerHTML = '📤 Uploading Photo...';
+        const fileName = `${Date.now()}_${photoFile.name}`;
+        const storageRef = storage.ref().child(`reviews/${fileName}`);
+        const snapshot = await storageRef.put(photoFile);
+        photoUrl = await snapshot.ref.getDownloadURL();
+      }
+
+      await withTimeout(db.collection('reviews').add({
+        name: name,
+        text: text,
+        rating: currentRating,
+        photo: photoUrl,
+        status: 'pending', // Requires admin approval
+        createdAt: new Date().toISOString()
+      }), 12000, 'Review submission');
+
+      // Success UI
+      document.querySelector('.review-form').innerHTML = `
+        <div style="text-align:center; padding:40px 20px;">
+          <div style="font-size:50px; margin-bottom:20px;">🌟</div>
+          <h3 style="color:var(--navy); margin-bottom:12px;">Thank You, ${escapeHtml(name)}!</h3>
+          <p style="color:#64748b; line-height:1.6;">Your review has been submitted for moderation. It will appear on the site once approved by our team.</p>
+          <button onclick="location.reload()" style="margin-top:24px; padding:12px 30px; background:var(--navy); color:#fff; border:none; border-radius:12px; font-weight:700; cursor:pointer;">Submit Another Review</button>
+        </div>
+      `;
+    } catch (err) {
+      console.error('Review error:', err);
+      alert('Could not submit review: ' + err.message);
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  };
+
+  // Sync and Render Reviews
+  db.collection('reviews')
+    .where('status', '==', 'active')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+      const grid = document.getElementById('reviewsGrid');
+      if (snap.empty) {
+        grid.innerHTML = '<div class="review-empty">✨ No reviews yet. Be the first to share your experience!</div>';
+        return;
+      }
+
+      grid.innerHTML = snap.docs.map(doc => {
+        const r = doc.data();
+        const date = new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const initial = r.name.charAt(0).toUpperCase();
+        
+        return `
+          <div class="review-card fade-up visible">
+            <div class="review-card-header">
+              <div class="review-avatar">${initial}</div>
+              <div class="review-author-info">
+                <p class="review-author">${escapeHtml(r.name)}</p>
+                <p class="review-meta">${date}</p>
+              </div>
+            </div>
+            <div class="review-stars" style="color:#f59e0b; padding:0 20px; margin-top:8px;">${stars}</div>
+            <div class="review-card-body">
+              <p class="review-text">"${escapeHtml(r.text)}"</p>
+            </div>
+            ${r.photo ? `
+              <div class="review-card-footer">
+                <div class="review-photo-thumb" onclick="window.open('${escapeAttr(r.photo)}', '_blank')">
+                  <img src="${escapeAttr(r.photo)}" alt="Customer Photo">
+                </div>
+                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Customer Photo</span>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    });
+
   // ── Site Settings (thumbnails) listener ─────────────────────
   db.collection('siteSettings').doc('thumbnails').onSnapshot(doc => {
     if (!doc.exists) return;
@@ -1368,3 +1505,126 @@
 </script>
 </body>
 </html>
+
+  // ── Review System Logic ──────────────────────────────────────
+  let currentRating = 5;
+
+  window.setRating = function(rating) {
+    currentRating = rating;
+    document.getElementById('reviewRating').value = rating;
+    const stars = document.querySelectorAll('#starsInput span');
+    stars.forEach((s, i) => {
+      s.classList.toggle('active', i < rating);
+    });
+  };
+
+  window.handlePhotoPreview = function(input) {
+    const preview = document.getElementById('photoPreview');
+    const img = document.getElementById('previewImg');
+    const prompt = document.getElementById('uploadPrompt');
+    const zone = document.getElementById('photoUploadZone');
+    
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        img.src = e.target.result;
+        preview.style.display = 'block';
+        prompt.style.display = 'none';
+        zone.style.borderColor = 'var(--orange)';
+        zone.style.background = 'rgba(249, 115, 22, 0.05)';
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
+  window.submitReview = async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('reviewSubmitBtn');
+    const originalText = btn.innerHTML;
+    const name = document.getElementById('reviewName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    const photoFile = document.getElementById('reviewPhotoFile').files[0];
+    
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Submitting...';
+
+    try {
+      await ensureFirebaseWriteAccess();
+      let photoUrl = '';
+
+      if (photoFile) {
+        btn.innerHTML = '📤 Uploading Photo...';
+        const fileName = `${Date.now()}_${photoFile.name}`;
+        const storageRef = storage.ref().child(`reviews/${fileName}`);
+        const snapshot = await storageRef.put(photoFile);
+        photoUrl = await snapshot.ref.getDownloadURL();
+      }
+
+      await withTimeout(db.collection('reviews').add({
+        name: name,
+        text: text,
+        rating: currentRating,
+        photo: photoUrl,
+        status: 'pending', // Requires admin approval
+        createdAt: new Date().toISOString()
+      }), 12000, 'Review submission');
+
+      // Success UI
+      document.querySelector('.review-form').innerHTML = `
+        <div style="text-align:center; padding:40px 20px;">
+          <div style="font-size:50px; margin-bottom:20px;">🌟</div>
+          <h3 style="color:var(--navy); margin-bottom:12px;">Thank You, ${escapeHtml(name)}!</h3>
+          <p style="color:#64748b; line-height:1.6;">Your review has been submitted for moderation. It will appear on the site once approved by our team.</p>
+          <button onclick="location.reload()" style="margin-top:24px; padding:12px 30px; background:var(--navy); color:#fff; border:none; border-radius:12px; font-weight:700; cursor:pointer;">Submit Another Review</button>
+        </div>
+      `;
+    } catch (err) {
+      console.error('Review error:', err);
+      alert('Could not submit review: ' + err.message);
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  };
+
+  // Sync and Render Reviews
+  db.collection('reviews')
+    .where('status', '==', 'active')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+      const grid = document.getElementById('reviewsGrid');
+      if (snap.empty) {
+        grid.innerHTML = '<div class="review-empty">✨ No reviews yet. Be the first to share your experience!</div>';
+        return;
+      }
+
+      grid.innerHTML = snap.docs.map(doc => {
+        const r = doc.data();
+        const date = new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const initial = r.name.charAt(0).toUpperCase();
+        
+        return `
+          <div class="review-card fade-up visible">
+            <div class="review-card-header">
+              <div class="review-avatar">${initial}</div>
+              <div class="review-author-info">
+                <p class="review-author">${escapeHtml(r.name)}</p>
+                <p class="review-meta">${date}</p>
+              </div>
+            </div>
+            <div class="review-stars">${stars}</div>
+            <div class="review-card-body">
+              <p class="review-text">"${escapeHtml(r.text)}"</p>
+            </div>
+            ${r.photo ? `
+              <div class="review-card-footer">
+                <div class="review-photo-thumb" onclick="window.open('${escapeAttr(r.photo)}', '_blank')">
+                  <img src="${escapeAttr(r.photo)}" alt="Customer Photo">
+                </div>
+                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Customer Photo</span>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    });
