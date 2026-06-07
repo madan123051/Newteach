@@ -552,8 +552,23 @@ async function uploadMediaFile(file, recordId){
   const safeName = file.name.replace(/[^a-z0-9._-]/gi,'-').toLowerCase();
   const path = `site-media/${recordId}-${Date.now()}-${safeName || 'upload.'+ext}`;
   const ref = fstorage.ref().child(path);
-  const snap = await ref.put(file, {contentType:file.type, customMetadata:{uploadedBy:state.session?.email||'admin'}});
-  return {url:await snap.ref.getDownloadURL(), name:file.name, type:file.type.startsWith('video/')?'video':'photo'};
+  return new Promise((resolve, reject) => {
+    const uploadTask = ref.put(file, {contentType:file.type, customMetadata:{uploadedBy:state.session?.email||'admin'}});
+    uploadTask.on('state_changed',
+      snap => {
+        const pct = (snap.bytesTransferred / snap.totalBytes * 100).toFixed(0);
+        const pb = document.getElementById('muProgressBar');
+        const ps = document.getElementById('muStatus');
+        if(pb) pb.style.width = pct + '%';
+        if(ps) ps.textContent = pct + '% uploaded...';
+      },
+      err => reject(err),
+      async () => {
+        const url = await uploadTask.snapshot.ref.getDownloadURL();
+        resolve({url, name:file.name, type:file.type.startsWith('video/')?'video':'photo'});
+      }
+    );
+  });
 }
 
 function confirmDelete(key,id){
