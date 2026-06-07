@@ -776,6 +776,7 @@ function muPickSource(source, el) {
 }
 
 let _muFile = null;
+let _muSourceType = "file";
 
 function openMediaModal(id) {
   if (!schemas['media'].roles.includes(state.session.role)) { toast('Access denied'); return; }
@@ -825,6 +826,22 @@ function openMediaModal(id) {
 
         <!-- RIGHT: Details Form -->
         <div>
+          <div class="field">
+            <label style="font-size:13px;font-weight:800;">🔗 Media Source</label>
+            <div class="cat-chips" id="muSourceChips">
+              <span class="cat-chip ${!rec.sourceType || rec.sourceType==='file'?'sel':''}" onclick="muPickSource('file',this)">📁 File Upload</span>
+              <span class="cat-chip ${rec.sourceType==='youtube'?'sel':''}" onclick="muPickSource('youtube',this)">🎬 YouTube</span>
+              <span class="cat-chip ${rec.sourceType==='instagram'?'sel':''}" onclick="muPickSource('instagram',this)">📸 Instagram</span>
+            </div>
+            <input type="hidden" id="muSourceType" value="${rec.sourceType || 'file'}">
+          </div>
+
+          <div class="field" id="muExtUrlField" style="${!rec.sourceType || rec.sourceType==='file'?'display:none':''}">
+            <label style="font-size:13px;font-weight:800;">🌐 Share Link / URL *</label>
+            <input id="muExtUrl" type="text" placeholder="Paste link here..." value="${escapeAttr(rec.url || '')}">
+            <p class="hint">Paste the full link from YouTube or Instagram.</p>
+          </div>
+
           <div class="field">
             <label style="font-size:13px;font-weight:800;">📝 Title *</label>
             <input id="muTitle" type="text" placeholder="e.g. 3BHK Invisible Grill – South Delhi" value="${escapeAttr(rec.title||'')}">

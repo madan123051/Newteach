@@ -913,6 +913,12 @@
   let currentDisplayCount = 6;
   const itemsPerPage = 6;
 
+  
+  function getYouTubeId(url) {
+    const m = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/)\|youtu\.be\/)([^"&?\s]{11})/);
+    return m ? m[1] : null;
+  }
+
   function renderGallery(items) {
     const grid = document.getElementById('galleryGrid');
     const filtered = activeFilter === 'all' ? items : items.filter(i => i.category === activeFilter);
@@ -928,17 +934,32 @@
       const title    = escapeHtml(item.title    || 'Project Installation');
       const category = escapeHtml(item.category || 'Our Work');
       const url      = escapeAttr(item.url);
-      const isVideo  = item.type === 'video';
+      const type     = item.type;
+      
+      let mediaHtml = '';
+      if (type === 'youtube') {
+        const yid = getYouTubeId(item.url);
+        mediaHtml = yid 
+          ? `<iframe src="https://www.youtube.com/embed/${yid}" style="width:100%;height:100%;border:0;" allowfullscreen></iframe>`
+          : `<div style="padding:20px;text-align:center;">Invalid YouTube Link</div>`;
+      } else if (type === 'instagram') {
+        mediaHtml = `<div style="padding:20px;text-align:center;background:#f8fafc;height:100%;display:flex;flex-direction:column;justify-content:center;">
+                      <div style="font-size:24px;margin-bottom:10px;">📸</div>
+                      <a href="${url}" target="_blank" style="color:var(--orange);font-weight:700;text-decoration:none;">View on Instagram →</a>
+                    </div>`;
+      } else if (type === 'video') {
+        mediaHtml = `<video src="${url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
+                     <div class="media-type-badge">🎬 Video</div>
+                     <div class="play-btn-overlay"><div class="play-btn">&#9654;</div></div>`;
+      } else {
+        mediaHtml = `<img src="${url}" alt="${escapeAttr(title)}" loading="lazy">
+                     <div class="media-type-badge">📷 Photo</div>`;
+      }
+
       return `
         <div class="gallery-card fade-up visible">
           <div class="gallery-card-media">
-            ${isVideo
-              ? `<video src="${url}" muted loop playsinline
-                   onmouseover="this.play()" onmouseout="this.pause()"></video>
-                 <div class="media-type-badge">🎬 Video</div>
-                 <div class="play-btn-overlay"><div class="play-btn">&#9654;</div></div>`
-              : `<img src="${url}" alt="${escapeAttr(title)}" loading="lazy">
-                 <div class="media-type-badge">📷 Photo</div>`}
+            ${mediaHtml}
           </div>
           <div class="gallery-card-body">
             <div class="gallery-card-category">${category}</div>
