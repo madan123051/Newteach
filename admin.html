@@ -33,7 +33,7 @@
   .cat-chip:hover{border-color:var(--orange);color:var(--orange);}
   .cat-chip.sel{border-color:var(--orange);background:rgba(249,115,22,0.1);color:var(--orange);}
   .mu-status-row{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
-  .mu-status-row label{display:flex;align-items:center;gap:7px;cursor:pointer;padding:8px 14px;border:2px solid var(--line);border-radius:12px;font-weight:700;font-size:13px;transition:all .2s;flex:1 1 130px;min-width:130px;justify-content:center;}
+  .mu-status-row label{display:flex;align-items:center;gap:7px;cursor:pointer;padding:8px 12px;border:2px solid var(--line);border-radius:12px;font-weight:700;font-size:13px;transition:all .2s;flex:1;min-width:100px;justify-content:flex-start;white-space:normal;word-break:break-word;line-height:1.3;}
   .mu-status-row label:has(input:checked){border-color:var(--orange);background:rgba(249,115,22,0.1);color:var(--orange);}
   .mu-save-btn{width:100%;margin-top:10px;padding:14px;font-size:15px;border-radius:14px;letter-spacing:.01em;}
   .mu-delete-btn{width:100%;margin-top:8px;padding:11px;border-radius:14px;font-size:13px;}
@@ -692,7 +692,7 @@ function openMediaModal(id) {
           <div class="field">
             <label style="font-size:13px;font-weight:800;">👁️ Visibility on Site</label>
             <div class="mu-status-row">
-              <label><input type="radio" name="muStatus" value="active" ${(!rec.status||rec.status==='active')?'checked':''}> ✅ Live (Show in Gallery)</label>
+              <label><input type="radio" name="muStatus" value="active" ${(!rec.status||rec.status==='active')?'checked':''}> ✅ Live</label>
               <label><input type="radio" name="muStatus" value="inactive" ${rec.status==='inactive'?'checked':''}> 🚫 Hidden</label>
             </div>
           </div>
