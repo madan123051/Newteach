@@ -843,7 +843,10 @@
       e.target.reset();
       setTimeout(() => { btn.disabled = false; btn.innerHTML = original; btn.style.background = ''; }, 3000);
     } catch (err) {
-      alert('Message could not be sent to admin: ' + err.message);
+      let msg = err.message;
+      if(err.code === 'permission-denied') msg = 'Permission denied. Firebase rules may need to allow public writes to leads/quotes. Contact the admin.';
+      else if(err.code === 'unavailable') msg = 'Network error. Please check your connection and try again.';
+      alert('Message could not be sent: ' + msg);
       btn.disabled = false; btn.innerHTML = original;
     }
   };

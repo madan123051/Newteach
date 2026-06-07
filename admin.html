@@ -205,10 +205,17 @@ function allowed(view){return state.session && permissions[state.session.role]?.
 // ─── Firebase Firestore Sync ──────────────────────────────────────
 const firestoreCollections = Object.entries(schemas).filter(([,s])=>s.firestore).map(([k])=>k);
 
-function setupFirestoreListeners(){
+async function setupFirestoreListeners(){
   // Teardown old listeners
   firestoreListeners.forEach(u=>u());
   firestoreListeners = [];
+
+  // Ensure Firebase user before reading (anonymous or real auth)
+  try {
+    if(!fbAuth.currentUser){
+      await fbAuth.signInAnonymously();
+    }
+  } catch(e){ console.warn('Pre-listener auth failed:', e.message); }
 
   firestoreCollections.forEach(key=>{
     const unsub = fstore.collection(key).orderBy('createdAt','desc').limit(200)
@@ -308,7 +315,8 @@ function boot(){
   if(localStorage.getItem('newtech-dark')==='true') document.body.classList.add('dark');
   // Check Firebase Auth session
   fbAuth.onAuthStateChanged(user=>{
-    if(user && !state.session){
+    // Skip anonymous users — they are only used for Firestore access, not admin login
+    if(user && !user.isAnonymous && !state.session){
       const role = roleMap[user.email] || 'Super Admin';
       const name = user.displayName || user.email.split('@')[0];
       state.session = {id:user.uid, name, email:user.email, role, provider:'firebase'};
