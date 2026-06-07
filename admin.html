@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
-  <title>Admin Dashboard | Newtech Home Solutions</title>
+  <title>Admin Dashboard | NewTech Home Solutions</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -113,7 +113,7 @@
     <div class="login-panel">
       <form class="login-card" id="loginForm">
         <div class="logo"><img src="assets/logo.png" alt="Logo"></div>
-        <h2>Newtech Admin Login</h2>
+        <h2>NewTech Admin Login</h2>
         <p class="muted">Sign in to access the protected dashboard.</p>
         <div class="field"><label for="email">Email</label><input id="email" type="email" required autocomplete="username" placeholder="your@email.com"></div>
         <div class="field"><label for="password">Password</label><input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password"></div>
@@ -128,7 +128,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="side-head">
         <div class="logo" style="height:40px;"><img src="assets/logo.png" alt="Logo"></div>
-        <div><strong>Newtech Home Solutions</strong><br><span class="role-chip" id="roleChip">Role</span></div>
+        <div><strong>NewTech Home Solutions</strong><br><span class="role-chip" id="roleChip">Role</span></div>
       </div>
       <div class="nav-section">Workspace</div>
       <div id="navItems"></div>
@@ -528,8 +528,8 @@ function viewCareer(id){
 
 function replyToApplicant(email, name){
   if(!email){toast('No email address found for this applicant');return;}
-  const subject = encodeURIComponent('Re: Your Job Application at Newtech Home Solutions');
-  const body = encodeURIComponent('Dear ' + (name||'Applicant') + ',\n\nThank you for applying to Newtech Home Solutions.\n\nWe have reviewed your application and would like to inform you that...\n\nBest regards,\nNewtech Home Solutions Team');
+  const subject = encodeURIComponent('Re: Your Job Application at NewTech Home Solutions');
+  const body = encodeURIComponent('Dear ' + (name||'Applicant') + ',\n\nThank you for applying to NewTech Home Solutions.\n\nWe have reviewed your application and would like to inform you that...\n\nBest regards,\nNewTech Home Solutions Team');
   window.open('mailto:' + email + '?subject=' + subject + '&body=' + body, '_blank');
 }
 
