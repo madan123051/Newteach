@@ -491,88 +491,7 @@
   .hero-arrow-btn{background:rgba(255,255,255,.88);border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;pointer-events:all;font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:all .25s;}
   .hero-arrow-btn:hover{background:var(--orange);color:#fff;}
 
-
-
-  /* REVIEWS - MOBILE STYLE CARDS ────────────────────────────────────────── */
-  .reviews-section { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 80px 0; }
-  .reviews-grid {
-    max-width: 1280px; margin: 0 auto; padding: 0 20px;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;
-  }
-  .review-card {
-    background: #fff; border-radius: 20px; padding: 0; overflow: hidden;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative; border: 1px solid rgba(249, 115, 22, 0.1);
-  }
-  .review-card:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 20px 40px rgba(30, 58, 138, 0.15);
-    border-color: var(--orange);
-  }
-  .review-card-header {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
-    padding: 20px; color: #fff; display: flex; align-items: center; gap: 12px;
-  }
-  .review-avatar {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--orange), #f59e0b);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; color: #fff; font-size: 18px;
-  }
-  .review-author-info { flex: 1; }
-  .review-author { font-weight: 700; color: #fff; font-size: 15px; margin: 0; }
-  .review-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin: 2px 0 0; }
-  .review-stars {
-    font-size: 16px; color: #f59e0b; letter-spacing: 2px;
-    padding: 0 20px; margin-top: 8px;
-  }
-  .review-card-body { padding: 20px; }
-  .review-text {
-    font-size: 14px; color: #475569; line-height: 1.7;
-    margin: 0; font-weight: 500;
-  }
-  .review-card-footer {
-    padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .review-photo-thumb {
-    width: 40px; height: 40px; border-radius: 8px; overflow: hidden;
-    background: #e2e8f0; cursor: pointer; transition: transform 0.2s;
-  }
-  .review-photo-thumb img {
-    width: 100%; height: 100%; object-fit: cover;
-  }
-  .review-photo-thumb:hover { transform: scale(1.1); }
-  .review-actions {
-    display: flex; gap: 8px;
-  }
-  .review-action-btn {
-    background: transparent; border: 1px solid #e2e8f0; color: #64748b;
-    padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
-    transition: all 0.2s;
-  }
-  .review-action-btn:hover {
-    background: #f1f5f9; color: var(--orange); border-color: var(--orange);
-  }
-  .review-form { max-width: 600px; margin: 40px auto; background: #fff; padding: 32px; border-radius: 20px; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08); border: 1px solid rgba(249, 115, 22, 0.1); }
-  .review-form-group { margin-bottom: 20px; }
-  .review-form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #1e3a8a; font-size: 14px; }
-  .review-form-group input, .review-form-group textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 14px; transition: all 0.2s; }
-  .review-form-group input:focus, .review-form-group textarea:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
-  .review-form-group textarea { min-height: 100px; resize: vertical; }
-  .review-stars-input { display: flex; gap: 12px; font-size: 28px; }
-  .review-stars-input span { cursor: pointer; color: #cbd5e1; transition: all 0.2s; transform: scale(1); }
-  .review-stars-input span:hover { color: #f59e0b; transform: scale(1.2); }
-  .review-stars-input span.active { color: #f59e0b; transform: scale(1.15); }
-  .review-submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--orange), #ea580c); color: #fff; border: 0; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 15px; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35); }
-  .review-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45); }
-  .review-submit-btn:active { transform: translateY(0); }
-  .review-empty { text-align: center; padding: 60px 20px; color: #94a3b8; }
-  .review-empty-icon { font-size: 48px; margin-bottom: 16px; }
-
-
-  </style>
+</style>
 </head>
 <body>
 
@@ -613,7 +532,7 @@
 <section class="hero" id="home">
   <div class="hero-container">
     <div class="hero-content">
-      <div class="section-label">Best in Delhi NCR</div>
+      <div class="section-label">Best in Delhi & NCR</div>
       <h1>Complete <span>Home Protection</span> & Interior Solutions</h1>
       <p class="hero-tagline">Providing quality solutions for a safer and more comfortable home.</p>
       <p>We specialize in premium pleated mesh, honeycomb partitions, invisible grills, and anti-bird nets to keep your living space secure and elegant.</p>
@@ -622,8 +541,8 @@
         <a href="#contact" class="btn-secondary">Get Free Quote</a>
       </div>
       <div class="hero-stats">
-        <div class="stat-item"><h3>8+</h3><p>Years Exp</p></div>
-        <div class="stat-item"><h3>1000+</h3><p>Happy Homes</p></div>
+        <div class="stat-item"><h3>15+</h3><p>Years Exp</p></div>
+        <div class="stat-item"><h3>5000+</h3><p>Happy Homes</p></div>
         <div class="stat-item"><h3>100%</h3><p>Quality</p></div>
       </div>
     </div>
@@ -654,7 +573,7 @@
     <div class="about-content fade-up">
       <div class="section-label">Who We Are</div>
       <h2>Your Trusted Partner in <span>Home Safety</span></h2>
-      <p>New Tech Home Solutions is a leader in providing innovative safety and interior solutions. With over 8 years of experience, we have helped over 1000+ homeowners in Delhi NCR protect their families while maintaining the beauty of their homes.</p>
+      <p>New Tech Home Solutions is a leader in providing innovative safety and interior solutions. With over 15 years of experience, we have helped thousands of homeowners in Delhi and NCR protect their families while maintaining the beauty of their homes.</p>
       <ul class="about-features">
         <li>Premium Quality Materials</li>
         <li>Expert Installation Team</li>
@@ -775,53 +694,6 @@
   </div>
 </section>
 
-
-<!-- REVIEWS -->
-<section class="reviews-section" id="reviews">
-  <div class="container" style="max-width:1280px;margin:0 auto;padding:0 20px;">
-    <div class="section-header fade-up" style="text-align:center;margin-bottom:50px;">
-      <div class="section-label">Customer Testimonials</div>
-      <h2>What Our Happy Customers Say</h2>
-      <p>Real reviews from homeowners who trust New Tech Home Solutions</p>
-    </div>
-    <div class="reviews-grid" id="reviewsGrid">
-      <div class="review-empty">No reviews yet. Be the first to share your experience!</div>
-    </div>
-    
-    <!-- Review Submission Form -->
-    <div class="review-form">
-      <h3 style="text-align:center;margin-bottom:24px;color:#1e3a8a;">Share Your Experience</h3>
-      <form id="reviewForm" onsubmit="submitReview(event)">
-        <div class="review-form-group">
-          <label>Your Name *</label>
-          <input type="text" id="reviewName" placeholder="Enter your name" required>
-        </div>
-        <div class="review-form-group">
-          <label>Rating *</label>
-          <div class="review-stars-input" id="starsInput">
-            <span onclick="setRating(1)">★</span>
-            <span onclick="setRating(2)">★</span>
-            <span onclick="setRating(3)">★</span>
-            <span onclick="setRating(4)">★</span>
-            <span onclick="setRating(5)">★</span>
-          </div>
-          <input type="hidden" id="reviewRating" value="5">
-        </div>
-        <div class="review-form-group">
-          <label>Your Review *</label>
-          <textarea id="reviewText" placeholder="Share your experience with us..." required></textarea>
-        </div>
-        <div class="review-form-group">
-          <label>Photo URL (optional)</label>
-          <input type="url" id="reviewPhoto" placeholder="https://example.com/photo.jpg">
-        </div>
-        <button type="submit" class="review-submit-btn">Submit Review</button>
-      </form>
-    </div>
-  </div>
-</section>
-
-
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="contact-container">
@@ -891,7 +763,7 @@
           <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">COMPLETE PROTECTION</div>
         </div>
       </div>
-      <p>Providing premium home protection and interior solutions across Delhi NCR.</p>
+      <p>Providing premium home protection and interior solutions across Delhi and NCR.</p>
       <div class="social-links">
         <a href="https://www.facebook.com/share/1BNHXkyEpx/?mibextid=wwXIfr" target="_blank" aria-label="Facebook" style="background:transparent;width:50px;height:50px;padding:0;"><img src="assets/facebook_3d.png" alt="Facebook" style="width:100%;height:100%;object-fit:contain;"></a>
         <a href="https://www.instagram.com/newtechhomesolutions?igsh=MXU3bjBjb3czNzk5OA==" target="_blank" aria-label="Instagram" style="background:transparent;width:50px;height:50px;padding:0;"><img src="assets/instagram_3d.png" alt="Instagram" style="width:100%;height:100%;object-fit:contain;"></a>
@@ -1038,14 +910,6 @@
 
   let allMediaItems = [];
   let activeFilter = 'all';
-  let currentDisplayCount = 6;
-  const itemsPerPage = 6;
-
-  
-  function getYouTubeId(url) {
-    const m = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/)\|youtu\.be\/)([^"&?\s]{11})/);
-    return m ? m[1] : null;
-  }
 
   function renderGallery(items) {
     const grid = document.getElementById('galleryGrid');
@@ -1054,40 +918,21 @@
       grid.innerHTML = '<div class="gallery-empty">✨ No projects yet in this category. Check back soon!</div>';
       return;
     }
-    
-    // Show only the first currentDisplayCount items
-    const displayed = filtered.slice(0, currentDisplayCount);
-    
-    grid.innerHTML = displayed.map(item => {
+    grid.innerHTML = filtered.map(item => {
       const title    = escapeHtml(item.title    || 'Project Installation');
       const category = escapeHtml(item.category || 'Our Work');
       const url      = escapeAttr(item.url);
-      const type     = item.type;
-      
-      let mediaHtml = '';
-      if (type === 'youtube') {
-        const yid = getYouTubeId(item.url);
-        mediaHtml = yid 
-          ? `<iframe src="https://www.youtube.com/embed/${yid}" style="width:100%;height:100%;border:0;" allowfullscreen></iframe>`
-          : `<div style="padding:20px;text-align:center;">Invalid YouTube Link</div>`;
-      } else if (type === 'instagram') {
-        mediaHtml = `<div style="padding:20px;text-align:center;background:#f8fafc;height:100%;display:flex;flex-direction:column;justify-content:center;">
-                      <div style="font-size:24px;margin-bottom:10px;">📸</div>
-                      <a href="${url}" target="_blank" style="color:var(--orange);font-weight:700;text-decoration:none;">View on Instagram →</a>
-                    </div>`;
-      } else if (type === 'video') {
-        mediaHtml = `<video src="${url}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
-                     <div class="media-type-badge">🎬 Video</div>
-                     <div class="play-btn-overlay"><div class="play-btn">&#9654;</div></div>`;
-      } else {
-        mediaHtml = `<img src="${url}" alt="${escapeAttr(title)}" loading="lazy">
-                     <div class="media-type-badge">📷 Photo</div>`;
-      }
-
+      const isVideo  = item.type === 'video';
       return `
         <div class="gallery-card fade-up visible">
           <div class="gallery-card-media">
-            ${mediaHtml}
+            ${isVideo
+              ? `<video src="${url}" muted loop playsinline
+                   onmouseover="this.play()" onmouseout="this.pause()"></video>
+                 <div class="media-type-badge">🎬 Video</div>
+                 <div class="play-btn-overlay"><div class="play-btn">&#9654;</div></div>`
+              : `<img src="${url}" alt="${escapeAttr(title)}" loading="lazy">
+                 <div class="media-type-badge">📷 Photo</div>`}
           </div>
           <div class="gallery-card-body">
             <div class="gallery-card-category">${category}</div>
@@ -1095,21 +940,7 @@
           </div>
         </div>`;
     }).join('');
-    
-    // Add "Load More" button if there are more items to display
-    if (filtered.length > currentDisplayCount) {
-      grid.innerHTML += `
-        <div class="gallery-load-more">
-          <button class="load-more-btn" onclick="loadMoreGallery()">Load More</button>
-        </div>`;
-    }
-    
     document.querySelectorAll('.gallery-card.fade-up').forEach(el => observer.observe(el));
-  }
-  
-  function loadMoreGallery() {
-    currentDisplayCount += itemsPerPage;
-    renderGallery(allMediaItems);
   }
 
   // Filter button handlers
