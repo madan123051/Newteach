@@ -75,7 +75,7 @@
   .job-char-count{font-size:11px;color:var(--muted);text-align:right;margin-top:2px;}
   @media(max-width:560px){.job-two-col{grid-template-columns:1fr;}.job-modal-hero{flex-direction:column;text-align:center;}}
 
-@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:50;transform:translateX(-105%);transition:.2s;width:280px}.sidebar.open{transform:none}.mobile-menu{display:inline-flex}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr}.login-brand{display:none}}@media(max-width:640px){.content{padding:18px}.topbar{padding:0 14px}.search{display:none}.stats{grid-template-columns:1fr}.page-head{display:block}.form-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.filters,.filters input,.filters select,.toolbar .btn{width:100%}.filters{display:grid}.top-actions .muted{display:none}}
+@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:50;transform:translateX(-105%);transition:.2s;width:280px}.sidebar.open{transform:none}.mobile-menu{display:inline-flex}.sidebar-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:40;opacity:0;pointer-events:none;transition:.2s}.sidebar-backdrop.open{opacity:1;pointer-events:auto}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr}.login-brand{display:none}}@media(max-width:640px){.content{padding:18px}.topbar{padding:0 14px}.search{display:none}.stats{grid-template-columns:1fr}.page-head{display:block}.form-grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.filters,.filters input,.filters select,.toolbar .btn{width:100%}.filters{display:grid}.top-actions .muted{display:none}}
   
   /* ── Site Thumbnail Settings ─────────────────────────── */
   .thumb-hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;}
@@ -157,10 +157,11 @@
       <a class="nav-item" href="index.html" target="_blank" rel="noopener" style="text-decoration:none">🌐 Visit site</a>
 <button class="nav-item" id="logoutBtn">↩ Logout</button>
     </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
     <main class="main">
       <header class="topbar">
         <div class="topbar-left">
-          <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
+          <button class="icon-btn mobile-menu" id="mobileMenu" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Open side menu">☰</button>
           <div class="search"><input id="globalSearch" placeholder="Global search across records"></div>
         </div>
         <div class="top-actions">
@@ -413,6 +414,7 @@ function boot(){
   }
 
   document.getElementById('logoutBtn')?.addEventListener('click', logout);
+  setupMobileMenu();
 
   fbAuth.onAuthStateChanged(user=>{
     if(user && !user.isAnonymous){
@@ -436,7 +438,7 @@ async function logout(){
   await fbAuth.signOut();
   showLogin();
 }
-function showLogin(){document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('appShell').classList.add('hidden');}
+function showLogin(){closeMobileMenu();document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('appShell').classList.add('hidden');}
 function showApp(){
   if(!state.session) return showLogin();
   document.getElementById('loginScreen').classList.add('hidden');
@@ -448,6 +450,34 @@ function showApp(){
   setupFirestoreListeners();
   renderNav();
   navigate('quotes');
+}
+
+
+function setupMobileMenu(){
+  const mobileMenu = document.getElementById('mobileMenu');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  mobileMenu?.addEventListener('click', () => toggleMobileMenu());
+  sidebarBackdrop?.addEventListener('click', closeMobileMenu);
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeMobileMenu();
+  });
+}
+
+function toggleMobileMenu(forceOpen){
+  const sidebar = document.getElementById('sidebar');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  if(!sidebar || !mobileMenu || !sidebarBackdrop) return;
+  const isOpen = typeof forceOpen === 'boolean' ? forceOpen : !sidebar.classList.contains('open');
+  sidebar.classList.toggle('open', isOpen);
+  sidebarBackdrop.hidden = !isOpen;
+  sidebarBackdrop.classList.toggle('open', isOpen);
+  mobileMenu.setAttribute('aria-expanded', String(isOpen));
+  mobileMenu.setAttribute('aria-label', isOpen ? 'Close side menu' : 'Open side menu');
+}
+
+function closeMobileMenu(){
+  toggleMobileMenu(false);
 }
 
 // ─── Navigation ───────────────────────────────────────────────────
@@ -480,7 +510,7 @@ function getBadge(id){
 function navigate(view){
   if(!allowed(view)){toast('Access denied for your role');return;}
   state.view=view; state.selected.clear(); renderNav(); renderContent();
-  document.getElementById('sidebar').classList.remove('open');
+  closeMobileMenu();
 }
 
 function renderContent(){
