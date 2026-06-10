@@ -1064,9 +1064,26 @@ function buildQuotationPdf(q){
   doc.text('Company Stamp',390,y+24);
   return doc;
 }
-function downloadQuotationPdf(id){const q=getQuotation(id); const doc=buildQuotationPdf(q); if(doc) doc.save((q.quotationNumber||'quotation')+'.pdf');}
+function downloadQuotationPdf(id){
+  const q = getQuotation(id);
+  const doc = buildQuotationPdf(q);
+  if(doc){
+    const name = (q.customerDetails?.name || q.customerName || 'Customer').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const num = (q.quotationNumber || 'quote').replace(/[^a-z0-9]/gi, '_');
+    doc.save(`${num}_${name}.pdf`);
+  }
+}
 function printQuotationPdf(id){const q=getQuotation(id); const doc=buildQuotationPdf(q); if(doc) doc.autoPrint(); if(doc) window.open(doc.output('bloburl'),'_blank');}
-function downloadCurrentQuotationPdf(){refreshQuoteTotals(); const doc=buildQuotationPdf(quotationFromForm()); if(doc) doc.save((document.getElementById('qNumber').value||'quotation')+'.pdf');}
+function downloadCurrentQuotationPdf(){
+  refreshQuoteTotals();
+  const q = quotationFromForm();
+  const doc = buildQuotationPdf(q);
+  if(doc){
+    const name = (q.customerDetails?.name || q.customerName || 'Customer').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const num = (q.quotationNumber || 'quote').replace(/[^a-z0-9]/gi, '_');
+    doc.save(`${num}_${name}.pdf`);
+  }
+}
 function previewCurrentQuotationPdf(){refreshQuoteTotals(); const doc=buildQuotationPdf(quotationFromForm()); if(doc){doc.autoPrint(); window.open(doc.output('bloburl'),'_blank');}}
 
 // ─── Event Handlers ───────────────────────────────────────────────
