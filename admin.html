@@ -393,19 +393,29 @@ async function login(email, password){
 
 function boot(){
   if(localStorage.getItem('newtech-dark')==='true') document.body.classList.add('dark');
-  // Check Firebase Auth session
+  
+  const loginForm = document.getElementById('loginForm');
+  if(loginForm){
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if(await login(email, password)) showApp();
+    });
+  }
+
   fbAuth.onAuthStateChanged(user=>{
-    // Skip anonymous users — they are only used for Firestore access, not admin login
     if(user && !user.isAnonymous && !state.session){
       const role = roleMap[user.email] || 'Super Admin';
       const name = user.displayName || user.email.split('@')[0];
       state.session = {id:user.uid, name, email:user.email, role, provider:'firebase'};
       sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
       showApp();
+    } else if(!user || user.isAnonymous) {
+      showLogin();
     }
   });
-  }
-
+}
 function showLogin(){document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('appShell').classList.add('hidden');}
 function showApp(){
   document.getElementById('loginScreen').classList.add('hidden');
