@@ -13,6 +13,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root{--bg:#f8fafc;--card:#ffffff;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;--navy:#1e3a8a;--navy-900:#172554;--orange:#f97316;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--shadow:0 4px 20px rgba(30,58,138,0.08);--radius:16px;color-scheme:light}body.dark{--bg:#0f172a;--card:#1e293b;--ink:#f8fafc;--muted:#94a3b8;--line:#334155;--navy:#3b82f6;--navy-900:#0f172a;--shadow:0 20px 50px rgba(0,0,0,0.3);color-scheme:dark}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.login-shell{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;background:linear-gradient(135deg,#f0f4ff 0%,#fff5eb 100%);}.login-brand{color:var(--navy-900);padding:64px;display:flex;flex-direction:column;justify-content:center}.login-brand h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.05em;margin:18px 0}.login-brand p{font-size:18px;line-height:1.75;color:var(--muted);max-width:680px}.security-list{display:grid;gap:12px;margin-top:24px}.security-list span{display:flex;gap:10px;align-items:center;color:var(--navy)}.login-panel{display:flex;align-items:center;justify-content:center;padding:28px}.login-card{width:100%;max-width:460px;background:var(--card);border:1px solid rgba(255,255,255,.16);box-shadow:var(--shadow);border-radius:28px;padding:32px}.logo{width:auto;height:58px;border-radius:0;background:none;display:flex;align-items:center;gap:10px;} .logo img{height:100%;}.login-card h2{font-size:30px;margin:18px 0 8px}.muted{color:var(--muted)}.field{display:grid;gap:8px;margin:14px 0}.field label{font-size:13px;font-weight:800}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--card);color:var(--ink)}.field textarea{min-height:96px;resize:vertical}.hint{font-size:12px;color:var(--muted);line-height:1.6}.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:800;display:inline-flex;gap:8px;align-items:center;justify-content:center}.btn-primary{background:var(--orange);color:white}.btn-navy{background:var(--navy);color:white}.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn-danger{background:#fee2e2;color:var(--red)}.login-card .btn{width:100%;margin-top:10px}.app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.sidebar{background:#1e3a8a;color:white;position:sticky;top:0;height:100vh;overflow:auto;padding:18px;box-shadow: 4px 0 15px rgba(0,0,0,0.05);}.side-head{display:flex;align-items:center;gap:12px;padding:8px 6px 22px;border-bottom:1px solid rgba(255,255,255,.12)}.side-head .logo{width:46px;height:46px}.role-chip{font-size:11px;background:rgba(249,115,22,.2);color:#fed7aa;border:1px solid rgba(249,115,22,.35);padding:4px 8px;border-radius:999px} .badge-notify{background:var(--red);color:white;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:auto;font-weight:800;}.nav-section{margin:20px 0 8px;color:#94a3b8;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.nav-item{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#cbd5e1;padding:12px;border-radius:12px;text-align:left;font-weight:700}.nav-item:hover,.nav-item.active{background:var(--orange);color:white;box-shadow: 0 4px 12px rgba(249,115,22,0.3);}.main{min-width:0}.topbar{height:72px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}.topbar-left{display:flex;align-items:center;gap:12px}.mobile-menu{display:none}.search{position:relative;min-width:min(440px,45vw)}.search input{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:11px 18px}.top-actions{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--orange));display:grid;place-items:center;color:#fff;font-weight:900}.content{padding:28px}.breadcrumbs{font-size:13px;color:var(--muted);margin-bottom:10px}.page-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.page-head h1{margin:0;font-size:30px;letter-spacing:-.03em}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition: transform 0.2s;} .stat:hover{transform: translateY(-5px);}.stat span{color:var(--muted);font-size:13px;font-weight:800}.stat strong{display:block;font-size:36px;margin-top:8px;color:var(--orange)}.grid{display:grid;grid-template-columns:1.5fr .9fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 24px rgba(16,24,40,.04);padding:18px}.card h2{font-size:18px;margin:0 0 14px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters input,.filters select{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px;background:var(--card)}th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--bg)}tr:last-child td{border-bottom:0}.badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800}.published,.active,.verified,.shortlisted{background:#dcfce7;color:#15803d}.draft,.pending,.scheduled,.reviewing,.in-progress{background:#fef3c7;color:#a16207}.inactive,.expired,.rejected,.cancelled{background:#fee2e2;color:#b91c1c}.quoted,.contacted,.closed{background:#dbeafe;color:#1d4ed8}.pagination{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px}.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}.media-tile{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}.media-thumb{height:110px;background:linear-gradient(135deg,#dbeafe,#ffedd5);display:grid;place-items:center;font-size:34px}.media-thumb img,.media-thumb video{width:100%;height:100%;object-fit:cover}.media-tile div:last-child{padding:10px}.activity{display:grid;gap:10px}.activity-item{display:flex;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px}.activity-dot{width:10px;height:10px;border-radius:50%;background:var(--orange);margin-top:5px;flex:0 0 auto}.modal{position:fixed;inset:0;background:rgba(2,6,23,.62);display:grid;place-items:center;padding:18px;z-index:100}.modal-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.toast-wrap{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:200}.toast{background:#101828;color:#fff;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow)}.danger-zone{border:1px dashed #fecaca;background:#fff7f7;border-radius:14px;padding:12px;color:#991b1b}.empty{text-align:center;color:var(--muted);padding:32px}.loading{opacity:.6;pointer-events:none}.firebase-badge{display:inline-flex;align-items:center;gap:5px;background:#fff3e0;color:#e65100;font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;border:1px solid #ffcc02;}
   /* ── Modern Media Upload Modal ────────────────────────── */
@@ -111,6 +112,10 @@
   .mpc-progress{ height:5px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:6px;display:none; }
   .mpc-progress-fill{ height:100%;background:linear-gradient(90deg,var(--orange),var(--navy));border-radius:999px;transition:width .2s; }
 
+
+    .quote-hero{background:linear-gradient(135deg,rgba(30,58,138,.10),rgba(249,115,22,.10));border:1px solid var(--line);border-radius:24px;padding:22px;display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-bottom:18px;box-shadow:var(--shadow)}
+    .quote-hero h2{font-size:26px;margin:0 0 8px;color:var(--navy)}.quote-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quote-kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}.quote-kpi span{font-size:12px;color:var(--muted);font-weight:800}.quote-kpi strong{display:block;font-size:22px;color:var(--orange);margin-top:4px}.quote-builder{max-width:1200px}.quote-section{border:1px solid var(--line);border-radius:18px;padding:16px;margin:16px 0;background:var(--card)}.quote-section h3{margin:0 0 12px;color:var(--navy)}.quote-products{display:grid;gap:14px}.quote-product{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--bg)}.quote-product-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.quote-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.quote-grid .field{margin:0}.quote-summary{position:sticky;bottom:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 -8px 30px rgba(30,58,138,.08);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.quote-totals{display:grid;grid-template-columns:repeat(6,auto);gap:10px 16px;text-align:right}.quote-totals span{font-size:12px;color:var(--muted);font-weight:800}.quote-totals strong{display:block;color:var(--ink)}.quote-totals .grand strong{font-size:22px;color:var(--orange)}.quote-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.quote-table-actions{display:flex;gap:6px;flex-wrap:wrap}.quotation-print{font-family:Inter,Arial,sans-serif;color:#1e293b}.workflow-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.workflow-strip span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;color:var(--navy)}
+    @media(max-width:1100px){.quote-grid{grid-template-columns:repeat(2,1fr)}.quote-hero{grid-template-columns:1fr}.quote-totals{grid-template-columns:repeat(3,auto)}}@media(max-width:700px){.quote-grid,.quote-kpis{grid-template-columns:1fr}.quote-summary{grid-template-columns:1fr}.quote-totals{grid-template-columns:1fr 1fr;text-align:left}.quote-actions{justify-content:flex-start}}
   </style>
 </head>
 <body>
@@ -191,10 +196,10 @@ const fstorage = firebase.storage();
 // ─── Role & Account Config ────────────────────────────────────────
 const roles = {SUPER_ADMIN:'Super Admin',COMPANY_ADMIN:'Company Admin',EDITOR:'Editor',MODERATOR:'Moderator'};
 const permissions = {
-  'Super Admin':  ['quotes','careers','jobs','media','thumbnails','reviews'],
-  'Company Admin':['quotes','careers','jobs','media','thumbnails','reviews'],
-  'Editor':       ['quotes','careers','jobs','media','thumbnails','reviews'],
-  'Moderator':    ['quotes','careers','jobs','media','thumbnails','reviews']
+  'Super Admin':  ['quotes','quotations','careers','jobs','media','thumbnails','reviews'],
+  'Company Admin':['quotes','quotations','careers','jobs','media','thumbnails','reviews'],
+  'Editor':       ['quotes','quotations','careers','jobs','media','thumbnails','reviews'],
+  'Moderator':    ['quotes','quotations','careers','jobs','media','thumbnails','reviews']
 };
 // Role map for Firebase Auth users (email → role)
 // Add your admin emails here
@@ -211,6 +216,11 @@ const schemas = {
   quotes:{
     label:'Quote Requests',singular:'Quote',icon:'💰',roles:['Super Admin','Company Admin','Editor'],firestore:true,
     fields:[['name','Customer Name','text'],['phone','Phone','tel'],['email','Email','email'],['service','Service Required','select',['Pleated Mesh','Honey Comb Partition','Invisible Grill','Anti Bird Net','Other']],['location','Location / Address','text'],['status','Status','select',['new','in-progress','quoted','closed']],['message','Requirements','textarea']],
+    seed:[]
+  },
+  quotations:{
+    label:'Quotation Generator',singular:'Quotation',icon:'🧾',roles:['Super Admin','Company Admin','Editor'],firestore:true,
+    fields:[['quotationNumber','Quotation Number','text'],['customerName','Customer Name','text'],['phone','Phone','tel'],['status','Status','select',['draft','sent','approved','converted','cancelled']]],
     seed:[]
   },
   careers:{
@@ -262,6 +272,7 @@ function allowed(view){return state.session && permissions[state.session.role]?.
 // ─── Firebase Firestore Sync ──────────────────────────────────────
 const firestoreCollections = Object.entries(schemas).filter(([,s])=>s.firestore).map(([k])=>k);
 if(!db.reviews) db.reviews = [];
+if(!db.quotations) db.quotations = [];
 
 async function setupFirestoreListeners(){
   // Teardown old listeners
@@ -398,6 +409,7 @@ function showApp(){
 function renderNav(){
   const items = [
     ['quotes',    'Quote Requests',      '💰', 'badge'],
+    ['quotations','Quotation Generator', '🧾'],
     ['careers',   'Career Applications', '🎓', 'badge'],
     ['jobs',      'Job Vacancies',       '💼'],
     ['media',     'Media Manager',       '🖼'],
@@ -427,6 +439,7 @@ function navigate(view){
 function renderContent(){
   if(state.view==='thumbnails') return renderThumbnailSettings();
   if(state.view==='reviews')    return renderReviewsModule();
+  if(state.view==='quotations') return renderQuotationModule();
   return renderManager(state.view);
 }
 
@@ -453,6 +466,7 @@ function renderManager(key){
 function managerSub(key){
   const map = {
     quotes:  'Quote requests from customers. Track status from new → quoted → closed. Synced with Firebase.',
+    quotations: 'Create branded measurements-based quotations with automatic GST, PDF download/print, drafts, duplicate and edit workflows.',
     careers: 'Job applications submitted by candidates. Review, shortlist or reject. Synced with Firebase.',
     jobs:    'Manage job vacancies, set expiry dates and track applications. Synced with Firebase.',
     media:   'Upload photos/videos to Firebase Storage and publish them to the live gallery.'
@@ -497,7 +511,7 @@ function filteredRows(key){
   let rows = [...(db[key]||[])];
   const q = state.query.toLowerCase();
   if(q) rows = rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
-  if(state.filter[key]) rows = rows.filter(r=>r.status===state.filter[key]);
+  if(state.filter[key]) rows = rows.filter(r=>(r.status||'draft')===state.filter[key]);
   return rows;
 }
 
@@ -634,9 +648,9 @@ function mediaPreview(r){
 
 function formatCell(value){
   const v = escapeHtml(String(value??''));
-  const greenList  = ['active','published','verified','shortlisted','quoted','contacted'];
+  const greenList  = ['active','published','verified','shortlisted','quoted','contacted','approved','converted','sent'];
   const yellowList = ['draft','pending','scheduled','reviewing','in-progress','new'];
-  const redList    = ['inactive','expired','rejected','cancelled','junk'];
+  const redList    = ['inactive','expired','rejected','cancelled','canceled','junk'];
   const blueList   = ['closed'];
   if(greenList.includes(v))  return `<span class="badge ${v}">${v}</span>`;
   if(yellowList.includes(v)) return `<span class="badge ${v}">${v}</span>`;
@@ -769,6 +783,291 @@ function closeModal(){document.getElementById('modal').classList.add('hidden');d
 function sanitize(v){return String(v).trim().replace(/[<>]/g,'');}
 function escapeHtml(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function escapeAttr(v){return escapeHtml(v).replace(/'/g,'&#39;');}
+
+
+
+// ─── Professional Quotation Generator ────────────────────────────
+const COMPANY_PROFILE = {
+  name:'NewTech Home Solutions',
+  logo:'assets/logo.png',
+  address:'F-1, Hari Nagar II, Near Eco Park, South Delhi, Delhi, India',
+  contacts:['+91 9315739299','+91 9354831931'],
+  email:'homesolutionsnewtech@gmail.com',
+  website:location.origin ? location.origin + location.pathname.replace('admin.html','index.html') : 'index.html',
+  gstNumber:'GSTIN: To be updated',
+  terms:['Quotation is valid for 15 days from the quotation date.','Final billing may vary after site verification and exact measurements.','Order processing starts after customer approval and advance payment.','Electrical, civil, scaffolding or access work is excluded unless mentioned.'],
+  warranty:['Product warranty applies as per selected material and manufacturer terms.','Warranty covers manufacturing defects only; misuse, physical damage and site modifications are excluded.','Installation service warranty applies to workmanship subject to normal usage.']
+};
+const QUOTE_CATEGORIES = ['Roller Blinds','Zebra Blinds','Wooden Blinds','Printed Blinds','Polyester Pleated Mesh','SS304 Pleated Mesh','Honeycomb Blackout','2 in 1 Pleated Mesh + Honeycomb','PVC Partition','Crystal Partition Door','Security Mesh'];
+const QUOTE_UNITS = ['Sq Ft','Sq Meter','CM','MM'];
+const TAX_OPTIONS = [{label:'No Tax',value:0},{label:'GST 5%',value:5},{label:'GST 12%',value:12},{label:'GST 18%',value:18},{label:'Custom Tax',value:'custom'}];
+
+function currency(n){const value = Number(n||0); return 'Rs. ' + value.toLocaleString('en-IN',{maximumFractionDigits:2});}
+function num(v){return Number(v||0)||0;}
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function generateQuotationNumber(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const count = (db.quotations||[]).filter(q => String(q.quotationNumber||'').includes('NTHS-'+y)).length + 1;
+  return `NTHS-${y}-${String(count).padStart(4,'0')}`;
+}
+function emptyQuoteProduct(){return {category:QUOTE_CATEGORIES[0],productName:'',width:0,height:0,unit:'Sq Ft',quantity:1,rateSqFt:0,rateSqMeter:0,installationCharge:0,deliveryCharge:0,discount:0,notes:''};}
+function calculateItem(item){
+  const width=num(item.width), height=num(item.height), qty=Math.max(1,num(item.quantity)||1);
+  let areaSqFt = 0;
+  if(item.unit==='Sq Ft') areaSqFt = width * height;
+  else if(item.unit==='Sq Meter') areaSqFt = width * height * 10.7639;
+  else if(item.unit==='CM') areaSqFt = (width/30.48) * (height/30.48);
+  else if(item.unit==='MM') areaSqFt = (width/304.8) * (height/304.8);
+  const areaSqMeter = areaSqFt / 10.7639;
+  const rate = num(item.rateSqFt) || (num(item.rateSqMeter) / 10.7639);
+  const productTotal = areaSqFt * qty * rate;
+  const lineTotal = productTotal + num(item.installationCharge) + num(item.deliveryCharge) - num(item.discount);
+  return {...item,areaSqFt,areaSqMeter,productTotal,lineTotal};
+}
+function calculateQuotation(q){
+  const products = (q.products||[]).map(calculateItem);
+  const productTotal = products.reduce((s,i)=>s+num(i.productTotal),0);
+  const installation = products.reduce((s,i)=>s+num(i.installationCharge),0);
+  const delivery = products.reduce((s,i)=>s+num(i.deliveryCharge),0);
+  const itemDiscount = products.reduce((s,i)=>s+num(i.discount),0);
+  const extraDiscount = num(q.discount);
+  const subtotal = productTotal + installation + delivery;
+  const discount = itemDiscount + extraDiscount;
+  const taxable = Math.max(0, subtotal - discount);
+  const taxRate = q.taxMode === 'custom' ? num(q.customTaxRate) : num(q.taxMode);
+  const tax = taxable * taxRate / 100;
+  const total = taxable + tax;
+  return {...q,products,productTotal,installation,delivery,subtotal,discount,taxRate,tax,total};
+}
+function quotationFromForm(){
+  const products = [...document.querySelectorAll('.quote-product')].map(row=>({
+    category:row.querySelector('[data-q="category"]').value,
+    productName:sanitize(row.querySelector('[data-q="productName"]').value),
+    width:num(row.querySelector('[data-q="width"]').value),
+    height:num(row.querySelector('[data-q="height"]').value),
+    unit:row.querySelector('[data-q="unit"]').value,
+    quantity:num(row.querySelector('[data-q="quantity"]').value)||1,
+    rateSqFt:num(row.querySelector('[data-q="rateSqFt"]').value),
+    rateSqMeter:num(row.querySelector('[data-q="rateSqMeter"]').value),
+    installationCharge:num(row.querySelector('[data-q="installationCharge"]').value),
+    deliveryCharge:num(row.querySelector('[data-q="deliveryCharge"]').value),
+    discount:num(row.querySelector('[data-q="discount"]').value),
+    notes:sanitize(row.querySelector('[data-q="notes"]').value)
+  }));
+  const q = {
+    quotationNumber:document.getElementById('qNumber').value,
+    quotationDate:document.getElementById('qDate').value,
+    customerDetails:{
+      name:sanitize(document.getElementById('qCustomer').value),phone:sanitize(document.getElementById('qPhone').value),email:sanitize(document.getElementById('qEmail').value),
+      installationAddress:sanitize(document.getElementById('qAddress').value),city:sanitize(document.getElementById('qCity').value),state:sanitize(document.getElementById('qState').value),country:sanitize(document.getElementById('qCountry').value),notes:sanitize(document.getElementById('qNotes').value)
+    },
+    customerName:sanitize(document.getElementById('qCustomer').value),phone:sanitize(document.getElementById('qPhone').value),email:sanitize(document.getElementById('qEmail').value),
+    products,discount:num(document.getElementById('qExtraDiscount').value),taxMode:document.getElementById('qTaxMode').value,customTaxRate:num(document.getElementById('qCustomTax').value),status:document.getElementById('qStatus').value,
+    companyProfile:COMPANY_PROFILE,futureWorkflow:{customerApproval:false,projectCreated:false,workerAssigned:false,installationTracking:false},pdfUrl:''
+  };
+  return calculateQuotation(q);
+}
+
+function renderQuotationModule(){
+  const rows = filteredRows('quotations');
+  const totals = rows.reduce((a,q)=>{a.total+=num(q.total); if((q.status||'draft')==='draft')a.drafts++; if(q.status==='approved')a.approved++; return a;},{total:0,drafts:0,approved:0});
+  document.getElementById('content').innerHTML = head('Quotation Generator','Dashboard → Quotation Generator → Create New Quotation',`<button class="btn btn-primary" onclick="openQuotationBuilder()">🧾 Create New Quotation</button>`) + `
+    <div class="quote-hero"><div><h2>Business quotation system for blinds, mesh, partitions and installation projects.</h2><p class="muted">Uses the existing NewTech logo, colors, fonts and company details automatically. Quotations are stored in Firestore and structured for approval, project creation, worker assignment and installation tracking.</p><div class="workflow-strip"><span>Quotation</span><span>Customer Approval</span><span>Project Creation</span><span>Worker Assignment</span><span>Installation Tracking</span></div></div><div class="quote-kpis"><div class="quote-kpi"><span>Total Value</span><strong>${currency(totals.total)}</strong></div><div class="quote-kpi"><span>Drafts</span><strong>${totals.drafts}</strong></div><div class="quote-kpi"><span>Approved</span><strong>${totals.approved}</strong></div></div></div>
+    <div class="card"><div class="toolbar"><div class="filters"><input placeholder="Search quotations" value="${escapeAttr(state.query)}" oninput="state.query=this.value;renderContent()"><select onchange="state.filter.quotations=this.value;renderContent()"><option value="">All statuses</option>${['draft','sent','approved','converted','cancelled'].map(s=>`<option ${state.filter.quotations===s?'selected':''} value="${s}">${s}</option>`).join('')}</select></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Quotation</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(q=>`<tr><td><strong>${escapeHtml(q.quotationNumber||'')}</strong></td><td>${escapeHtml(q.customerDetails?.name||q.customerName||'—')}<br><span class="muted">${escapeHtml(q.phone||q.customerDetails?.phone||'')}</span></td><td>${escapeHtml(q.quotationDate||'')}</td><td>${(q.products||[]).length}</td><td><strong>${currency(q.total)}</strong></td><td>${formatCell(q.status||'draft')}</td><td><div class="quote-table-actions"><button class="icon-btn" onclick="openQuotationBuilder('${q.id}')">Edit</button><button class="icon-btn" onclick="duplicateQuotation('${q.id}')">Duplicate</button><button class="icon-btn" onclick="downloadQuotationPdf('${q.id}')">PDF</button><button class="icon-btn" onclick="printQuotationPdf('${q.id}')">Print</button><button class="icon-btn" onclick="confirmDelete('quotations','${q.id}')">Delete</button></div></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No quotations yet. Click Create New Quotation.</td></tr>'}</tbody></table></div></div>`;
+}
+function productRowHtml(item={},i=0){
+  item={...emptyQuoteProduct(),...item};
+  const calc=calculateItem(item);
+  return `<div class="quote-product" data-index="${i}"><div class="quote-product-head"><strong>Product ${i+1}</strong><button class="icon-btn" onclick="this.closest('.quote-product').remove();refreshQuoteTotals()">Remove</button></div><div class="quote-grid">
+    <div class="field"><label>Category</label><select data-q="category" onchange="refreshQuoteTotals()">${QUOTE_CATEGORIES.map(c=>`<option ${item.category===c?'selected':''} value="${c}">${c}</option>`).join('')}</select></div>
+    <div class="field"><label>Product Name</label><input data-q="productName" value="${escapeAttr(item.productName)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Width</label><input data-q="width" type="number" step="0.01" value="${escapeAttr(item.width)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Height</label><input data-q="height" type="number" step="0.01" value="${escapeAttr(item.height)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Unit</label><select data-q="unit" onchange="refreshQuoteTotals()">${QUOTE_UNITS.map(u=>`<option ${item.unit===u?'selected':''} value="${u}">${u}</option>`).join('')}</select></div>
+    <div class="field"><label>Quantity</label><input data-q="quantity" type="number" step="1" min="1" value="${escapeAttr(item.quantity)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Area Calculation</label><input data-q="area" value="${calc.areaSqFt.toFixed(2)} sq ft / ${calc.areaSqMeter.toFixed(2)} sq m" readonly style="background:var(--card)"></div>
+    <div class="field"><label>Rate Per Sq Ft</label><input data-q="rateSqFt" type="number" step="0.01" value="${escapeAttr(item.rateSqFt)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Rate Per Sq Meter</label><input data-q="rateSqMeter" type="number" step="0.01" value="${escapeAttr(item.rateSqMeter)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Installation Charge</label><input data-q="installationCharge" type="number" step="0.01" value="${escapeAttr(item.installationCharge)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Delivery Charge</label><input data-q="deliveryCharge" type="number" step="0.01" value="${escapeAttr(item.deliveryCharge)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field"><label>Discount</label><input data-q="discount" type="number" step="0.01" value="${escapeAttr(item.discount)}" oninput="refreshQuoteTotals()"></div>
+    <div class="field" style="grid-column:1/-1"><label>Notes</label><textarea data-q="notes" oninput="refreshQuoteTotals()">${escapeHtml(item.notes)}</textarea></div>
+  </div></div>`;
+}
+function openQuotationBuilder(id){
+  const existing = id ? (db.quotations||[]).find(q=>q.id===id) : null;
+  const q = existing || {quotationNumber:generateQuotationNumber(),quotationDate:todayISO(),customerDetails:{country:'India'},products:[emptyQuoteProduct()],taxMode:18,status:'draft'};
+  document.getElementById('modal').classList.remove('hidden');
+  document.getElementById('modal').innerHTML = `<div class="modal-card quote-builder"><div class="modal-head"><div><h2>${id?'Edit Existing':'Create New'} Quotation</h2><p class="muted">${COMPANY_PROFILE.name} branded quotation with automatic measurements, GST and PDF.</p></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
+  <div class="quote-section"><h3>Company Branding</h3><div style="display:flex;gap:14px;align-items:center"><img src="${COMPANY_PROFILE.logo}" alt="Logo" style="height:58px"><div><strong>${COMPANY_PROFILE.name}</strong><br><span class="muted">${COMPANY_PROFILE.address}<br>${COMPANY_PROFILE.contacts.join(' / ')} • ${COMPANY_PROFILE.email}</span></div></div></div>
+  <div class="quote-section"><h3>Customer Details</h3><div class="quote-grid"><div class="field"><label>Quotation Number</label><input id="qNumber" value="${escapeAttr(q.quotationNumber)}" readonly></div><div class="field"><label>Date</label><input id="qDate" type="date" value="${escapeAttr(q.quotationDate||todayISO())}" onchange="refreshQuoteTotals()"></div><div class="field"><label>Customer Name</label><input id="qCustomer" value="${escapeAttr(q.customerDetails?.name||q.customerName||'')}"></div><div class="field"><label>Phone Number</label><input id="qPhone" value="${escapeAttr(q.customerDetails?.phone||q.phone||'')}"></div><div class="field"><label>Email</label><input id="qEmail" type="email" value="${escapeAttr(q.customerDetails?.email||q.email||'')}"></div><div class="field"><label>City</label><input id="qCity" value="${escapeAttr(q.customerDetails?.city||'')}"></div><div class="field"><label>State</label><input id="qState" value="${escapeAttr(q.customerDetails?.state||'')}"></div><div class="field"><label>Country</label><input id="qCountry" value="${escapeAttr(q.customerDetails?.country||'India')}"></div><div class="field" style="grid-column:1/-1"><label>Installation Address</label><textarea id="qAddress">${escapeHtml(q.customerDetails?.installationAddress||'')}</textarea></div><div class="field" style="grid-column:1/-1"><label>Notes</label><textarea id="qNotes">${escapeHtml(q.customerDetails?.notes||'')}</textarea></div></div></div>
+  <div class="quote-section"><div class="quote-product-head"><h3>Product Section</h3><button class="btn btn-ghost" onclick="addQuoteProduct()">+ Add Product</button></div><div id="quoteProducts" class="quote-products">${(q.products?.length?q.products:[emptyQuoteProduct()]).map(productRowHtml).join('')}</div></div>
+  <div class="quote-section"><h3>GST Module</h3><div class="quote-grid"><div class="field"><label>Tax/GST</label><select id="qTaxMode" onchange="toggleCustomTax();refreshQuoteTotals()">${TAX_OPTIONS.map(t=>`<option ${String(q.taxMode??18)===String(t.value)?'selected':''} value="${t.value}">${t.label}</option>`).join('')}</select></div><div class="field"><label>Custom Tax %</label><input id="qCustomTax" type="number" step="0.01" value="${escapeAttr(q.customTaxRate||0)}" oninput="refreshQuoteTotals()"></div><div class="field"><label>Quotation Discount</label><input id="qExtraDiscount" type="number" step="0.01" value="${escapeAttr(q.discount||0)}" oninput="refreshQuoteTotals()"></div><div class="field"><label>Status</label><select id="qStatus"><option value="draft" ${q.status==='draft'?'selected':''}>Draft</option><option value="sent" ${q.status==='sent'?'selected':''}>Sent</option><option value="approved" ${q.status==='approved'?'selected':''}>Approved</option><option value="converted" ${q.status==='converted'?'selected':''}>Converted to Project</option><option value="cancelled" ${q.status==='cancelled'?'selected':''}>Cancelled</option></select></div></div></div>
+  <div class="quote-summary"><div class="quote-totals" id="quoteTotals"></div><div class="quote-actions"><button class="btn btn-ghost" onclick="saveQuotation('${id||''}','draft')">Save Draft</button><button class="btn btn-navy" onclick="previewCurrentQuotationPdf()">Print PDF</button><button class="btn btn-ghost" onclick="downloadCurrentQuotationPdf()">Download PDF</button><button class="btn btn-primary" onclick="saveQuotation('${id||''}',document.getElementById('qStatus').value)">${id?'Save Changes':'Save Quotation'}</button></div></div></div>`;
+  toggleCustomTax(); refreshQuoteTotals();
+}
+function addQuoteProduct(){document.getElementById('quoteProducts').insertAdjacentHTML('beforeend',productRowHtml(emptyQuoteProduct(),document.querySelectorAll('.quote-product').length));refreshQuoteTotals();}
+function toggleCustomTax(){const el=document.getElementById('qCustomTax'); if(el) el.disabled=document.getElementById('qTaxMode').value!=='custom';}
+function refreshQuoteTotals(){
+  document.querySelectorAll('.quote-product').forEach(row=>{const item={width:row.querySelector('[data-q="width"]').value,height:row.querySelector('[data-q="height"]').value,unit:row.querySelector('[data-q="unit"]').value,quantity:row.querySelector('[data-q="quantity"]').value,rateSqFt:row.querySelector('[data-q="rateSqFt"]').value,rateSqMeter:row.querySelector('[data-q="rateSqMeter"]').value,installationCharge:row.querySelector('[data-q="installationCharge"]').value,deliveryCharge:row.querySelector('[data-q="deliveryCharge"]').value,discount:row.querySelector('[data-q="discount"]').value}; const calc=calculateItem(item); row.querySelector('[data-q="area"]').value=`${calc.areaSqFt.toFixed(2)} sq ft / ${calc.areaSqMeter.toFixed(2)} sq m`;});
+  const q=quotationFromForm(); const el=document.getElementById('quoteTotals'); if(el) el.innerHTML=`<div><span>Subtotal</span><strong>${currency(q.subtotal)}</strong></div><div><span>Installation</span><strong>${currency(q.installation)}</strong></div><div><span>Delivery</span><strong>${currency(q.delivery)}</strong></div><div><span>Discount</span><strong>${currency(q.discount)}</strong></div><div><span>GST ${q.taxRate}%</span><strong>${currency(q.tax)}</strong></div><div class="grand"><span>Grand Total</span><strong>${currency(q.total)}</strong></div>`;
+}
+async function saveQuotation(id,status){
+  const q=quotationFromForm(); q.status=status||q.status; q.quotationId=id||uid(); q.createdBy=state.session?.email||'admin'; q.updatedAt=new Date().toISOString();
+  try{ if(id){await fsUpdate('quotations',id,q); const i=db.quotations.findIndex(x=>x.id===id); if(i>-1) db.quotations[i]={...db.quotations[i],...q,id};} else {q.id=q.quotationId; q.createdAt=new Date().toISOString(); const liveId=await fsCreate('quotations',q); q.id=liveId||q.id; db.quotations.unshift(q);} save(); closeModal(); renderContent(); toast('Quotation saved to Firestore ✓'); }catch(e){toast('Quotation save failed: '+e.message);}
+}
+async function duplicateQuotation(id){const q=(db.quotations||[]).find(x=>x.id===id); if(!q)return; const copy={...q,id:uid(),quotationId:uid(),quotationNumber:generateQuotationNumber(),quotationDate:todayISO(),status:'draft',createdAt:new Date().toISOString(),createdBy:state.session?.email||'admin'}; delete copy.updatedAt; try{const liveId=await fsCreate('quotations',copy); copy.id=liveId||copy.id; db.quotations.unshift(copy); save(); renderContent(); toast('Quotation duplicated as draft');}catch(e){toast('Duplicate failed: '+e.message);}}
+function getQuotation(id){return calculateQuotation((db.quotations||[]).find(q=>q.id===id)||quotationFromForm());}
+function buildQuotationPdf(q){
+  const jsPDF = window.jspdf?.jsPDF;
+  if(!jsPDF){toast('PDF library is still loading. Please try again.');return null;}
+  const doc = new jsPDF({unit:'pt',format:'a4'});
+  const W = 595;
+  const pageLeft = 36;
+  const pageRight = W - 36;
+  let y = 36;
+
+  try{
+    const logoImg = document.querySelector('img[src="assets/logo.png"]');
+    if(logoImg?.complete) doc.addImage(logoImg,'PNG',36,30,48,48);
+    else {
+      doc.setFillColor(30,58,138); doc.roundedRect(36,30,48,48,8,8,'F');
+      doc.setTextColor(255); doc.setFontSize(10); doc.text('NTHS',60,58,{align:'center'});
+    }
+  }catch(e){
+    doc.setFillColor(30,58,138); doc.roundedRect(36,30,48,48,8,8,'F');
+    doc.setTextColor(255); doc.setFontSize(10); doc.text('NTHS',60,58,{align:'center'});
+  }
+
+  doc.setFont('helvetica','bold');
+  doc.setTextColor(30,58,138);
+  doc.setFontSize(18);
+  doc.text(COMPANY_PROFILE.name,100,y+12);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(9);
+  doc.setTextColor(80);
+  doc.text(COMPANY_PROFILE.address,100,y+28,{maxWidth:300});
+  doc.text(COMPANY_PROFILE.contacts.join(' / ')+' | '+COMPANY_PROFILE.email,100,y+54,{maxWidth:330});
+  doc.setDrawColor(249,115,22);
+  doc.setLineWidth(3);
+  doc.line(pageLeft,106,pageRight,106);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(20);
+  doc.setTextColor(249,115,22);
+  doc.text('QUOTATION',pageRight,50,{align:'right'});
+  doc.setFontSize(10);
+  doc.setTextColor(30,58,138);
+  doc.text(q.quotationNumber||'',pageRight,70,{align:'right'});
+  doc.text('Date: '+(q.quotationDate||todayISO()),pageRight,86,{align:'right'});
+
+  y = 130;
+  doc.setFontSize(11);
+  doc.text('Customer Details',pageLeft,y);
+  doc.text('Company / GST Details',330,y);
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(60);
+  y += 18;
+  const c = q.customerDetails || {};
+  doc.text([c.name||'Customer',c.phone||'',c.email||'',c.installationAddress||'', [c.city,c.state,c.country].filter(Boolean).join(', ')].filter(Boolean),pageLeft,y,{maxWidth:240,lineHeightFactor:1.15});
+  doc.text([COMPANY_PROFILE.name,COMPANY_PROFILE.gstNumber,'Email: '+COMPANY_PROFILE.email,'Phone: '+COMPANY_PROFILE.contacts.join(', ')],330,y,{maxWidth:220,lineHeightFactor:1.15});
+
+  y += 98;
+  doc.setFont('helvetica','bold');
+  doc.setTextColor(30,58,138);
+  doc.setFontSize(11);
+  doc.text('Products, Measurements, Rates and Amounts',pageLeft,y);
+  y += 18;
+
+  const cols = {
+    product: pageLeft + 10,
+    measurement: 190,
+    qty: 265,
+    rate: 325,
+    install: 382,
+    delivery: 438,
+    discount: 490,
+    amount: pageRight - 8
+  };
+  const drawTableHeader = () => {
+    doc.setFillColor(30,58,138);
+    doc.rect(pageLeft,y,pageRight-pageLeft,24,'F');
+    doc.setTextColor(255);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7.5);
+    doc.text('Product',cols.product,y+15);
+    doc.text('Measurement',cols.measurement,y+15);
+    doc.text('Qty',cols.qty,y+15);
+    doc.text('Rate / Sq Ft',cols.rate,y+15,{align:'right'});
+    doc.text('Install',cols.install,y+15,{align:'right'});
+    doc.text('Delivery',cols.delivery,y+15,{align:'right'});
+    doc.text('Disc.',cols.discount,y+15,{align:'right'});
+    doc.text('Amount',cols.amount,y+15,{align:'right'});
+    y += 30;
+    doc.setTextColor(40);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+  };
+  drawTableHeader();
+
+  q.products.forEach((it,idx)=>{
+    const productLines = doc.splitTextToSize(`${idx+1}. ${it.category}${it.productName ? ' - '+it.productName : ''}`,125);
+    const measurementLines = doc.splitTextToSize(`${it.width} x ${it.height} ${it.unit}\n${it.areaSqFt.toFixed(2)} sq ft / ${it.areaSqMeter.toFixed(2)} sq m`,70);
+    const rowHeight = Math.max(34, productLines.length * 10 + 10, measurementLines.length * 10 + 10);
+    if(y + rowHeight > 675){
+      doc.addPage();
+      y = 40;
+      drawTableHeader();
+    }
+    doc.setDrawColor(226,232,240);
+    doc.line(pageLeft,y-8,pageRight,y-8);
+    doc.text(productLines,cols.product,y,{lineHeightFactor:1.1});
+    doc.text(measurementLines,cols.measurement,y,{lineHeightFactor:1.1});
+    doc.text(String(it.quantity),cols.qty,y);
+    doc.text(currency(it.rateSqFt || (it.rateSqMeter/10.7639)),cols.rate,y,{align:'right'});
+    doc.text(currency(it.installationCharge),cols.install,y,{align:'right'});
+    doc.text(currency(it.deliveryCharge),cols.delivery,y,{align:'right'});
+    doc.text(currency(it.discount),cols.discount,y,{align:'right'});
+    doc.setFont('helvetica','bold');
+    doc.text(currency(it.lineTotal),cols.amount,y,{align:'right'});
+    doc.setFont('helvetica','normal');
+    y += rowHeight;
+  });
+
+  y += 12;
+  if(y > 650){ doc.addPage(); y = 50; }
+  const sx = 350;
+  doc.setFont('helvetica','bold');
+  [['Subtotal',q.subtotal],['Discount',q.discount],[`GST (${q.taxRate}%)`,q.tax],['Grand Total',q.total]].forEach(([label,value],i)=>{
+    doc.setTextColor(i===3?249:30,i===3?115:58,i===3?22:138);
+    doc.text(label,sx,y);
+    doc.text(currency(value),pageRight,y,{align:'right'});
+    y += 20;
+  });
+
+  y += 18;
+  if(y > 610){ doc.addPage(); y = 50; }
+  doc.setTextColor(30,58,138);
+  doc.text('Terms & Conditions',pageLeft,y);
+  doc.text('Warranty Information',330,y);
+  y += 14;
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(70);
+  doc.text(COMPANY_PROFILE.terms.map((t,i)=>`${i+1}. ${t}`),pageLeft,y,{maxWidth:245,lineHeightFactor:1.15});
+  doc.text(COMPANY_PROFILE.warranty.map((t,i)=>`${i+1}. ${t}`),330,y,{maxWidth:220,lineHeightFactor:1.15});
+
+  y = 760;
+  doc.setDrawColor(180);
+  doc.line(pageLeft,y,pageRight,y);
+  doc.text('Authorized Signature',60,y+24);
+  doc.text('Company Stamp',390,y+24);
+  return doc;
+}
+function downloadQuotationPdf(id){const q=getQuotation(id); const doc=buildQuotationPdf(q); if(doc) doc.save((q.quotationNumber||'quotation')+'.pdf');}
+function printQuotationPdf(id){const q=getQuotation(id); const doc=buildQuotationPdf(q); if(doc) doc.autoPrint(); if(doc) window.open(doc.output('bloburl'),'_blank');}
+function downloadCurrentQuotationPdf(){refreshQuoteTotals(); const doc=buildQuotationPdf(quotationFromForm()); if(doc) doc.save((document.getElementById('qNumber').value||'quotation')+'.pdf');}
+function previewCurrentQuotationPdf(){refreshQuoteTotals(); const doc=buildQuotationPdf(quotationFromForm()); if(doc){doc.autoPrint(); window.open(doc.output('bloburl'),'_blank');}}
 
 // ─── Event Handlers ───────────────────────────────────────────────
 document.getElementById('loginForm').onsubmit = async e=>{
