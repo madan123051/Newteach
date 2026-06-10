@@ -14,6 +14,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
   <style>
     :root{--bg:#f8fafc;--card:#ffffff;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;--navy:#1e3a8a;--navy-900:#172554;--orange:#f97316;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--shadow:0 4px 20px rgba(30,58,138,0.08);--radius:16px;color-scheme:light}body.dark{--bg:#0f172a;--card:#1e293b;--ink:#f8fafc;--muted:#94a3b8;--line:#334155;--navy:#3b82f6;--navy-900:#0f172a;--shadow:0 20px 50px rgba(0,0,0,0.3);color-scheme:dark}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.login-shell{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;background:linear-gradient(135deg,#f0f4ff 0%,#fff5eb 100%);}.login-brand{color:var(--navy-900);padding:64px;display:flex;flex-direction:column;justify-content:center}.login-brand h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.05em;margin:18px 0}.login-brand p{font-size:18px;line-height:1.75;color:var(--muted);max-width:680px}.security-list{display:grid;gap:12px;margin-top:24px}.security-list span{display:flex;gap:10px;align-items:center;color:var(--navy)}.login-panel{display:flex;align-items:center;justify-content:center;padding:28px}.login-card{width:100%;max-width:460px;background:var(--card);border:1px solid rgba(255,255,255,.16);box-shadow:var(--shadow);border-radius:28px;padding:32px}.logo{width:auto;height:58px;border-radius:0;background:none;display:flex;align-items:center;gap:10px;} .logo img{height:100%;}.login-card h2{font-size:30px;margin:18px 0 8px}.muted{color:var(--muted)}.field{display:grid;gap:8px;margin:14px 0}.field label{font-size:13px;font-weight:800}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--card);color:var(--ink)}.field textarea{min-height:96px;resize:vertical}.hint{font-size:12px;color:var(--muted);line-height:1.6}.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:800;display:inline-flex;gap:8px;align-items:center;justify-content:center}.btn-primary{background:var(--orange);color:white}.btn-navy{background:var(--navy);color:white}.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn-danger{background:#fee2e2;color:var(--red)}.login-card .btn{width:100%;margin-top:10px}.app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.sidebar{background:#1e3a8a;color:white;position:sticky;top:0;height:100vh;overflow:auto;padding:18px;box-shadow: 4px 0 15px rgba(0,0,0,0.05);}.side-head{display:flex;align-items:center;gap:12px;padding:8px 6px 22px;border-bottom:1px solid rgba(255,255,255,.12)}.side-head .logo{width:46px;height:46px}.role-chip{font-size:11px;background:rgba(249,115,22,.2);color:#fed7aa;border:1px solid rgba(249,115,22,.35);padding:4px 8px;border-radius:999px} .badge-notify{background:var(--red);color:white;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:auto;font-weight:800;}.nav-section{margin:20px 0 8px;color:#94a3b8;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.nav-item{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#cbd5e1;padding:12px;border-radius:12px;text-align:left;font-weight:700}.nav-item:hover,.nav-item.active{background:var(--orange);color:white;box-shadow: 0 4px 12px rgba(249,115,22,0.3);}.main{min-width:0}.topbar{height:72px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}.topbar-left{display:flex;align-items:center;gap:12px}.mobile-menu{display:none}.search{position:relative;min-width:min(440px,45vw)}.search input{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:11px 18px}.top-actions{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--orange));display:grid;place-items:center;color:#fff;font-weight:900}.content{padding:28px}.breadcrumbs{font-size:13px;color:var(--muted);margin-bottom:10px}.page-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.page-head h1{margin:0;font-size:30px;letter-spacing:-.03em}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition: transform 0.2s;} .stat:hover{transform: translateY(-5px);}.stat span{color:var(--muted);font-size:13px;font-weight:800}.stat strong{display:block;font-size:36px;margin-top:8px;color:var(--orange)}.grid{display:grid;grid-template-columns:1.5fr .9fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 24px rgba(16,24,40,.04);padding:18px}.card h2{font-size:18px;margin:0 0 14px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters input,.filters select{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px;background:var(--card)}th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--bg)}tr:last-child td{border-bottom:0}.badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800}.published,.active,.verified,.shortlisted{background:#dcfce7;color:#15803d}.draft,.pending,.scheduled,.reviewing,.in-progress{background:#fef3c7;color:#a16207}.inactive,.expired,.rejected,.cancelled{background:#fee2e2;color:#b91c1c}.quoted,.contacted,.closed{background:#dbeafe;color:#1d4ed8}.pagination{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px}.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}.media-tile{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}.media-thumb{height:110px;background:linear-gradient(135deg,#dbeafe,#ffedd5);display:grid;place-items:center;font-size:34px}.media-thumb img,.media-thumb video{width:100%;height:100%;object-fit:cover}.media-tile div:last-child{padding:10px}.activity{display:grid;gap:10px}.activity-item{display:flex;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px}.activity-dot{width:10px;height:10px;border-radius:50%;background:var(--orange);margin-top:5px;flex:0 0 auto}.modal{position:fixed;inset:0;background:rgba(2,6,23,.62);display:grid;place-items:center;padding:18px;z-index:100}.modal-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.toast-wrap{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:200}.toast{background:#101828;color:#fff;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow)}.danger-zone{border:1px dashed #fecaca;background:#fff7f7;border-radius:14px;padding:12px;color:#991b1b}.empty{text-align:center;color:var(--muted);padding:32px}.loading{opacity:.6;pointer-events:none}.firebase-badge{display:inline-flex;align-items:center;gap:5px;background:#fff3e0;color:#e65100;font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;border:1px solid #ffcc02;}
   /* ── Modern Media Upload Modal ────────────────────────── */
@@ -197,9 +198,9 @@ const fstorage = firebase.storage();
 // ─── Role & Account Config ────────────────────────────────────────
 const roles = {SUPER_ADMIN:'Super Admin',COMPANY_ADMIN:'Company Admin',EDITOR:'Editor',MODERATOR:'Moderator'};
 const permissions = {
-  'Super Admin':  ['quotes','quotations','careers','jobs','media','thumbnails','reviews'],
-  'Company Admin':['quotes','quotations','careers','jobs','media','thumbnails','reviews'],
-  'Editor':       ['quotes','quotations','careers','jobs','media','thumbnails','reviews'],
+  'Super Admin':  ['quotes','quotations','invoices','warrantyCards','careers','jobs','media','thumbnails','reviews'],
+  'Company Admin':['quotes','quotations','invoices','warrantyCards','careers','jobs','media','thumbnails','reviews'],
+  'Editor':       ['quotes','quotations','invoices','warrantyCards','careers','jobs','media','thumbnails','reviews'],
   'Moderator':    ['quotes','quotations','careers','jobs','media','thumbnails','reviews']
 };
 // Role map for Firebase Auth users (email → role)
@@ -546,6 +547,8 @@ function managerSub(key){
   const map = {
     quotes:  'Quote requests from customers. Track status from new → quoted → closed. Synced with Firebase.',
     quotations: 'Create branded measurements-based quotations with automatic GST, PDF download/print, drafts, duplicate and edit workflows.',
+    invoices: 'Create GST-ready tax invoices with customer details, product totals, PDF download/print, drafts, duplicate and edit workflows.',
+    warrantyCards: 'Generate branded warranty cards with installation details, PDF download/print and Firestore-backed records.',
     careers: 'Job applications submitted by candidates. Review, shortlist or reject. Synced with Firebase.',
     jobs:    'Manage job vacancies, set expiry dates and track applications. Synced with Firebase.',
     media:   'Upload photos/videos to Firebase Storage and publish them to the live gallery.'
@@ -919,7 +922,7 @@ function calculateQuotation(q){
   const taxRate = q.taxMode === 'custom' ? num(q.customTaxRate) : num(q.taxMode);
   const tax = taxable * taxRate / 100;
   const total = taxable + tax;
-  return {...q,products,productTotal,installation,delivery,subtotal,discount,taxRate,tax,total};
+  return {...q,products,productTotal,installation,delivery,subtotal,discount,taxRate,tax,taxAmount:tax,total};
 }
 function quotationFromForm(){
   const products = [...document.querySelectorAll('.quote-product')].map(row=>({
@@ -956,7 +959,7 @@ function renderQuotationModule(){
   document.getElementById("content").innerHTML = head("Quotation Generator","Dashboard → Quotation Generator → Create New Quotation",`<button class="btn btn-primary" onclick="openQuotationBuilder()">🧾 Create New Quotation</button>`) + `
     <div class="quote-hero"><div><h2>Business quotation system for blinds, mesh, partitions and installation projects.</h2><p class="muted">Uses the existing NewTech logo, colors, fonts and company details automatically. Quotations are stored in Firestore and structured for approval, project creation, worker assignment and installation tracking.</p><div class="workflow-strip"><span>Quotation</span><span>Customer Approval</span><span>Project Creation</span><span>Worker Assignment</span><span>Installation Tracking</span></div></div><div class="quote-kpis"><div class="quote-kpi"><span>Total Value</span><strong>${currency(totals.total)}</strong></div><div class="quote-kpi"><span>Drafts</span><strong>${totals.drafts}</strong></div><div class="quote-kpi"><span>Approved</span><strong>${totals.approved}</strong></div></div></div>
     <div class="card"><div class="toolbar"><div class="filters"><input placeholder="Search quotations" value="${escapeAttr(state.query)}" oninput="state.query=this.value;renderContent()"><select onchange="state.filter.quotations=this.value;renderContent()"><option value="">All statuses</option>${["draft","sent","approved","converted","cancelled"].map(s=>`<option ${state.filter.quotations===s?"selected":""} value="${s}">${s}</option>`).join("")}</select></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Quotation</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(q=>`<tr><td><strong>${escapeHtml(q.quotationNumber||"")}</strong></td><td>${escapeHtml(q.customerDetails?.name||q.customerName||"—")}<br><span class="muted">${escapeHtml(q.phone||q.customerDetails?.phone||"")}</span></td><td>${escapeHtml(q.quotationDate||"")}</td><td>${(q.products||[]).length}</td><td><strong>${currency(q.total)}</strong></td><td>${formatCell(q.status||"draft")}</td><td><div class="quote-table-actions"><button class="icon-btn" onclick="openQuotationBuilder('${q.id}')">Edit</button><button class="icon-btn" onclick="duplicateQuotation('${q.id}')">Duplicate</button><button class="icon-btn" onclick="downloadQuotationPdf('${q.id}')">PDF</button><button class="icon-btn" onclick="printQuotationPdf('${q.id}')">Print</button><button class="icon-btn" onclick="confirmDelete('quotations','$q.id')">Delete</button></div></td></tr>`).join("") || '<tr><td colspan="7" class="empty">No quotations yet. Click Create New Quotation.</td></tr>'}</tbody></table></div></div>`;
+    <div class="table-wrap"><table><thead><tr><th>Quotation</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(q=>`<tr><td><strong>${escapeHtml(q.quotationNumber||"")}</strong></td><td>${escapeHtml(q.customerDetails?.name||q.customerName||"—")}<br><span class="muted">${escapeHtml(q.phone||q.customerDetails?.phone||"")}</span></td><td>${escapeHtml(q.quotationDate||"")}</td><td>${(q.products||[]).length}</td><td><strong>${currency(q.total)}</strong></td><td>${formatCell(q.status||"draft")}</td><td><div class="quote-table-actions"><button class="icon-btn" onclick="openQuotationBuilder('${q.id}')">Edit</button><button class="icon-btn" onclick="duplicateQuotation('${q.id}')">Duplicate</button><button class="icon-btn" onclick="downloadQuotationPdf('${q.id}')">PDF</button><button class="icon-btn" onclick="printQuotationPdf('${q.id}')">Print</button><button class="icon-btn" onclick="confirmDelete('quotations','${q.id}')">Delete</button></div></td></tr>`).join("") || '<tr><td colspan="7" class="empty">No quotations yet. Click Create New Quotation.</td></tr>'}</tbody></table></div></div>`;
 }
 
 function renderInvoiceModule(){
@@ -965,7 +968,7 @@ function renderInvoiceModule(){
   document.getElementById("content").innerHTML = head("Tax Invoice Generator","Dashboard → Tax Invoice Generator → Create New Invoice",`<button class="btn btn-primary" onclick="openInvoiceBuilder()">💸 Create New Invoice</button>`) + `
     <div class="quote-hero"><div><h2>Business tax invoice system for blinds, mesh, partitions and installation projects.</h2><p class="muted">Uses the existing NewTech logo, colors, fonts and company details automatically. Invoices are stored in Firestore and structured for approval, project creation, worker assignment and installation tracking.</p><div class="workflow-strip"><span>Invoice</span><span>Customer Payment</span><span>Project Creation</span><span>Worker Assignment</span><span>Installation Tracking</span></div></div><div class="quote-kpis"><div class="quote-kpi"><span>Total Value</span><strong>${currency(totals.total)}</strong></div><div class="quote-kpi"><span>Drafts</span><strong>${totals.drafts}</strong></div><div class="quote-kpi"><span>Paid</span><strong>${totals.paid}</strong></div></div></div>
     <div class="card"><div class="toolbar"><div class="filters"><input placeholder="Search invoices" value="${escapeAttr(state.query)}" oninput="state.query=this.value;renderContent()"><select onchange="state.filter.invoices=this.value;renderContent()"><option value="">All statuses</option>${["draft","paid","cancelled"].map(s=>`<option ${state.filter.invoices===s?"selected":""} value="${s}">${s}</option>`).join("")}</select></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(inv=>`<tr><td><strong>${escapeHtml(inv.invoiceNumber||"")}</strong></td><td>${escapeHtml(inv.customerDetails?.name||inv.customerName||"—")}<br><span class="muted">${escapeHtml(inv.phone||inv.customerDetails?.phone||"")}</span></td><td>${escapeHtml(inv.invoiceDate||"")}</td><td>${(inv.products||[]).length}</td><td><strong>${currency(inv.total)}</strong></td><td>${formatCell(inv.status||"draft")}</td><td><div class="quote-table-actions"><button class="icon-btn" onclick="openInvoiceBuilder('${inv.id}')">Edit</button><button class="icon-btn" onclick="duplicateInvoice('${inv.id}')">Duplicate</button><button class="icon-btn" onclick="downloadInvoicePdf('${inv.id}')">PDF</button><button class="icon-btn" onclick="printInvoicePdf('${inv.id}')">Print</button><button class="icon-btn" onclick="confirmDelete('invoices','$inv.id')">Delete</button></div></td></tr>`).join("") || '<tr><td colspan="7" class="empty">No invoices yet. Click Create New Invoice.</td></tr>'}</tbody></table></div></div>`;
+    <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(inv=>`<tr><td><strong>${escapeHtml(inv.invoiceNumber||"")}</strong></td><td>${escapeHtml(inv.customerDetails?.name||inv.customerName||"—")}<br><span class="muted">${escapeHtml(inv.phone||inv.customerDetails?.phone||"")}</span></td><td>${escapeHtml(inv.invoiceDate||"")}</td><td>${(inv.products||[]).length}</td><td><strong>${currency(inv.total)}</strong></td><td>${formatCell(inv.status||"draft")}</td><td><div class="quote-table-actions"><button class="icon-btn" onclick="openInvoiceBuilder('${inv.id}')">Edit</button><button class="icon-btn" onclick="duplicateInvoice('${inv.id}')">Duplicate</button><button class="icon-btn" onclick="downloadInvoicePdf('${inv.id}')">PDF</button><button class="icon-btn" onclick="printInvoicePdf('${inv.id}')">Print</button><button class="icon-btn" onclick="confirmDelete('invoices','${inv.id}')">Delete</button></div></td></tr>`).join("") || '<tr><td colspan="7" class="empty">No invoices yet. Click Create New Invoice.</td></tr>'}</tbody></table></div></div>`;
 }
 
 function renderWarrantyCardModule(){
@@ -973,26 +976,26 @@ function renderWarrantyCardModule(){
   document.getElementById("content").innerHTML = head("Warranty Card Generator","Dashboard → Warranty Card Generator → Create New Warranty Card",`<button class="btn btn-primary" onclick="openWarrantyCardBuilder()">🛡️ Create New Warranty Card</button>`) + `
     <div class="quote-hero"><div><h2>Generate and manage warranty cards for products.</h2><p class="muted">Uses the existing NewTech logo, colors, fonts and company details automatically. Warranty cards are stored in Firestore and structured for easy retrieval and management.</p></div><div class="quote-kpis"><div class="quote-kpi"><span>Total Cards</span><strong>${rows.length}</strong></div></div></div>
     <div class="card"><div class="toolbar"><div class="filters"><input placeholder="Search warranty cards" value="${escapeAttr(state.query)}" oninput="state.query=this.value;renderContent()"></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Serial No.</th><th>Customer</th><th>Product</th><th>Installation Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(wc=>`<tr><td><strong>${escapeHtml(wc.serialNo||"")}</strong></td><td>${escapeHtml(wc.customerDetails?.name||wc.customerName||"—")}</td><td>${escapeHtml(wc.productPurchased||"")}</td><td>${escapeHtml(wc.installationDate||"")}</td><td>${formatCell(wc.status||"active")}</td><td><div class="quote-table-actions"><button class="icon-btn" onclick="openWarrantyCardBuilder('${wc.id}')">Edit</button><button class="icon-btn" onclick="downloadWarrantyCardPdf('${wc.id}')">PDF</button><button class="icon-btn" onclick="printWarrantyCardPdf('${wc.id}')">Print</button><button class="icon-btn" onclick="confirmDelete('warrantyCards','$wc.id')">Delete</button></div></td></tr>`).join("") || '<tr><td colspan="6" class="empty">No warranty cards yet. Click Create New Warranty Card.</td></tr>'}</tbody></table></div></div>`;
+    <div class="table-wrap"><table><thead><tr><th>Serial No.</th><th>Customer</th><th>Product</th><th>Installation Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(wc=>`<tr><td><strong>${escapeHtml(wc.serialNo||"")}</strong></td><td>${escapeHtml(wc.customerDetails?.name||wc.customerName||"—")}</td><td>${escapeHtml(wc.productPurchased||"")}</td><td>${escapeHtml(wc.installationDate||"")}</td><td>${formatCell(wc.status||"active")}</td><td><div class="quote-table-actions"><button class="icon-btn" onclick="openWarrantyCardBuilder('${wc.id}')">Edit</button><button class="icon-btn" onclick="downloadWarrantyCardPdf('${wc.id}')">PDF</button><button class="icon-btn" onclick="printWarrantyCardPdf('${wc.id}')">Print</button><button class="icon-btn" onclick="confirmDelete('warrantyCards','${wc.id}')">Delete</button></div></td></tr>`).join("") || '<tr><td colspan="6" class="empty">No warranty cards yet. Click Create New Warranty Card.</td></tr>'}</tbody></table></div></div>`;
 }
 
-function productRowHtml(item={},i=0){
+function productRowHtml(item={},i=0,refreshFn='refreshQuoteTotals'){
   item={...emptyQuoteProduct(),...item};
   const calc=calculateItem(item);
-  return `<div class="quote-product" data-index="${i}"><div class="quote-product-head"><strong>Product ${i+1}</strong><button class="icon-btn" onclick="this.closest('.quote-product').remove();refreshQuoteTotals()">Remove</button></div><div class="quote-grid">
-    <div class="field"><label>Category</label><select data-q="category" onchange="refreshQuoteTotals()">${QUOTE_CATEGORIES.map(c=>`<option ${item.category===c?'selected':''} value="${c}">${c}</option>`).join('')}</select></div>
-    <div class="field"><label>Product Name</label><input data-q="productName" value="${escapeAttr(item.productName)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field"><label>Width</label><input data-q="width" type="number" step="0.01" value="${escapeAttr(item.width)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field"><label>Height</label><input data-q="height" type="number" step="0.01" value="${escapeAttr(item.height)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field"><label>Unit</label><select data-q="unit" onchange="refreshQuoteTotals()">${QUOTE_UNITS.map(u=>`<option ${item.unit===u?'selected':''} value="${u}">${u}</option>`).join('')}</select></div>
-    <div class="field"><label>Quantity</label><input data-q="quantity" type="number" step="1" min="1" value="${escapeAttr(item.quantity)}" oninput="refreshQuoteTotals()"></div>
+  return `<div class="quote-product" data-index="${i}"><div class="quote-product-head"><strong>Product ${i+1}</strong><button class="icon-btn" onclick="this.closest('.quote-product').remove();${refreshFn}()">Remove</button></div><div class="quote-grid">
+    <div class="field"><label>Category</label><select data-q="category" onchange="${refreshFn}()">${QUOTE_CATEGORIES.map(c=>`<option ${item.category===c?'selected':''} value="${c}">${c}</option>`).join('')}</select></div>
+    <div class="field"><label>Product Name</label><input data-q="productName" value="${escapeAttr(item.productName)}" oninput="${refreshFn}()"></div>
+    <div class="field"><label>Width</label><input data-q="width" type="number" step="0.01" value="${escapeAttr(item.width)}" oninput="${refreshFn}()"></div>
+    <div class="field"><label>Height</label><input data-q="height" type="number" step="0.01" value="${escapeAttr(item.height)}" oninput="${refreshFn}()"></div>
+    <div class="field"><label>Unit</label><select data-q="unit" onchange="${refreshFn}()">${QUOTE_UNITS.map(u=>`<option ${item.unit===u?'selected':''} value="${u}">${u}</option>`).join('')}</select></div>
+    <div class="field"><label>Quantity</label><input data-q="quantity" type="number" step="1" min="1" value="${escapeAttr(item.quantity)}" oninput="${refreshFn}()"></div>
     <div class="field"><label>Area Calculation</label><input data-q="area" value="${calc.areaSqFt.toFixed(2)} sq ft / ${calc.areaSqMeter.toFixed(2)} sq m" readonly style="background:var(--card)"></div>
-    <div class="field"><label>Rate Per Sq Ft</label><input data-q="rateSqFt" type="number" step="0.01" value="${escapeAttr(item.rateSqFt)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field"><label>Rate Per Sq Meter</label><input data-q="rateSqMeter" type="number" step="0.01" value="${escapeAttr(item.rateSqMeter)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field"><label>Installation Charge</label><input data-q="installationCharge" type="number" step="0.01" value="${escapeAttr(item.installationCharge)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field"><label>Delivery Charge</label><input data-q="deliveryCharge" type="number" step="0.01" value="${escapeAttr(item.deliveryCharge)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field"><label>Discount</label><input data-q="discount" type="number" step="0.01" value="${escapeAttr(item.discount)}" oninput="refreshQuoteTotals()"></div>
-    <div class="field" style="grid-column:1/-1"><label>Notes</label><textarea data-q="notes" oninput="refreshQuoteTotals()">${escapeHtml(item.notes)}</textarea></div>
+    <div class="field"><label>Rate Per Sq Ft</label><input data-q="rateSqFt" type="number" step="0.01" value="${escapeAttr(item.rateSqFt)}" oninput="${refreshFn}()"></div>
+    <div class="field"><label>Rate Per Sq Meter</label><input data-q="rateSqMeter" type="number" step="0.01" value="${escapeAttr(item.rateSqMeter)}" oninput="${refreshFn}()"></div>
+    <div class="field"><label>Installation Charge</label><input data-q="installationCharge" type="number" step="0.01" value="${escapeAttr(item.installationCharge)}" oninput="${refreshFn}()"></div>
+    <div class="field"><label>Delivery Charge</label><input data-q="deliveryCharge" type="number" step="0.01" value="${escapeAttr(item.deliveryCharge)}" oninput="${refreshFn}()"></div>
+    <div class="field"><label>Discount</label><input data-q="discount" type="number" step="0.01" value="${escapeAttr(item.discount)}" oninput="${refreshFn}()"></div>
+    <div class="field" style="grid-column:1/-1"><label>Notes</label><textarea data-q="notes" oninput="${refreshFn}()">${escapeHtml(item.notes)}</textarea></div>
   </div></div>`;
 }
 function openQuotationBuilder(id){
@@ -1002,7 +1005,7 @@ function openQuotationBuilder(id){
   document.getElementById('modal').innerHTML = `<div class="modal-card quote-builder"><div class="modal-head"><div><h2>${id?'Edit Existing':'Create New'} Quotation</h2><p class="muted">${COMPANY_PROFILE.name} branded quotation with automatic measurements, GST and PDF.</p></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
   <div class="quote-section"><h3>Company Branding</h3><div style="display:flex;gap:14px;align-items:center"><img src="${COMPANY_PROFILE.logo}" alt="Logo" style="height:58px"><div><strong>${COMPANY_PROFILE.name}</strong><br><span class="muted">${COMPANY_PROFILE.address}<br>${COMPANY_PROFILE.contacts.join(' / ')} • ${COMPANY_PROFILE.email}</span></div></div></div>
   <div class="quote-section"><h3>Customer Details</h3><div class="quote-grid"><div class="field"><label>Quotation Number</label><input id="qNumber" value="${escapeAttr(q.quotationNumber)}" readonly></div><div class="field"><label>Date</label><input id="qDate" type="date" value="${escapeAttr(q.quotationDate||todayISO())}" onchange="refreshQuoteTotals()"></div><div class="field"><label>Customer Name</label><input id="qCustomer" value="${escapeAttr(q.customerDetails?.name||q.customerName||'')}"></div><div class="field"><label>Phone Number</label><input id="qPhone" value="${escapeAttr(q.customerDetails?.phone||q.phone||'')}"></div><div class="field"><label>Email</label><input id="qEmail" type="email" value="${escapeAttr(q.customerDetails?.email||q.email||'')}"></div><div class="field"><label>City</label><input id="qCity" value="${escapeAttr(q.customerDetails?.city||'')}"></div><div class="field"><label>State</label><input id="qState" value="${escapeAttr(q.customerDetails?.state||'')}"></div><div class="field"><label>Country</label><input id="qCountry" value="${escapeAttr(q.customerDetails?.country||'India')}"></div><div class="field" style="grid-column:1/-1"><label>Installation Address</label><textarea id="qAddress">${escapeHtml(q.customerDetails?.installationAddress||'')}</textarea></div><div class="field" style="grid-column:1/-1"><label>Notes</label><textarea id="qNotes">${escapeHtml(q.customerDetails?.notes||'')}</textarea></div></div></div>
-  <div class="quote-section"><div class="quote-product-head"><h3>Product Section</h3><button class="btn btn-ghost" onclick="addQuoteProduct()">+ Add Product</button></div><div id="quoteProducts" class="quote-products">${(q.products?.length?q.products:[emptyQuoteProduct()]).map(productRowHtml).join('')}</div></div>
+  <div class="quote-section"><div class="quote-product-head"><h3>Product Section</h3><button class="btn btn-ghost" onclick="addQuoteProduct()">+ Add Product</button></div><div id="quoteProducts" class="quote-products">${(q.products?.length?q.products:[emptyQuoteProduct()]).map((item,i)=>productRowHtml(item,i)).join('')}</div></div>
   <div class="quote-section"><h3>GST Module</h3><div class="quote-grid"><div class="field"><label>Tax/GST</label><select id="qTaxMode" onchange="toggleCustomTax();refreshQuoteTotals()">${TAX_OPTIONS.map(t=>`<option ${String(q.taxMode??18)===String(t.value)?'selected':''} value="${t.value}">${t.label}</option>`).join('')}</select></div><div class="field"><label>Custom Tax %</label><input id="qCustomTax" type="number" step="0.01" value="${escapeAttr(q.customTaxRate||0)}" oninput="refreshQuoteTotals()"></div><div class="field"><label>Quotation Discount</label><input id="qExtraDiscount" type="number" step="0.01" value="${escapeAttr(q.discount||0)}" oninput="refreshQuoteTotals()"></div><div class="field"><label>Status</label><select id="qStatus"><option value="draft" ${q.status==='draft'?'selected':''}>Draft</option><option value="sent" ${q.status==='sent'?'selected':''}>Sent</option><option value="approved" ${q.status==='approved'?'selected':''}>Approved</option><option value="converted" ${q.status==='converted'?'selected':''}>Converted to Project</option><option value="cancelled" ${q.status==='cancelled'?'selected':''}>Cancelled</option></select></div></div></div>
   <div class="quote-summary"><div class="quote-totals" id="quoteTotals"></div><div class="quote-actions"><button class="btn btn-ghost" onclick="saveQuotation('${id||''}','draft')">Save Draft</button><button class="btn btn-navy" onclick="previewCurrentQuotationPdf()">Print PDF</button><button class="btn btn-ghost" onclick="downloadCurrentQuotationPdf()">Download PDF</button><button class="btn btn-primary" onclick="saveQuotation('${id||''}',document.getElementById('qStatus').value)">${id?'Save Changes':'Save Quotation'}</button></div></div></div>`;
   toggleCustomTax(); refreshQuoteTotals();
@@ -1010,83 +1013,66 @@ function openQuotationBuilder(id){
 function addQuoteProduct(){document.getElementById('quoteProducts').insertAdjacentHTML('beforeend',productRowHtml(emptyQuoteProduct(),document.querySelectorAll('.quote-product').length));refreshQuoteTotals();}
 function toggleCustomTax(){const el=document.getElementById('qCustomTax'); if(el) el.disabled=document.getElementById('qTaxMode').value!=='custom';}
 function refreshQuoteTotals(){
-  const q = currentQuotation();
-  const subtotal = q.products.reduce((a,p)=>a+(num(p.quantity)*num(p.rate)),0);
-  const discount = num(q.discount);
-  const taxRate = q.taxMode==='custom'?num(q.customTaxRate):num(q.taxMode);
-  const taxAmount = (subtotal - discount) * (taxRate/100);
-  const total = subtotal - discount + taxAmount;
+  const q = quotationFromForm();
   document.getElementById('quoteTotals').innerHTML = `
-    <div class="quote-total-row"><label>Subtotal</label><span>${currency(subtotal)}</span></div>
-    <div class="quote-total-row"><label>Discount</label><span>${currency(discount)}</span></div>
-    <div class="quote-total-row"><label>Tax (${taxRate}%)</label><span>${currency(taxAmount)}</span></div>
-    <div class="quote-total-row total"><label>Total</label><span>${currency(total)}</span></div>
+    <div class="quote-total-row"><label>Products</label><span>${currency(q.productTotal)}</span></div>
+    <div class="quote-total-row"><label>Install + Delivery</label><span>${currency(q.installation + q.delivery)}</span></div>
+    <div class="quote-total-row"><label>Discount</label><span>${currency(q.discount)}</span></div>
+    <div class="quote-total-row"><label>Tax (${q.taxRate}%)</label><span>${currency(q.taxAmount)}</span></div>
+    <div class="quote-total-row total"><label>Total</label><span>${currency(q.total)}</span></div>
   `;
-  state.quotationBuilder.total = total;
 }
 
 function currentQuotation(){
-  const q = state.quotations.find(q=>q.id===state.quotationBuilder.id) || {};
-  q.quotationNumber = document.getElementById('qNumber').value;
-  q.quotationDate = document.getElementById('qDate').value;
-  q.customerName = document.getElementById('qCustomer').value;
-  q.phone = document.getElementById('qPhone').value;
-  q.email = document.getElementById('qEmail').value;
-  q.customerDetails = {
-    name:q.customerName,
-    phone:q.phone,
-    email:q.email,
-    city:document.getElementById('qCity').value,
-    state:document.getElementById('qState').value,
-    country:document.getElementById('qCountry').value,
-    installationAddress:document.getElementById('qAddress').value,
-    notes:document.getElementById('qNotes').value,
-  };
-  q.products = Array.from(document.querySelectorAll(".quote-product")).map(el=>{
-    return {
-      category:el.querySelector(".product-category").value,
-      description:el.querySelector(".product-description").value,
-      quantity:el.querySelector(".product-quantity").value,
-      unit:el.querySelector(".product-unit").value,
-      rate:el.querySelector(".product-rate").value,
-    };
-  });
-  q.taxMode = document.getElementById('qTaxMode').value;
-  q.customTaxRate = document.getElementById('qCustomTax').value;
-  q.discount = document.getElementById('qExtraDiscount').value;
-  q.status = document.getElementById('qStatus').value;
-  return calculateQuotation(q);
+  return quotationFromForm();
+}
+
+async function saveModuleRecord(key, id, record){
+  if(!id) delete record.id;
+  record.updatedAt = new Date().toISOString();
+  if(id){
+    const i = (db[key] || []).findIndex(r => r.id === id);
+    const updated = {...(i > -1 ? db[key][i] : {}), ...record, id};
+    await fsUpdate(key, id, updated);
+    if(i > -1) db[key][i] = updated;
+    else (db[key] ||= []).unshift(updated);
+  } else {
+    const newRec = {id: uid(), ...record, createdAt: new Date().toISOString()};
+    const liveId = await fsCreate(key, newRec);
+    newRec.id = liveId || newRec.id;
+    (db[key] ||= []).unshift(newRec);
+  }
+  save();
 }
 
 async function saveQuotation(id,status){
   const q = currentQuotation();
   q.status = status;
-  if(id){
-    await updateDoc('quotations',id,q);
-  }else{
-    q.id = uid();
-    await addDoc('quotations',q);
+  try{
+    await saveModuleRecord('quotations', id, q);
+    closeModal(); renderContent(); toast('Quotation saved ✓');
+  } catch(e){
+    console.error('Quotation save failed:', e);
+    toast(`Save failed: ${e.message}`);
   }
-  state.quotationBuilder = null;
-  renderContent();
 }
 
 async function duplicateQuotation(id){
-  const q = state.quotations.find(q=>q.id===id);
+  const q = (db.quotations || []).find(q=>q.id===id);
   if(q){
-    const newQ = {...q,id:uid(),quotationNumber:q.quotationNumber+' (Copy)'};
-    await addDoc('quotations',newQ);
-    renderContent();
+    const newQ = {...q, id: undefined, quotationNumber:(q.quotationNumber||generateQuotationNumber())+' (Copy)'};
+    await saveModuleRecord('quotations', null, newQ);
+    renderContent(); toast('Quotation duplicated ✓');
   }
 }
 
 async function downloadQuotationPdf(id){
-  const q = state.quotations.find(q=>q.id===id);
+  const q = calculateQuotation((db.quotations||[]).find(q=>q.id===id)||{});
   if(q) buildQuotationPdf(q).download(`QuotationNo.${q.quotationNumber}.pdf`);
 }
 
 async function printQuotationPdf(id){
-  const q = state.quotations.find(q=>q.id===id);
+  const q = calculateQuotation((db.quotations||[]).find(q=>q.id===id)||{});
   if(q) buildQuotationPdf(q).open();
 }
 
@@ -1094,115 +1080,105 @@ async function previewCurrentQuotationPdf(){
   buildQuotationPdf(currentQuotation()).open();
 }
 
+function generateInvoiceNumber(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const count = (db.invoices||[]).filter(inv => String(inv.invoiceNumber||'').includes('INV-'+y)).length + 1;
+  return `INV-${y}-${String(count).padStart(4,'0')}`;
+}
+
+function generateWarrantySerial(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const count = (db.warrantyCards||[]).filter(wc => String(wc.serialNo||'').includes('WC-'+y)).length + 1;
+  return `WC-${y}-${String(count).padStart(4,'0')}`;
+}
+
 function openInvoiceBuilder(id=null){
-  state.invoiceBuilder = {id};
-  const inv = state.invoices.find(inv=>inv.id===id) || {};
-  document.getElementById('modal').innerHTML = `
-    <div class="modal-content">${head('Tax Invoice Generator',`Dashboard → Tax Invoice Generator → ${id?'Edit Invoice':'Create New Invoice'}`,`<button class="btn btn-ghost" onclick="closeModal()">✕ Close</button>`)}<div class="quote-builder"> 
+  const existing = id ? (db.invoices||[]).find(inv=>inv.id===id) : null;
+  const inv = existing || {invoiceNumber:generateInvoiceNumber(),invoiceDate:todayISO(),customerDetails:{country:'India'},products:[emptyQuoteProduct()],taxMode:18,status:'draft'};
+  document.getElementById('modal').classList.remove('hidden');
+  document.getElementById('modal').innerHTML = `<div class="modal-card quote-builder"><div class="modal-head"><div><h2>${id?'Edit Existing':'Create New'} Tax Invoice</h2><p class="muted">${COMPANY_PROFILE.name} branded tax invoice with automatic measurements, GST and PDF.</p></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
     <div class="quote-section"><h3>Customer Details</h3><div class="quote-grid"><div class="field"><label>Invoice Number</label><input id="invNumber" value="${escapeAttr(inv.invoiceNumber)}" readonly></div><div class="field"><label>Date</label><input id="invDate" type="date" value="${escapeAttr(inv.invoiceDate||todayISO())}" onchange="refreshInvoiceTotals()"></div><div class="field"><label>Customer Name</label><input id="invCustomer" value="${escapeAttr(inv.customerDetails?.name||inv.customerName||'')}"></div><div class="field"><label>Phone Number</label><input id="invPhone" value="${escapeAttr(inv.customerDetails?.phone||inv.phone||'')}"></div><div class="field"><label>Email</label><input id="invEmail" type="email" value="${escapeAttr(inv.customerDetails?.email||inv.email||'')}"></div><div class="field"><label>City</label><input id="invCity" value="${escapeAttr(inv.customerDetails?.city||'')}"></div><div class="field"><label>State</label><input id="invState" value="${escapeAttr(inv.customerDetails?.state||'')}"></div><div class="field"><label>Country</label><input id="invCountry" value="${escapeAttr(inv.customerDetails?.country||'India')}"></div><div class="field" style="grid-column:1/-1"><label>Installation Address</label><textarea id="invAddress">${escapeHtml(inv.customerDetails?.installationAddress||'')}</textarea></div><div class="field" style="grid-column:1/-1"><label>Notes</label><textarea id="invNotes">${escapeHtml(inv.customerDetails?.notes||'')}</textarea></div></div></div>
-    <div class="quote-section"><div class="quote-product-head"><h3>Product Section</h3><button class="btn btn-ghost" onclick="addInvoiceProduct()">+ Add Product</button></div><div id="invoiceProducts" class="quote-products">${(inv.products?.length?inv.products:[emptyQuoteProduct()]).map(productRowHtml).join('')}</div></div>
-    <div class="quote-section"><h3>GST Module</h3><div class="quote-grid"><div class="field"><label>Tax/GST</label><select id="invTaxMode" onchange="toggleCustomInvoiceTax();refreshInvoiceTotals()">${TAX_OPTIONS.map(t=>`<option ${String(inv.taxMode??18)===String(t.value)?'selected':''} value="${t.value}">${t.label}</option>`).join('')}</select></div><div class="field"><label>Custom Tax %</label><input id="invCustomTax" type="number" step="0.01" value="${escapeAttr(inv.customTaxRate||0)}" oninput="refreshInvoiceTotals()"></div><div class="field"><label>Invoice Discount</label><input id="invExtraDiscount" type="number" step="0.01" value="${escapeAttr(inv.discount||0)}" oninput="refreshInvoiceTotals()"></div><div class="field"><label>Status</label><select id="invStatus"><option value="draft" ${inv.status==='draft'?'selected':''} >Draft</option><option value="paid" ${inv.status==='paid'?'selected':''} >Paid</option><option value="cancelled" ${inv.status==='cancelled'?'selected':''} >Cancelled</option></select></div></div></div>
+    <div class="quote-section"><div class="quote-product-head"><h3>Product Section</h3><button class="btn btn-ghost" onclick="addInvoiceProduct()">+ Add Product</button></div><div id="invoiceProducts" class="quote-products">${(inv.products?.length?inv.products:[emptyQuoteProduct()]).map((item,i)=>productRowHtml(item,i,'refreshInvoiceTotals')).join('')}</div></div>
+    <div class="quote-section"><h3>GST Module</h3><div class="quote-grid"><div class="field"><label>Tax/GST</label><select id="invTaxMode" onchange="toggleCustomInvoiceTax();refreshInvoiceTotals()">${TAX_OPTIONS.map(t=>`<option ${String(inv.taxMode??18)===String(t.value)?'selected':''} value="${t.value}">${t.label}</option>`).join('')}</select></div><div class="field"><label>Custom Tax %</label><input id="invCustomTax" type="number" step="0.01" value="${escapeAttr(inv.customTaxRate||0)}" oninput="refreshInvoiceTotals()"></div><div class="field"><label>Invoice Discount</label><input id="invExtraDiscount" type="number" step="0.01" value="${escapeAttr(inv.discount||0)}" oninput="refreshInvoiceTotals()"></div><div class="field"><label>Status</label><select id="invStatus"><option value="draft" ${inv.status==='draft'?'selected':''}>Draft</option><option value="paid" ${inv.status==='paid'?'selected':''}>Paid</option><option value="cancelled" ${inv.status==='cancelled'?'selected':''}>Cancelled</option></select></div></div></div>
     <div class="quote-summary"><div class="quote-totals" id="invoiceTotals"></div><div class="quote-actions"><button class="btn btn-ghost" onclick="saveInvoice('${id||''}','draft')">Save Draft</button><button class="btn btn-navy" onclick="previewCurrentInvoicePdf()">Print PDF</button><button class="btn btn-ghost" onclick="downloadCurrentInvoicePdf()">Download PDF</button><button class="btn btn-primary" onclick="saveInvoice('${id||''}',document.getElementById('invStatus').value)">${id?'Save Changes':'Save Invoice'}</button></div></div></div>`;
-  openModal();
   toggleCustomInvoiceTax(); refreshInvoiceTotals();
 }
 
-function addInvoiceProduct(){document.getElementById('invoiceProducts').insertAdjacentHTML('beforeend',productRowHtml(emptyQuoteProduct(),document.querySelectorAll(".quote-product").length));refreshInvoiceTotals();}
+function addInvoiceProduct(){
+  document.getElementById('invoiceProducts').insertAdjacentHTML('beforeend', productRowHtml(emptyQuoteProduct(), document.querySelectorAll('#invoiceProducts .quote-product').length, 'refreshInvoiceTotals'));
+  refreshInvoiceTotals();
+}
 function toggleCustomInvoiceTax(){const el=document.getElementById('invCustomTax'); if(el) el.disabled=document.getElementById('invTaxMode').value!=='custom';}
-function refreshInvoiceTotals(){
-  const inv = currentInvoice();
-  const subtotal = inv.products.reduce((a,p)=>a+(num(p.quantity)*num(p.rate)),0);
-  const discount = num(inv.discount);
-  const taxRate = inv.taxMode==='custom'?num(inv.customTaxRate):num(inv.taxMode);
-  const taxAmount = (subtotal - discount) * (taxRate/100);
-  const total = subtotal - discount + taxAmount;
-  document.getElementById('invoiceTotals').innerHTML = `
-    <div class="quote-total-row"><label>Subtotal</label><span>${currency(subtotal)}</span></div>
-    <div class="quote-total-row"><label>Discount</label><span>${currency(discount)}</span></div>
-    <div class="quote-total-row"><label>Tax (${taxRate}%)</label><span>${currency(taxAmount)}</span></div>
-    <div class="quote-total-row total"><label>Total</label><span>${currency(total)}</span></div>
-  `;
-  state.invoiceBuilder.total = total;
+function formProducts(containerSelector){
+  return [...document.querySelectorAll(`${containerSelector} .quote-product`)].map(row=>({
+    category:row.querySelector('[data-q="category"]').value,
+    productName:sanitize(row.querySelector('[data-q="productName"]').value),
+    width:num(row.querySelector('[data-q="width"]').value),
+    height:num(row.querySelector('[data-q="height"]').value),
+    unit:row.querySelector('[data-q="unit"]').value,
+    quantity:num(row.querySelector('[data-q="quantity"]').value)||1,
+    rateSqFt:num(row.querySelector('[data-q="rateSqFt"]').value),
+    rateSqMeter:num(row.querySelector('[data-q="rateSqMeter"]').value),
+    installationCharge:num(row.querySelector('[data-q="installationCharge"]').value),
+    deliveryCharge:num(row.querySelector('[data-q="deliveryCharge"]').value),
+    discount:num(row.querySelector('[data-q="discount"]').value),
+    notes:sanitize(row.querySelector('[data-q="notes"]').value)
+  }));
 }
 
-function currentInvoice(){
-  const inv = state.invoices.find(inv=>inv.id===state.invoiceBuilder.id) || {};
-  inv.invoiceNumber = document.getElementById('invNumber').value;
-  inv.invoiceDate = document.getElementById('invDate').value;
-  inv.customerName = document.getElementById('invCustomer').value;
-  inv.phone = document.getElementById('invPhone').value;
-  inv.email = document.getElementById('invEmail').value;
-  inv.customerDetails = {
-    name:inv.customerName,
-    phone:inv.phone,
-    email:inv.email,
-    city:document.getElementById('invCity').value,
-    state:document.getElementById('invState').value,
-    country:document.getElementById('invCountry').value,
-    installationAddress:document.getElementById('invAddress').value,
-    notes:document.getElementById('invNotes').value,
+function invoiceFromForm(){
+  const products = formProducts('#invoiceProducts');
+  const inv = {
+    invoiceNumber:document.getElementById('invNumber').value,
+    invoiceDate:document.getElementById('invDate').value,
+    customerDetails:{
+      name:sanitize(document.getElementById('invCustomer').value),phone:sanitize(document.getElementById('invPhone').value),email:sanitize(document.getElementById('invEmail').value),
+      installationAddress:sanitize(document.getElementById('invAddress').value),city:sanitize(document.getElementById('invCity').value),state:sanitize(document.getElementById('invState').value),country:sanitize(document.getElementById('invCountry').value),notes:sanitize(document.getElementById('invNotes').value)
+    },
+    customerName:sanitize(document.getElementById('invCustomer').value),phone:sanitize(document.getElementById('invPhone').value),email:sanitize(document.getElementById('invEmail').value),
+    products,discount:num(document.getElementById('invExtraDiscount').value),taxMode:document.getElementById('invTaxMode').value,customTaxRate:num(document.getElementById('invCustomTax').value),status:document.getElementById('invStatus').value,
+    companyProfile:COMPANY_PROFILE,pdfUrl:''
   };
-  inv.products = Array.from(document.querySelectorAll(".quote-product")).map(el=>{
-    return {
-      category:el.querySelector(".product-category").value,
-      description:el.querySelector(".product-description").value,
-      quantity:el.querySelector(".product-quantity").value,
-      unit:el.querySelector(".product-unit").value,
-      rate:el.querySelector(".product-rate").value,
-    };
-  });
-  inv.taxMode = document.getElementById('invTaxMode').value;
-  inv.customTaxRate = document.getElementById('invCustomTax').value;
-  inv.discount = document.getElementById('invExtraDiscount').value;
-  inv.status = document.getElementById('invStatus').value;
   return calculateInvoice(inv);
 }
-
-function calculateInvoice(inv){
-  inv.subtotal = inv.products.reduce((a,p)=>a+(num(p.quantity)*num(p.rate)),0);
-  inv.discount = num(inv.discount);
-  inv.taxRate = inv.taxMode==='custom'?num(inv.customTaxRate):num(inv.taxMode);
-  inv.taxAmount = (inv.subtotal - inv.discount) * (inv.taxRate/100);
-  inv.total = inv.subtotal - inv.discount + inv.taxAmount;
-  return inv;
+function refreshInvoiceTotals(){
+  const inv = invoiceFromForm();
+  document.getElementById('invoiceTotals').innerHTML = `
+    <div class="quote-total-row"><label>Products</label><span>${currency(inv.productTotal)}</span></div>
+    <div class="quote-total-row"><label>Install + Delivery</label><span>${currency(inv.installation + inv.delivery)}</span></div>
+    <div class="quote-total-row"><label>Discount</label><span>${currency(inv.discount)}</span></div>
+    <div class="quote-total-row"><label>Tax (${inv.taxRate}%)</label><span>${currency(inv.taxAmount)}</span></div>
+    <div class="quote-total-row total"><label>Total</label><span>${currency(inv.total)}</span></div>
+  `;
 }
-
+function currentInvoice(){ return invoiceFromForm(); }
+function calculateInvoice(inv){ return calculateQuotation(inv); }
 async function saveInvoice(id,status){
-  const inv = currentInvoice();
-  inv.status = status;
-  if(id){
-    await updateDoc('invoices',id,inv);
-  }else{
-    inv.id = uid();
-    await addDoc('invoices',inv);
-  }
-  state.invoiceBuilder = null;
-  renderContent();
+  const inv = currentInvoice(); inv.status = status;
+  try{
+    await saveModuleRecord('invoices', id, inv);
+    closeModal(); renderContent(); toast('Invoice saved ✓');
+  } catch(e){ console.error('Invoice save failed:', e); toast(`Save failed: ${e.message}`); }
 }
-
 async function duplicateInvoice(id){
-  const inv = state.invoices.find(inv=>inv.id===id);
+  const inv = (db.invoices || []).find(inv=>inv.id===id);
   if(inv){
-    const newInv = {...inv,id:uid(),invoiceNumber:inv.invoiceNumber+' (Copy)'};
-    await addDoc('invoices',newInv);
-    renderContent();
+    const newInv = {...inv, id: undefined, invoiceNumber:(inv.invoiceNumber||generateInvoiceNumber())+' (Copy)'};
+    await saveModuleRecord('invoices', null, newInv);
+    renderContent(); toast('Invoice duplicated ✓');
   }
 }
-
 async function downloadInvoicePdf(id){
-  const inv = state.invoices.find(inv=>inv.id===id);
+  const inv = calculateInvoice((db.invoices||[]).find(inv=>inv.id===id)||{});
   if(inv) buildInvoicePdf(inv).download(`InvoiceNo.${inv.invoiceNumber}.pdf`);
 }
-
 async function printInvoicePdf(id){
-  const inv = state.invoices.find(inv=>inv.id===id);
+  const inv = calculateInvoice((db.invoices||[]).find(inv=>inv.id===id)||{});
   if(inv) buildInvoicePdf(inv).open();
 }
-
-async function previewCurrentInvoicePdf(){
-  buildInvoicePdf(currentInvoice()).open();
-}
-
+async function previewCurrentInvoicePdf(){ buildInvoicePdf(currentInvoice()).open(); }
 function downloadCurrentInvoicePdf(){
   const inv = currentInvoice();
   const doc = buildInvoicePdf(inv);
@@ -1211,63 +1187,46 @@ function downloadCurrentInvoicePdf(){
 }
 
 function openWarrantyCardBuilder(id=null){
-  state.warrantyCardBuilder = {id};
-  const wc = state.warrantyCards.find(wc=>wc.id===id) || {};
-  document.getElementById('modal').innerHTML = `
-    <div class="modal-content">${head('Warranty Card Generator',`Dashboard → Warranty Card Generator → ${id?'Edit Warranty Card':'Create New Warranty Card'}`,`<button class="btn btn-ghost" onclick="closeModal()">✕ Close</button>`)}<div class="quote-builder"> 
-    <div class="quote-section"><h3>Customer Details</h3><div class="quote-grid"><div class="field"><label>Serial Number</label><input id="wcSerialNo" value="${escapeAttr(wc.serialNo)}"></div><div class="field"><label>Installation Date</label><input id="wcInstallationDate" type="date" value="${escapeAttr(wc.installationDate||todayISO())}"></div><div class="field"><label>Customer Name</label><input id="wcCustomer" value="${escapeAttr(wc.customerDetails?.name||wc.customerName||'')}"></div><div class="field"><label>Phone Number</label><input id="wcPhone" value="${escapeAttr(wc.customerDetails?.phone||wc.phone||'')}"></div><div class="field"><label>Email</label><input id="wcEmail" type="email" value="${escapeAttr(wc.customerDetails?.email||wc.email||'')}"></div><div class="field"><label>City</label><input id="wcCity" value="${escapeAttr(wc.customerDetails?.city||'')}"></div><div class="field"><label>State</label><input id="wcState" value="${escapeAttr(wc.customerDetails?.state||'')}"></div><div class="field"><label>Country</label><input id="wcCountry" value="${escapeAttr(wc.customerDetails?.country||'India')}"></div><div class="field" style="grid-column:1/-1"><label>Installation Address</label><textarea id="wcAddress">${escapeHtml(wc.customerDetails?.installationAddress||'')}</textarea></div><div class="field" style="grid-column:1/-1"><label>Product Purchased</label><input id="wcProductPurchased" value="${escapeAttr(wc.productPurchased||'')}"></div></div></div>
-    <div class="quote-section"><div class="quote-grid"><div class="field"><label>Status</label><select id="wcStatus"><option value="active" ${wc.status==='active'?'selected':''} >Active</option><option value="expired" ${wc.status==='expired'?'selected':''} >Expired</option></select></div></div></div>
+  const existing = id ? (db.warrantyCards||[]).find(wc=>wc.id===id) : null;
+  const wc = existing || {serialNo:generateWarrantySerial(),installationDate:todayISO(),customerDetails:{country:'India'},status:'active'};
+  document.getElementById('modal').classList.remove('hidden');
+  document.getElementById('modal').innerHTML = `<div class="modal-card quote-builder"><div class="modal-head"><div><h2>${id?'Edit Existing':'Create New'} Warranty Card</h2><p class="muted">${COMPANY_PROFILE.name} branded warranty card PDF.</p></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <div class="quote-section"><h3>Customer Details</h3><div class="quote-grid"><div class="field"><label>Serial Number</label><input id="wcSerialNo" value="${escapeAttr(wc.serialNo)}"></div><div class="field"><label>Installation Date</label><input id="wcInstallationDate" type="date" value="${escapeAttr(wc.installationDate||todayISO())}"></div><div class="field"><label>Customer Name</label><input id="wcCustomer" value="${escapeAttr(wc.customerDetails?.name||wc.customerName||'')}"></div><div class="field"><label>Phone Number</label><input id="wcPhone" value="${escapeAttr(wc.customerDetails?.phone||wc.phone||'')}"></div><div class="field"><label>Email</label><input id="wcEmail" type="email" value="${escapeAttr(wc.customerDetails?.email||wc.email||'')}"></div><div class="field"><label>City</label><input id="wcCity" value="${escapeAttr(wc.customerDetails?.city||'')}"></div><div class="field"><label>State</label><input id="wcState" value="${escapeAttr(wc.customerDetails?.state||'')}"></div><div class="field"><label>Country</label><input id="wcCountry" value="${escapeAttr(wc.customerDetails?.country||'India')}"></div><div class="field" style="grid-column:1/-1"><label>Installation Address</label><textarea id="wcAddress">${escapeHtml(wc.customerDetails?.installationAddress||'')}</textarea></div><div class="field" style="grid-column:1/-1"><label>Product Purchased</label><input id="wcProductPurchased" value="${escapeAttr(wc.productPurchased||'')}"></div><div class="field"><label>Status</label><select id="wcStatus"><option value="active" ${wc.status==='active'?'selected':''}>Active</option><option value="expired" ${wc.status==='expired'?'selected':''}>Expired</option></select></div></div></div>
     <div class="quote-summary"><div class="quote-actions"><button class="btn btn-ghost" onclick="saveWarrantyCard('${id||''}')">Save</button><button class="btn btn-navy" onclick="printCurrentWarrantyCardPdf()">Print PDF</button><button class="btn btn-ghost" onclick="downloadCurrentWarrantyCardPdf()">Download PDF</button><button class="btn btn-primary" onclick="saveWarrantyCard('${id||''}')">${id?'Save Changes':'Create Warranty Card'}</button></div></div></div>`;
-  openModal();
 }
-
 function currentWarrantyCard(){
-  const wc = state.warrantyCards.find(wc=>wc.id===state.warrantyCardBuilder.id) || {};
-  wc.serialNo = document.getElementById('wcSerialNo').value;
-  wc.installationDate = document.getElementById('wcInstallationDate').value;
-  wc.customerName = document.getElementById('wcCustomer').value;
-  wc.phone = document.getElementById('wcPhone').value;
-  wc.email = document.getElementById('wcEmail').value;
-  wc.customerDetails = {
-    name:wc.customerName,
-    phone:wc.phone,
-    email:wc.email,
-    city:document.getElementById('wcCity').value,
-    state:document.getElementById('wcState').value,
-    country:document.getElementById('wcCountry').value,
-    installationAddress:document.getElementById('wcAddress').value,
+  const wc = {
+    serialNo:sanitize(document.getElementById('wcSerialNo').value),
+    installationDate:document.getElementById('wcInstallationDate').value,
+    customerName:sanitize(document.getElementById('wcCustomer').value),
+    phone:sanitize(document.getElementById('wcPhone').value),
+    email:sanitize(document.getElementById('wcEmail').value),
+    productPurchased:sanitize(document.getElementById('wcProductPurchased').value),
+    status:document.getElementById('wcStatus').value
   };
-  wc.productPurchased = document.getElementById('wcProductPurchased').value;
-  wc.status = document.getElementById('wcStatus').value;
+  wc.customerDetails = {
+    name:wc.customerName, phone:wc.phone, email:wc.email,
+    city:sanitize(document.getElementById('wcCity').value), state:sanitize(document.getElementById('wcState').value), country:sanitize(document.getElementById('wcCountry').value),
+    installationAddress:sanitize(document.getElementById('wcAddress').value)
+  };
   return wc;
 }
-
 async function saveWarrantyCard(id){
   const wc = currentWarrantyCard();
-  if(id){
-    await updateDoc('warrantyCards',id,wc);
-  }else{
-    wc.id = uid();
-    await addDoc('warrantyCards',wc);
-  }
-  state.warrantyCardBuilder = null;
-  renderContent();
+  try{
+    await saveModuleRecord('warrantyCards', id, wc);
+    closeModal(); renderContent(); toast('Warranty card saved ✓');
+  } catch(e){ console.error('Warranty card save failed:', e); toast(`Save failed: ${e.message}`); }
 }
-
 async function downloadWarrantyCardPdf(id){
-  const wc = state.warrantyCards.find(wc=>wc.id===id);
+  const wc = (db.warrantyCards||[]).find(wc=>wc.id===id);
   if(wc) buildWarrantyCardPdf(wc).download(`WarrantyCard.${wc.serialNo}.pdf`);
 }
-
 async function printWarrantyCardPdf(id){
-  const wc = state.warrantyCards.find(wc=>wc.id===id);
+  const wc = (db.warrantyCards||[]).find(wc=>wc.id===id);
   if(wc) buildWarrantyCardPdf(wc).open();
 }
-
-function printCurrentWarrantyCardPdf(){
-  buildWarrantyCardPdf(currentWarrantyCard()).open();
-}
-
+function printCurrentWarrantyCardPdf(){ buildWarrantyCardPdf(currentWarrantyCard()).open(); }
 function downloadCurrentWarrantyCardPdf(){
   const wc = currentWarrantyCard();
   const doc = buildWarrantyCardPdf(wc);
@@ -1276,6 +1235,41 @@ function downloadCurrentWarrantyCardPdf(){
 }
 
 function getQuotation(id){return calculateQuotation((db.quotations||[]).find(q=>q.id===id)||quotationFromForm());}
+
+function pdfProductRows(products=[]){
+  return (products||[]).map(item => {
+    const p = calculateItem(item);
+    const rate = num(p.rateSqFt) || (num(p.rateSqMeter) ? num(p.rateSqMeter) / 10.7639 : num(p.rate));
+    return [
+      p.category || '',
+      p.productName || p.description || p.notes || '',
+      p.quantity || 1,
+      p.unit || '',
+      currency(rate),
+      currency(p.lineTotal || (num(p.quantity) * rate))
+    ];
+  });
+}
+
+function renderPdfTable(doc, columns, rows, options){
+  if(typeof doc.autoTable === 'function'){
+    doc.autoTable({...options, head:[columns], body:rows});
+    return;
+  }
+  let y = options.startY || 80;
+  doc.setFontSize(9);
+  doc.text(columns.join(' | '), 14, y);
+  rows.forEach(row => {
+    y += 6;
+    doc.text(row.map(v => String(v ?? '')).join(' | '), 14, y);
+  });
+  doc.lastAutoTable = {finalY:y};
+}
+
+function getPdfTableFinalY(doc, fallbackY){
+  return doc.lastAutoTable?.finalY || doc.autoTable?.previous?.finalY || fallbackY;
+}
+
 function buildQuotationPdf(q){
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF();
@@ -1298,27 +1292,17 @@ function buildQuotationPdf(q){
   doc.setFontSize(12);
   doc.text("Bill To:", 14, 50);
   doc.setFontSize(10);
-  doc.text(q.customerDetails.name, 14, 56);
-  doc.text(q.customerDetails.installationAddress, 14, 62);
-  doc.text(`${q.customerDetails.city}, ${q.customerDetails.state}`, 14, 68);
-  doc.text(q.customerDetails.phone, 14, 74);
+  const qc = q.customerDetails || {};
+  doc.text(qc.name || q.customerName || "Customer", 14, 56);
+  doc.text(qc.installationAddress || "", 14, 62);
+  doc.text([qc.city, qc.state].filter(Boolean).join(", "), 14, 68);
+  doc.text(qc.phone || q.phone || "", 14, 74);
 
   // Products Table
-  const tableColumn = ["Category", "Description", "Qty", "Unit", "Rate", "Amount"];
-  const tableRows = [];
-  q.products.forEach(p => {
-    const row = [
-      p.category,
-      p.description,
-      p.quantity,
-      p.unit,
-      currency(p.rate),
-      currency(num(p.quantity) * num(p.rate))
-    ];
-    tableRows.push(row);
-  });
+  const tableColumn = ["Category", "Product", "Qty", "Unit", "Rate/Sq Ft", "Amount"];
+  const tableRows = pdfProductRows(q.products);
 
-  doc.autoTable(tableColumn, tableRows, {
+  renderPdfTable(doc, tableColumn, tableRows, {
     startY: 80,
     headStyles: { fillColor: [41, 128, 185] },
     styles: { fontSize: 9, cellPadding: 2, overflow: 'linebreak' },
@@ -1332,7 +1316,7 @@ function buildQuotationPdf(q){
     }
   });
 
-  let finalY = doc.autoTable.previous.finalY;
+  let finalY = getPdfTableFinalY(doc, 80);
 
   // Totals
   doc.setFontSize(10);
@@ -1383,27 +1367,17 @@ function buildInvoicePdf(inv){
   doc.setFontSize(12);
   doc.text("Bill To:", 14, 50);
   doc.setFontSize(10);
-  doc.text(inv.customerDetails.name, 14, 56);
-  doc.text(inv.customerDetails.installationAddress, 14, 62);
-  doc.text(`${inv.customerDetails.city}, ${inv.customerDetails.state}`, 14, 68);
-  doc.text(inv.customerDetails.phone, 14, 74);
+  const ic = inv.customerDetails || {};
+  doc.text(ic.name || inv.customerName || "Customer", 14, 56);
+  doc.text(ic.installationAddress || "", 14, 62);
+  doc.text([ic.city, ic.state].filter(Boolean).join(", "), 14, 68);
+  doc.text(ic.phone || inv.phone || "", 14, 74);
 
   // Products Table
-  const tableColumn = ["Category", "Description", "Qty", "Unit", "Rate", "Amount"];
-  const tableRows = [];
-  inv.products.forEach(p => {
-    const row = [
-      p.category,
-      p.description,
-      p.quantity,
-      p.unit,
-      currency(p.rate),
-      currency(num(p.quantity) * num(p.rate))
-    ];
-    tableRows.push(row);
-  });
+  const tableColumn = ["Category", "Product", "Qty", "Unit", "Rate/Sq Ft", "Amount"];
+  const tableRows = pdfProductRows(inv.products);
 
-  doc.autoTable(tableColumn, tableRows, {
+  renderPdfTable(doc, tableColumn, tableRows, {
     startY: 80,
     headStyles: { fillColor: [41, 128, 185] },
     styles: { fontSize: 9, cellPadding: 2, overflow: 'linebreak' },
@@ -1417,7 +1391,7 @@ function buildInvoicePdf(inv){
     }
   });
 
-  let finalY = doc.autoTable.previous.finalY;
+  let finalY = getPdfTableFinalY(doc, 80);
 
   // Totals
   doc.setFontSize(10);
