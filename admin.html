@@ -262,6 +262,8 @@ const schemas = {
 
 // ─── App State ────────────────────────────────────────────────────
 let state = {session:null,view:'',query:'',page:{},filter:{},selected:new Set()};
+let isLoggingIn = false;
+let appStarted = false;
 const storageKey = 'newtech-admin-v3';
 let firestoreListeners = [];
 let fsConnected = false;
@@ -377,17 +379,23 @@ function log(action,type='activity'){/* activity logging removed */}
 
 async function login(email, password){
   const btn = document.getElementById('loginBtn');
+  const normalizedEmail = String(email || '').trim().toLowerCase();
   btn.textContent='Signing in…'; btn.disabled=true;
+  isLoggingIn = true;
   try {
-    const cred = await fbAuth.signInWithEmailAndPassword(email, password);
+    const cred = await fbAuth.signInWithEmailAndPassword(normalizedEmail, password);
     const name = cred.user.displayName || cred.user.email.split('@')[0];
-    const role = roleMap[cred.user.email] || 'Super Admin';
+    const role = roleMap[cred.user.email.toLowerCase()] || 'Super Admin';
     state.session = {id:cred.user.uid, name, email:cred.user.email, role, provider:'firebase'};
+    sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
+    btn.textContent='Sign in securely'; btn.disabled=false;
     return true;
   } catch(err) {
     toast('Login failed: ' + (err.message || 'Invalid email or password'));
     btn.textContent='Sign in securely'; btn.disabled=false;
     return false;
+  } finally {
+    isLoggingIn = false;
   }
 }
 
@@ -398,30 +406,45 @@ function boot(){
   if(loginForm){
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value;
+      const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       if(await login(email, password)) showApp();
     });
   }
 
+  document.getElementById('logoutBtn')?.addEventListener('click', logout);
+
   fbAuth.onAuthStateChanged(user=>{
-    if(user && !user.isAnonymous && !state.session){
-      const role = roleMap[user.email] || 'Super Admin';
+    if(user && !user.isAnonymous){
+      const role = roleMap[user.email.toLowerCase()] || 'Super Admin';
       const name = user.displayName || user.email.split('@')[0];
       state.session = {id:user.uid, name, email:user.email, role, provider:'firebase'};
       sessionStorage.setItem('newtech-session', JSON.stringify(state.session));
       showApp();
-    } else if(!user || user.isAnonymous) {
+    } else if(!state.session && !isLoggingIn) {
       showLogin();
     }
   });
 }
+
+async function logout(){
+  firestoreListeners.forEach(u=>u());
+  firestoreListeners = [];
+  state.session = null;
+  appStarted = false;
+  sessionStorage.removeItem('newtech-session');
+  await fbAuth.signOut();
+  showLogin();
+}
 function showLogin(){document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('appShell').classList.add('hidden');}
 function showApp(){
+  if(!state.session) return showLogin();
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('roleChip').textContent = state.session.role;
 
+  if(appStarted) return;
+  appStarted = true;
   setupFirestoreListeners();
   renderNav();
   navigate('quotes');
@@ -1150,6 +1173,13 @@ async function previewCurrentInvoicePdf(){
   buildInvoicePdf(currentInvoice()).open();
 }
 
+function downloadCurrentInvoicePdf(){
+  const inv = currentInvoice();
+  const doc = buildInvoicePdf(inv);
+  const num = (inv.invoiceNumber || 'invoice').replace(/[^a-z0-9]/gi, '_');
+  doc.save(`${num}.pdf`);
+}
+
 function openWarrantyCardBuilder(id=null){
   state.warrantyCardBuilder = {id};
   const wc = state.warrantyCards.find(wc=>wc.id===id) || {};
@@ -1204,7 +1234,16 @@ async function printWarrantyCardPdf(id){
   if(wc) buildWarrantyCardPdf(wc).open();
 }
 
-async function previewCurrentWarrantyCardPdf(){
+function printCurrentWarrantyCardPdf(){
+  buildWarrantyCardPdf(currentWarrantyCard()).open();
+}
+
+function downloadCurrentWarrantyCardPdf(){
+  const wc = currentWarrantyCard();
+  const doc = buildWarrantyCardPdf(wc);
+  const serial = (wc.serialNo || 'warranty-card').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  doc.save(`${serial}.pdf`);
+}
 
 function getQuotation(id){return calculateQuotation((db.quotations||[]).find(q=>q.id===id)||quotationFromForm());}
 function buildQuotationPdf(q){
@@ -1373,431 +1412,42 @@ function buildWarrantyCardPdf(wc){
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF();
 
-  // Header
   doc.setFontSize(18);
-  doc.text("WARRANTY CARD", 14, 22);
+  doc.text('WARRANTY CARD', 14, 22);
   doc.setFontSize(11);
-  doc.text(`Serial No: ${wc.serialNo}`, 14, 30);
-  doc.text(`Installation Date: ${wc.installationDate}`, 14, 36);
+  doc.text(`Serial No: ${wc.serialNo || ''}`, 14, 30);
+  doc.text(`Installation Date: ${wc.installationDate || ''}`, 14, 36);
 
-  // Company Details
   doc.setFontSize(10);
   doc.text(COMPANY_PROFILE.name, 150, 22);
   doc.text(COMPANY_PROFILE.address, 150, 28);
-  doc.text(`Phone: ${COMPANY_PROFILE.contacts[0]}`, 150, 34);
+  doc.text(`Phone: ${COMPANY_PROFILE.contacts[0] || ''}`, 150, 34);
   doc.text(`Email: ${COMPANY_PROFILE.email}`, 150, 40);
 
-  // Customer Details
+  const c = wc.customerDetails || {};
   doc.setFontSize(12);
-  doc.text("Customer Details:", 14, 50);
+  doc.text('Customer Details:', 14, 50);
   doc.setFontSize(10);
-  doc.text(wc.customerDetails.name, 14, 56);
-  doc.text(wc.customerDetails.installationAddress, 14, 62);
-  doc.text(`${wc.customerDetails.city}, ${wc.customerDetails.state}`, 14, 68);
-  doc.text(wc.customerDetails.phone, 14, 74);
+  doc.text(c.name || wc.customerName || 'Customer', 14, 56);
+  doc.text(c.installationAddress || '', 14, 62);
+  doc.text([c.city, c.state].filter(Boolean).join(', '), 14, 68);
+  doc.text(c.phone || wc.phone || '', 14, 74);
 
-  // Product Details
   doc.setFontSize(12);
-  doc.text("Product Details:", 14, 84);
+  doc.text('Product Details:', 14, 84);
   doc.setFontSize(10);
-  doc.text(`Product Purchased: ${wc.productPurchased}`, 14, 90);
-  doc.text(`Status: ${wc.status}`, 14, 96);
+  doc.text(`Product Purchased: ${wc.productPurchased || ''}`, 14, 90);
+  doc.text(`Status: ${wc.status || 'active'}`, 14, 96);
 
-  // Warranty Terms
   let finalY = 106;
   doc.setFontSize(10);
-  doc.text("Warranty Terms:", 14, finalY);
-  COMPANY_PROFILE.warrantyTerms.forEach((term, i) => {
+  doc.text('Warranty Terms:', 14, finalY);
+  (COMPANY_PROFILE.warrantyTerms || COMPANY_PROFILE.warranty || []).forEach((term, i) => {
     doc.text(`${i + 1}. ${term}`, 14, finalY + 6 + (i * 6));
   });
 
   return doc;
 }
-  const {jsPDF} = window.jspdf;
-  const doc = new jsPDF();
-
-  // Header
-  doc.setFontSize(18);
-  doc.text("QUOTATION", 14, 22);
-  doc.setFontSize(11);
-  doc.text(`Quotation No: ${q.quotationNumber}`, 14, 30);
-  doc.text(`Date: ${q.quotationDate}`, 14, 36);
-
-  // Company Details
-  doc.setFontSize(10);
-  doc.text(COMPANY_PROFILE.name, 150, 22);
-  doc.text(COMPANY_PROFILE.address, 150, 28);
-  doc.text(`Phone: ${COMPANY_PROFILE.contacts[0]}`, 150, 34);
-  doc.text(`Email: ${COMPANY_PROFILE.email}`, 150, 40);
-
-  // Customer Details
-  doc.setFontSize(12);
-  doc.text("Bill To:", 14, 50);
-  doc.setFontSize(10);
-  doc.text(q.customerDetails.name, 14, 56);
-  doc.text(q.customerDetails.installationAddress, 14, 62);
-  doc.text(`${q.customerDetails.city}, ${q.customerDetails.state}`, 14, 68);
-  doc.text(q.customerDetails.phone, 14, 74);
-
-  // Products Table
-  const tableColumn = ["Category", "Description", "Qty", "Unit", "Rate", "Amount"];
-  const tableRows = [];
-  q.products.forEach(p => {
-    const row = [
-      p.category,
-      p.description,
-      p.quantity,
-      p.unit,
-      currency(p.rate),
-      currency(num(p.quantity) * num(p.rate))
-    ];
-    tableRows.push(row);
-  });
-
-  doc.autoTable(tableColumn, tableRows, {
-    startY: 80,
-    headStyles: { fillColor: [41, 128, 185] },
-    styles: { fontSize: 9, cellPadding: 2, overflow: 'linebreak' },
-    columnStyles: {
-      0: { cellWidth: 30 },
-      1: { cellWidth: 70 },
-      2: { cellWidth: 15 },
-      3: { cellWidth: 15 },
-      4: { cellWidth: 25 },
-      5: { cellWidth: 25, halign: 'right' }
-    }
-  });
-
-  let finalY = doc.autoTable.previous.finalY;
-
-  // Totals
-  doc.setFontSize(10);
-  doc.text(`Subtotal: ${currency(q.subtotal)}`, 150, finalY + 10);
-  doc.text(`Discount: ${currency(q.discount)}`, 150, finalY + 16);
-  doc.text(`Tax (${q.taxRate}%): ${currency(q.taxAmount)}`, 150, finalY + 22);
-  doc.setFontSize(12);
-  doc.text(`Total: ${currency(q.total)}`, 150, finalY + 30);
-
-  // Terms and Conditions
-  finalY = finalY + 40;
-  doc.setFontSize(10);
-  doc.text("Terms and Conditions:", 14, finalY);
-  COMPANY_PROFILE.terms.forEach((term, i) => {
-    doc.text(`${i + 1}. ${term}`, 14, finalY + 6 + (i * 6));
-  });
-
-  // Warranty
-  finalY = finalY + 6 + (COMPANY_PROFILE.terms.length * 6);
-  doc.text("Warranty:", 14, finalY);
-  COMPANY_PROFILE.warranty.forEach((w, i) => {
-    doc.text(`${i + 1}. ${w}`, 14, finalY + 6 + (i * 6));
-  });
-
-  return doc;
-}
-
-function buildTaxInvoicePdf(invoice){
-    const jsPDF = window.jspdf?.jsPDF;
-    if(!jsPDF){toast("PDF library is still loading. Please try again.");return null;}
-    const doc = new jsPDF({unit:'pt',format:'a4'});
-    const W = 595;
-    const pageLeft = 36;
-    const pageRight = W - 36;
-    let y = 36;
-
-    try{
-      const logoImg = document.querySelector('img[src="assets/logo.png"]');
-      if(logoImg?.complete) doc.addImage(logoImg,'PNG',36,30,48,48);
-      else {
-        doc.setFillColor(30,58,138); doc.roundedRect(36,30,48,48,8,8,'F');
-        doc.setTextColor(255); doc.setFontSize(10); doc.text('NTHS',60,58,{align:'center'});
-      }
-    }catch(e){
-      doc.setFillColor(30,58,138); doc.roundedRect(36,30,48,48,8,8,'F');
-      doc.setTextColor(255); doc.setFontSize(10); doc.text('NTHS',60,58,{align:'center'});
-    }
-
-    doc.setFont('helvetica','bold');
-    doc.setTextColor(30,58,138);
-    doc.setFontSize(18);
-    doc.text(COMPANY_PROFILE.name,100,y+12);
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(9);
-    doc.setTextColor(80);
-    doc.text(COMPANY_PROFILE.address,100,y+28,{maxWidth:300});
-    doc.text(COMPANY_PROFILE.contacts.join(' / ')+' | '+COMPANY_PROFILE.email,100,y+54,{maxWidth:330});
-    doc.setDrawColor(249,115,22);
-    doc.setLineWidth(3);
-    doc.line(pageLeft,106,pageRight,106);
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(20);
-    doc.setTextColor(249,115,22);
-    doc.text('TAX INVOICE',pageRight,50,{align:'right'});
-    doc.setFontSize(10);
-    doc.setTextColor(30,58,138);
-    doc.text('Our GST: ' + (invoice.ourGstNumber || COMPANY_PROFILE.gstNumber), pageRight, 70, {align:'right'});
-    doc.text('Date: ' + (invoice.invoiceDate || todayISO()), pageRight, 86, {align:'right'});
-
-    y = 130;
-    doc.setFontSize(11);
-    doc.text('To,',pageLeft,y);
-    doc.text('Invoice Details',330,y);
-    doc.setFont('helvetica','normal');
-    doc.setTextColor(60);
-    y += 18;
-    const c = invoice.customerDetails || {};
-    doc.text([c.name||'Customer',c.address||'',c.contact||'',"Gst No.: "+(c.gstNumber||'')].filter(Boolean),pageLeft,y,{maxWidth:240,lineHeightFactor:1.15});
-    doc.text(['Invoice No.: '+(invoice.invoiceNumber||''),'Ref.: '+(invoice.reference||''),'Delivery Add: '+(invoice.deliveryAddress||'')].filter(Boolean),330,y,{maxWidth:220,lineHeightFactor:1.15});
-
-    y += 98;
-    doc.setFont('helvetica','bold');
-    doc.setTextColor(30,58,138);
-    doc.setFontSize(11);
-    doc.text('Products and Services',pageLeft,y);
-    y += 6;
-
-    const cols = {
-      sno: pageLeft + 5,
-      product: pageLeft + 30,
-      hsn: 220,
-      qty: 280,
-      area: 330,
-      rate: 390,
-      amount: pageRight - 8
-    };
-    const drawTableHeader = () => {
-      doc.setFillColor(30,58,138);
-      doc.rect(pageLeft,y,pageRight-pageLeft,24,'F');
-      doc.setTextColor(255);
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(7.5);
-      doc.text('S.No.',cols.sno,y+15);
-      doc.text('Product Description',cols.product,y+15);
-      doc.text('HSN SAC',cols.hsn,y+15);
-      doc.text('Qty',cols.qty,y+15);
-      doc.text('Area (in Sqft)',cols.area,y+15);
-      doc.text('Rate (in Rs.)',cols.rate,y+15,{align:'right'});
-      doc.text('Amount (in Rs.)',cols.amount,y+15,{align:'right'});
-      y += 36;
-      doc.setTextColor(40);
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(8);
-    };
-    drawTableHeader();
-
-    invoice.products.forEach((it,idx)=>{
-      const productLines = doc.splitTextToSize(`${it.productName}`,180);
-      const rowHeight = Math.max(20, productLines.length * 10 + 10);
-      if(y + rowHeight > 675){
-        doc.addPage();
-        y = 40;
-        drawTableHeader();
-      }
-      doc.setDrawColor(226,232,240);
-      doc.line(pageLeft,y-10,pageRight,y-10);
-      doc.text(String(idx+1),cols.sno,y);
-      doc.text(productLines,cols.product,y,{lineHeightFactor:1.1});
-      doc.text(String(it.hsnSac||''),cols.hsn,y);
-      doc.text(String(it.quantity),cols.qty,y);
-      doc.text(String(it.areaSqft.toFixed(2)),cols.area,y);
-      doc.text(currency(it.rate),cols.rate,y,{align:'right'});
-      doc.setFont('helvetica','bold');
-      doc.text(currency(it.amount),cols.amount,y,{align:'right'});
-      doc.setFont('helvetica','normal');
-      y += rowHeight;
-    });
-
-    y += 12;
-    if(y > 650){ doc.addPage(); y = 50; }
-    const sx = 350;
-    doc.setFont('helvetica','bold');
-    doc.setTextColor(30,58,138);
-    doc.text('Total',sx,y);
-    doc.text(currency(invoice.productTotal),pageRight,y,{align:'right'});
-    y += 14;
-    doc.text('Transportation & Installation Charges',sx,y);
-    doc.text(currency(invoice.installationCharge),pageRight,y,{align:'right'});
-    y += 14;
-    doc.text('Sub Total (Without GST)',sx,y);
-    doc.text(currency(invoice.subtotal),pageRight,y,{align:'right'});
-    y += 14;
-    doc.text('CGST @ ' + (invoice.taxRate/2) + '%',sx,y);
-    doc.text(currency(invoice.tax/2),pageRight,y,{align:'right'});
-    y += 14;
-    doc.text('SGST @ ' + (invoice.taxRate/2) + '%',sx,y);
-    doc.text(currency(invoice.tax/2),pageRight,y,{align:'right'});
-    y += 14;
-
-    doc.setTextColor(249,115,22);
-    doc.text('Total Payable Amount',sx,y);
-    doc.text(currency(invoice.total),pageRight,y,{align:'right'});
-    y += 20;
-
-    doc.setTextColor(30,58,138);
-    doc.text('GST Amount (in words) : ' + (invoice.gstAmountInWords||''),pageLeft,y);
-    y += 14;
-    doc.text('Total Amount (in words) : ' + (invoice.totalAmountInWords||''),pageLeft,y);
-
-    y += 28;
-    if(y > 610){ doc.addPage(); y = 50; }
-    doc.setTextColor(30,58,138);
-    doc.text('TERMS & CONDITIONS',pageLeft,y);
-    y += 14;
-    doc.setFont('helvetica','normal');
-    doc.setTextColor(70);
-    doc.text(COMPANY_PROFILE.invoiceTerms.map((t,i)=>`${i+1}. ${t}`),pageLeft,y,{maxWidth:245,lineHeightFactor:1.15});
-
-    y = 760;
-    doc.setDrawColor(180);
-    doc.line(pageLeft,y,pageRight,y);
-    doc.text('Authorized Signatory',pageRight,y+24,{align:'right'});
-    return doc;
-  }
-
-
-  const jsPDF = window.jspdf?.jsPDF;
-  if(!jsPDF){toast('PDF library is still loading. Please try again.');return null;}
-  const doc = new jsPDF({unit:'pt',format:'a4'});
-  const W = 595;
-  const pageLeft = 36;
-  const pageRight = W - 36;
-  let y = 36;
-
-  try{
-    const logoImg = document.querySelector('img[src="assets/logo.png"]');
-    if(logoImg?.complete) doc.addImage(logoImg,'PNG',36,30,48,48);
-    else {
-      doc.setFillColor(30,58,138); doc.roundedRect(36,30,48,48,8,8,'F');
-      doc.setTextColor(255); doc.setFontSize(10); doc.text('NTHS',60,58,{align:'center'});
-    }
-  }catch(e){
-    doc.setFillColor(30,58,138); doc.roundedRect(36,30,48,48,8,8,'F');
-    doc.setTextColor(255); doc.setFontSize(10); doc.text('NTHS',60,58,{align:'center'});
-  }
-
-  doc.setFont('helvetica','bold');
-  doc.setTextColor(30,58,138);
-  doc.setFontSize(18);
-  doc.text(COMPANY_PROFILE.name,100,y+12);
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(9);
-  doc.setTextColor(80);
-  doc.text(COMPANY_PROFILE.address,100,y+28,{maxWidth:300});
-  doc.text(COMPANY_PROFILE.contacts.join(' / ')+' | '+COMPANY_PROFILE.email,100,y+54,{maxWidth:330});
-  doc.setDrawColor(249,115,22);
-  doc.setLineWidth(3);
-  doc.line(pageLeft,106,pageRight,106);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(20);
-  doc.setTextColor(249,115,22);
-  doc.text('QUOTATION',pageRight,50,{align:'right'});
-  doc.setFontSize(10);
-  doc.setTextColor(30,58,138);
-  doc.text(q.quotationNumber||'',pageRight,70,{align:'right'});
-  doc.text('Date: '+(q.quotationDate||todayISO()),pageRight,86,{align:'right'});
-
-  y = 130;
-  doc.setFontSize(11);
-  doc.text('Customer Details',pageLeft,y);
-  doc.text('Company / GST Details',330,y);
-  doc.setFont('helvetica','normal');
-  doc.setTextColor(60);
-  y += 18;
-  const c = q.customerDetails || {};
-  doc.text([c.name||'Customer',c.phone||'',c.email||'',c.installationAddress||'', [c.city,c.state,c.country].filter(Boolean).join(', ')].filter(Boolean),pageLeft,y,{maxWidth:240,lineHeightFactor:1.15});
-  doc.text([COMPANY_PROFILE.name,COMPANY_PROFILE.gstNumber,'Email: '+COMPANY_PROFILE.email,'Phone: '+COMPANY_PROFILE.contacts.join(', ')],330,y,{maxWidth:220,lineHeightFactor:1.15});
-
-  y += 98;
-  doc.setFont('helvetica','bold');
-  doc.setTextColor(30,58,138);
-  doc.setFontSize(11);
-  doc.text('Products, Measurements, Rates and Amounts',pageLeft,y);
-  y += 6;
-
-  const cols = {
-    product: pageLeft + 10,
-    measurement: 190,
-    qty: 265,
-    rate: 325,
-    install: 382,
-    delivery: 438,
-    discount: 490,
-    amount: pageRight - 8
-  };
-  const drawTableHeader = () => {
-    doc.setFillColor(30,58,138);
-    doc.rect(pageLeft,y,pageRight-pageLeft,24,'F');
-    doc.setTextColor(255);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(7.5);
-    doc.text('Product',cols.product,y+15);
-    doc.text('Measurement',cols.measurement,y+15);
-    doc.text('Qty',cols.qty,y+15);
-    doc.text('Rate / Sq Ft',cols.rate,y+15,{align:'right'});
-    doc.text('Install',cols.install,y+15,{align:'right'});
-    doc.text('Delivery',cols.delivery,y+15,{align:'right'});
-    doc.text('Disc.',cols.discount,y+15,{align:'right'});
-    doc.text('Amount',cols.amount,y+15,{align:'right'});
-    y += 36;
-    doc.setTextColor(40);
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(8);
-  };
-  drawTableHeader();
-
-  q.products.forEach((it,idx)=>{
-    const productLines = doc.splitTextToSize(`${idx+1}. ${it.category}${it.productName ? ' - '+it.productName : ''}`,125);
-    const measurementLines = doc.splitTextToSize(`${it.width} x ${it.height} ${it.unit}\n${it.areaSqFt.toFixed(2)} sq ft / ${it.areaSqMeter.toFixed(2)} sq m`,70);
-    const rowHeight = Math.max(34, productLines.length * 10 + 10, measurementLines.length * 10 + 10);
-    if(y + rowHeight > 675){
-      doc.addPage();
-      y = 40;
-      drawTableHeader();
-    }
-    doc.setDrawColor(226,232,240);
-    doc.line(pageLeft,y-10,pageRight,y-10);
-    doc.text(productLines,cols.product,y,{lineHeightFactor:1.1});
-    doc.text(measurementLines,cols.measurement,y,{lineHeightFactor:1.1});
-    doc.text(String(it.quantity),cols.qty,y);
-    doc.text(currency(it.rateSqFt || (it.rateSqMeter/10.7639)),cols.rate,y,{align:'right'});
-    doc.text(currency(it.installationCharge),cols.install,y,{align:'right'});
-    doc.text(currency(it.deliveryCharge),cols.delivery,y,{align:'right'});
-    doc.text(currency(it.discount),cols.discount,y,{align:'right'});
-    doc.setFont('helvetica','bold');
-    doc.text(currency(it.lineTotal),cols.amount,y,{align:'right'});
-    doc.setFont('helvetica','normal');
-    y += rowHeight;
-  });
-
-  y += 12;
-  if(y > 650){ doc.addPage(); y = 50; }
-  const sx = 350;
-  doc.setFont('helvetica','bold');
-  [['Subtotal',q.subtotal],['Discount',q.discount],[`GST (${q.taxRate}%)`,q.tax],['Grand Total',q.total]].forEach(([label,value],i)=>{
-    doc.setTextColor(i===3?249:30,i===3?115:58,i===3?22:138);
-    doc.text(label,sx,y);
-    doc.text(currency(value),pageRight,y,{align:'right'});
-    y += 20;
-  });
-
-  y += 18;
-  if(y > 610){ doc.addPage(); y = 50; }
-  doc.setTextColor(30,58,138);
-  doc.text('Terms & Conditions',pageLeft,y);
-  doc.text('Warranty Information',330,y);
-  y += 14;
-  doc.setFont('helvetica','normal');
-  doc.setTextColor(70);
-  doc.text(COMPANY_PROFILE.terms.map((t,i)=>`${i+1}. ${t}`),pageLeft,y,{maxWidth:245,lineHeightFactor:1.15});
-  doc.text(COMPANY_PROFILE.warranty.map((t,i)=>`${i+1}. ${t}`),330,y,{maxWidth:220,lineHeightFactor:1.15});
-
-  y = 760;
-  doc.setDrawColor(180);
-  doc.line(pageLeft,y,pageRight,y);
-  doc.text('Authorized Signature',60,y+24);
-  doc.text('Company Stamp',390,y+24);
-  return doc;
 
 function downloadCurrentQuotationPdf(){
   refreshQuoteTotals();
