@@ -95,6 +95,22 @@
   .order-btn{background:var(--bg);border:1px solid var(--line);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
   .order-btn:hover{background:var(--orange);color:#fff;border-color:var(--orange);}
 
+  
+  /* ── Multi-Photo Category ──────────────────────────────────────────────────── */
+  .mpc-grid{ display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px; }
+  .mpc-card{ border:1.5px solid var(--line);border-radius:18px;background:var(--card);padding:18px;transition:box-shadow .2s; }
+  .mpc-card:hover{ box-shadow:0 8px 28px rgba(30,58,138,.1); }
+  .mpc-title{ font-weight:800;font-size:15px;margin-bottom:14px;color:var(--ink);display:flex;align-items:center;gap:8px; }
+  .mpc-photos{ display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px; }
+  .mpc-slot{ aspect-ratio:1;border-radius:10px;border:2px dashed var(--line); background:var(--bg);display:flex;align-items:center;justify-content:center; overflow:hidden;position:relative;cursor:pointer;transition:all .2s; }
+  .mpc-slot:hover{ border-color:var(--orange);background:rgba(249,115,22,.05); }
+  .mpc-slot img{ width:100%;height:100%;object-fit:cover;border-radius:8px; }
+  .mpc-slot .plus{ font-size:22px;color:var(--muted); }
+  .mpc-slot .del{ position:absolute;top:3px;right:3px;background:rgba(239,68,68,.9); color:#fff;border:none;border-radius:5px;width:20px;height:20px; font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center; }
+  .mpc-slot:hover .del{ display:flex; }
+  .mpc-progress{ height:5px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:6px;display:none; }
+  .mpc-progress-fill{ height:100%;background:linear-gradient(90deg,var(--orange),var(--navy));border-radius:999px;transition:width .2s; }
+
   </style>
 </head>
 <body>
@@ -1405,6 +1421,7 @@ async function loadThumbSettings(){
     settings.categoryImages=settings.categoryImages||{};
   }catch(e){console.warn('Load thumb settings:',e.message);}
   renderThumbUI(settings);
+  loadMpcPhotos();
 }
 
 function renderThumbUI(s){
@@ -1474,6 +1491,12 @@ function renderThumbUI(s){
       </div>
     </div>
 
+    <!-- Category Multi-Photo Gallery -->
+    <div class="card" style="margin-bottom:20px">
+      <h2 style="margin:0 0 6px;font-size:20px">📸 Category Photo Gallery</h2>
+      <p class="muted" style="margin:0 0 20px;font-size:13px">Upload up to 5 photos per category for the gallery. Shown when visitors click service cards.</p>
+      <div class="mpc-grid" id="mpcGrid"><div style="text-align:center;color:var(--muted);padding:24px;grid-column:1/-1">⏳ Loading…</div></div>
+    </div>
     <!-- About Section Image -->
     <div class="card">
       <h2 style="margin:0 0 6px;font-size:20px">🏠 About Section Image</h2>
@@ -1645,6 +1668,125 @@ async function moveHeroSlide(index, dir){
   await fstore.collection('siteSettings').doc('thumbnails').set(settings,{merge:false});
   toast('Slide reordered ✓');
   loadThumbSettings();
+}
+
+
+
+// ── Category Photo Gallery ─────────────────────────────────────────────────────
+var MPC_CATS = [
+  {key:'invisibleGrill',label:'Invisible Grill'},
+  {key:'blinds',label:'Premium Blinds'},
+  {key:'polysterMesh',label:'Polyster Pleated Mesh'},
+  {key:'ssMesh',label:'SS 304 Pleated Mesh'},
+  {key:'honeycombBlackout',label:'Honeycomb Blackout'},
+  {key:'2in1',label:'2in1 Mesh & Honeycomb'},
+  {key:'pvcPartition',label:'PVC Partition'},
+  {key:'antiBirdNet',label:'Anti Bird Net'},
+  {key:'securityMesh',label:'Security Mesh'},
+  {key:'crystalDoor',label:'Crystal Partition Door'},
+  {key:'other',label:'Other Interior Work'}
+];
+var mpcData = {};
+
+async function loadMpcPhotos() {
+  if (!document.getElementById('mpcGrid')) return;
+  await ensureFirebaseUser();
+  MPC_CATS.forEach(function(cat) {
+    fstore.collection('categoryPhotos').doc(cat.key).get().then(function(doc) {
+      mpcData[cat.key] = doc.exists ? (doc.data() || {photos:[]}) : {photos:[]};
+      if (!mpcData[cat.key].photos) mpcData[cat.key].photos = [];
+      renderMpcGrid();
+    }).catch(function(e) {
+      mpcData[cat.key] = {photos:[]};
+    });
+  });
+}
+
+function renderMpcGrid() {
+  var grid = document.getElementById('mpcGrid');
+  if (!grid) return;
+  var loaded = Object.keys(mpcData).length;
+  if (loaded < MPC_CATS.length) return;
+  
+  grid.innerHTML = MPC_CATS.map(function(cat) {
+    var photos = (mpcData[cat.key] && mpcData[cat.key].photos) || [];
+    var slots = '';
+    for (var i = 0; i < 5; i++) {
+      if (photos[i]) {
+        slots += '<div class="mpc-slot"><img src="'+escapeAttr(photos[i].url)+'" alt="Photo'+(i+1)+'"><button class="del" onclick="mpcDel(\''+cat.key+'\','+i+');event.stopPropagation()">✕</button></div>';
+      } else if (photos.length < 5 && i === photos.length) {
+        slots += '<label class="mpc-slot" style="cursor:pointer"><span class="plus">＋</span><input type="file" accept="image/*" style="display:none" onchange="mpcUpload(this,\''+cat.key+'\')"></label>';
+      } else {
+        slots += '<div class="mpc-slot" style="pointer-events:none;opacity:.35"><span class="plus">·</span></div>';
+      }
+    }
+    return '<div class="mpc-card">' +
+      '<div class="mpc-title">📁 '+escapeHtml(cat.label)+' <span style="font-size:11px;color:var(--muted);font-weight:500">('+photos.length+'/5)</span></div>' +
+      '<div class="mpc-photos">'+slots+'</div>' +
+      (photos.length > 0 ? '<button class="btn btn-danger" style="width:100%;font-size:12px;padding:7px" onclick="mpcClear(\''+cat.key+'\')">Clear</button>' : '') +
+      '<div class="mpc-progress" id="mpcProg_'+cat.key+'"><div class="mpc-progress-fill" id="mpcFill_'+cat.key+'" style="width:0%"></div></div>' +
+      '</div>';
+  }).join('');
+}
+
+async function mpcUpload(input, key) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  if (file.size > 12*1024*1024) { toast('File too large'); return; }
+  await ensureFirebaseUser();
+  var photos = (mpcData[key] && mpcData[key].photos) || [];
+  if (photos.length >= 5) { toast('Max 5 photos'); return; }
+  
+  var prog = document.getElementById('mpcProg_'+key);
+  var fill = document.getElementById('mpcFill_'+key);
+  if (prog) prog.style.display = 'block';
+  
+  try {
+    var fname = key + '_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    var ref = fstorage.ref('categoryPhotos/'+key+'/'+fname);
+    var task = ref.put(file);
+    await new Promise(function(res, rej) {
+      task.on('state_changed', function(snap) {
+        var pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+        if (fill) fill.style.width = pct + '%';
+      }, rej, res);
+    });
+    var url = await ref.getDownloadURL();
+    photos.push({url:url, filename:fname});
+    mpcData[key] = {photos:photos, updatedAt:new Date().toISOString()};
+    await fstore.collection('categoryPhotos').doc(key).set(mpcData[key]);
+    toast('✅ Photo '+(photos.length)+'/5 uploaded');
+    renderMpcGrid();
+  } catch(e) { toast('Upload failed: '+e.message); }
+  finally { if (prog) prog.style.display = 'none'; }
+}
+
+function mpcDel(key, i) {
+  if (!confirm('Remove?')) return;
+  var photos = (mpcData[key] && mpcData[key].photos) || [];
+  var removed = photos.splice(i, 1)[0];
+  mpcData[key].photos = photos;
+  mpcData[key].updatedAt = new Date().toISOString();
+  fstore.collection('categoryPhotos').doc(key).set(mpcData[key]).then(function() {
+    if (removed && removed.filename) {
+      fstorage.ref('categoryPhotos/'+key+'/'+removed.filename).delete().catch(function(e){});
+    }
+    toast('Removed');
+    renderMpcGrid();
+  }).catch(function(e) { toast('Error: '+e.message); });
+}
+
+function mpcClear(key) {
+  if (!confirm('Clear ALL?')) return;
+  var photos = (mpcData[key] && mpcData[key].photos) || [];
+  photos.forEach(function(p) {
+    if (p.filename) fstorage.ref('categoryPhotos/'+key+'/'+p.filename).delete().catch(function(e){});
+  });
+  mpcData[key] = {photos:[], updatedAt:new Date().toISOString()};
+  fstore.collection('categoryPhotos').doc(key).set(mpcData[key]).then(function() {
+    toast('Cleared');
+    renderMpcGrid();
+  }).catch(function(e) { toast('Error: '+e.message); });
 }
 
 </script>

@@ -805,6 +805,40 @@
   .review-submit-btn:active { transform: translateY(0); }
   .review-empty { text-align: center; padding: 60px 20px; color: #94a3b8; width: 100%; }
 
+  
+  /* ── CATEGORY TAB OVERLAY ──────────────────────────────────────────────────── */
+  .cat-tab-overlay{ position:fixed;inset:0;z-index:2000; background:#f8fafc; transform:translateX(100%); transition:transform .42s cubic-bezier(.22,1,.36,1); overflow-y:auto;display:flex;flex-direction:column; }
+  .cat-tab-overlay.open{ transform:translateX(0); }
+  .cat-tab-header{ position:sticky;top:0;z-index:10; background:rgba(255,255,255,.97); backdrop-filter:blur(14px); border-bottom:1px solid #e2e8f0; padding:14px 24px; display:flex;align-items:center;gap:14px; }
+  .cat-tab-back{ background:var(--navy);color:#fff;border:none; border-radius:12px;padding:10px 18px; font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;cursor:pointer; display:flex;align-items:center;gap:7px;transition:all .2s;flex-shrink:0; }
+  .cat-tab-back:hover{ background:var(--orange);transform:translateX(-3px); }
+  .cat-tab-title{ font-size:20px;font-weight:800;color:var(--navy);flex:1;margin:0; }
+  .cat-tab-body{ padding:28px 24px;max-width:1280px;margin:0 auto;width:100%; }
+  .cat-photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:22px;margin-top:20px; }
+  .cat-photo-card{ background:#fff;border-radius:20px;overflow:hidden; box-shadow:0 4px 22px rgba(30,58,138,.08); transition:all .4s cubic-bezier(.34,1.56,.64,1);cursor:pointer; }
+  .cat-photo-card:hover{ transform:translateY(-10px) scale(1.02);box-shadow:0 22px 50px rgba(30,58,138,.18); }
+  .cat-photo-img{ height:250px;overflow:hidden;background:#f1f5f9;position:relative; }
+  .cat-photo-img img{ width:100%;height:100%;object-fit:cover;transition:transform .6s ease;display:block; }
+  .cat-photo-card:hover .cat-photo-img img{ transform:scale(1.1); }
+  .cat-photo-overlay{ position:absolute;inset:0; background:linear-gradient(to top,rgba(30,58,138,.6),transparent 55%); opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:18px; }
+  .cat-photo-card:hover .cat-photo-overlay{ opacity:1; }
+  .cat-photo-overlay span{ color:#fff;font-weight:700;font-size:14px; }
+  .cat-photo-num{ position:absolute;top:12px;right:12px; background:rgba(0,0,0,.52);backdrop-filter:blur(6px); color:#fff;font-size:11px;font-weight:700;padding:4px 11px;border-radius:999px; }
+  .cat-tab-empty{ text-align:center;padding:70px 20px;color:var(--gray); }
+  .cat-tab-empty .ei{ font-size:58px;margin-bottom:14px; }
+  .cat-tab-empty h3{ font-size:22px;color:var(--navy);margin-bottom:8px; }
+  .cat-inquiry-bar{ background:linear-gradient(135deg,var(--navy),var(--navy-dark)); padding:22px 28px;border-radius:20px;margin-top:36px; display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px; }
+  .cat-inquiry-bar p{ color:rgba(255,255,255,.9);font-size:15px;font-weight:600;margin:0; }
+  .cat-lightbox{ position:fixed;inset:0;z-index:3000; background:rgba(0,0,0,.93);backdrop-filter:blur(8px); display:flex;align-items:center;justify-content:center;padding:20px; opacity:0;animation:lbIn .25s ease forwards; }
+  @keyframes lbIn{ to{ opacity:1; } }
+  .cat-lightbox img{ max-width:100%;max-height:88vh;border-radius:12px;box-shadow:0 28px 72px rgba(0,0,0,.5); }
+  .cat-lb-close{ position:absolute;top:18px;right:18px; background:rgba(255,255,255,.15);border:none;color:#fff; width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;transition:background .2s; }
+  .cat-lb-close:hover{ background:var(--orange); }
+  .cat-lb-nav{ position:absolute;top:50%;transform:translateY(-50%); background:rgba(255,255,255,.15);border:none;color:#fff; width:50px;height:50px;border-radius:50%;font-size:24px;cursor:pointer;transition:all .2s; }
+  .cat-lb-nav:hover{ background:var(--orange); }
+  .cat-lb-prev{ left:18px; }.cat-lb-next{ right:18px; }
+  @media(max-width:600px){ .cat-photo-grid{ grid-template-columns:repeat(2,1fr);gap:12px; } .cat-photo-img{ height:170px; } .cat-tab-body{ padding:18px 14px; } .cat-tab-header{ padding:10px 14px; } .cat-tab-title{ font-size:16px; } .cat-inquiry-bar{ flex-direction:column;text-align:center; } }
+
   </style>
 </head>
 <body>
@@ -898,102 +932,135 @@
   </div>
   <div class="products-grid">
     <!-- 1. Invisible Grill -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('invisibleGrill')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/services/invisible-grill.jpg" alt="Invisible Grill" id="catImg-invisibleGrill"></div>
       <div class="product-info">
         <h3>Invisible Grill</h3>
         <p>High-tensile safety grills that don't block your view. Ideal for balconies and high-rise apartments.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 2. Blinds -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('blinds')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/hero-fallback.jpg" alt="Premium Blinds" id="catImg-blinds"></div>
       <div class="product-info">
         <h3>Premium Blinds</h3>
         <p>Expertly crafted Roller, Zebra, Wooden, and Printed blinds to elevate your home's interior style.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 3. Polyster Pleated Mesh -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('polysterMesh')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/services/pleated-mesh.jpg" alt="Polyster Pleated Mesh" id="catImg-polysterMesh"></div>
       <div class="product-info">
         <h3>Polyster Pleated Mesh</h3>
         <p>Durable and cost-effective mosquito protection for windows and doors. Smooth and easy operation.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 4. SS 304 Pleated Mesh -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('ssMesh')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/hero-fallback.jpg" alt="SS 304 Pleated Mesh" id="catImg-ssMesh"></div>
       <div class="product-info">
         <h3>SS 304 Pleated Mesh</h3>
         <p>Premium grade stainless steel mesh offering superior strength and long-lasting protection.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 5. Honeycomb Blackout -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('honeycombBlackout')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/services/honeycomb.jpg" alt="Honeycomb Blackout" id="catImg-honeycombBlackout"></div>
       <div class="product-info">
         <h3>Honeycomb Blackout</h3>
         <p>Complete light control and thermal insulation with modern honeycomb design. Perfect for bedrooms.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 6. 2in1 Pleated Mesh + Honeycomb -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('2in1')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/hero-fallback.jpg" alt="2in1 Mesh & Honeycomb" id="catImg-2in1"></div>
       <div class="product-info">
         <h3>2in1 Mesh & Honeycomb</h3>
         <p>Versatile dual-layer solution combining mosquito protection with blackout privacy in one frame.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 7. PVC Partition -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('pvcPartition')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/hero-fallback.jpg" alt="PVC Partition" id="catImg-pvcPartition"></div>
       <div class="product-info">
         <h3>PVC Partition</h3>
         <p>Waterproof and lightweight room dividers. Ideal for bathrooms, kitchens, and commercial spaces.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 8. Anti Bird Net -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('antiBirdNet')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/services/bird-net.jpg" alt="Anti Bird Net" id="catImg-antiBirdNet"></div>
       <div class="product-info">
         <h3>Anti Bird Net</h3>
         <p>Nearly invisible, high-density polyethylene nets to keep birds away from balconies and open areas.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 9. Security Mesh -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('securityMesh')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/hero-fallback.jpg" alt="Security Mesh" id="catImg-securityMesh"></div>
       <div class="product-info">
         <h3>Security Mesh</h3>
         <p>Ultra-strong SS 304 security mesh that provides ultimate protection without blocking airflow.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 10. Crystal Partition Door -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('crystalDoor')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/hero-fallback.jpg" alt="Crystal Partition Door" id="catImg-crystalDoor"></div>
       <div class="product-info">
         <h3>Crystal Partition Door</h3>
         <p>Premium transparent folding doors that offer elegance and space-saving room division.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
     <!-- 11. Other Interior Work -->
-    <div class="product-card fade-up">
+    <div class="product-card fade-up" onclick="openCategoryTab('other')" style="cursor:pointer;">
       <div class="product-img"><img src="assets/hero-fallback.jpg" alt="Interior Work" id="catImg-other"></div>
       <div class="product-info">
         <h3>Other Interior Work</h3>
         <p>Custom interior solutions including specialized partitions, safety installations, and more.</p>
-        <a href="#contact" class="product-link">Inquiry Now →</a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="product-link" style="cursor:pointer;pointer-events:none;">View Photos →</span>
+          <a href="#contact" class="product-link" style="color:var(--gray);font-size:12px;" onclick="event.stopPropagation()">Inquiry →</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1884,5 +1951,114 @@
     else { nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.06)'; }
   });
 </script>
+
+<!-- CATEGORY TAB OVERLAY -->
+<div class="cat-tab-overlay" id="catTabOverlay">
+  <div class="cat-tab-header">
+    <button class="cat-tab-back" onclick="closeCategoryTab()">← Back</button>
+    <h2 class="cat-tab-title" id="catTabTitle">Category</h2>
+    <a href="#contact" class="nav-cta" onclick="closeCategoryTab()" style="flex-shrink:0;">Get Quote</a>
+  </div>
+  <div class="cat-tab-body">
+    <div id="catTabContent">
+      <div class="gallery-skeleton" style="height:250px;border-radius:20px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var catPhotos = [];
+  var lbIndex = 0;
+  var catMeta = {
+    invisibleGrill:{label:'Invisible Grill',terms:['Invisible Grill']},
+    blinds:{label:'Premium Blinds',terms:['Roller blinds','Zebra blinds','Wooden blinds','Printed blinds','Blinds']},
+    polysterMesh:{label:'Polyster Pleated Mesh',terms:['Polyster pleated mesh']},
+    ssMesh:{label:'SS 304 Pleated Mesh',terms:['SS 304 pleated mesh']},
+    honeycombBlackout:{label:'Honeycomb Blackout',terms:['Honeycomb blackout']},
+    '2in1':{label:'2in1 Mesh & Honeycomb',terms:['2in1 pleated mesh + honeycomb']},
+    pvcPartition:{label:'PVC Partition',terms:['Pvc partition']},
+    antiBirdNet:{label:'Anti Bird Net',terms:['Anti Bird Net']},
+    securityMesh:{label:'Security Mesh',terms:['Security mesh']},
+    crystalDoor:{label:'Crystal Partition Door',terms:['Crystal partition door']},
+    other:{label:'Other Interior Work',terms:['Other Interior Work']}
+  };
+  
+  window.openCategoryTab = function(key) {
+    var meta = catMeta[key] || {label:key, terms:[key]};
+    document.getElementById('catTabTitle').textContent = meta.label;
+    document.getElementById('catTabOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    loadPhotos(key, meta);
+  };
+  
+  window.closeCategoryTab = function() {
+    document.getElementById('catTabOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escA(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  
+  async function loadPhotos(key, meta) {
+    var c = document.getElementById('catTabContent');
+    c.innerHTML = '<div class="cat-photo-grid"><div class="gallery-skeleton" style="height:250px;border-radius:20px;"></div></div>';
+    var all = [];
+    try {
+      var cpSnap = await firebase.firestore().collection('categoryPhotos').doc(key).get();
+      if (cpSnap.exists) {
+        var d = cpSnap.data();
+        if (d.photos) d.photos.forEach(function(p){ if(p && p.url) all.push(p); });
+      }
+      for (var i = 0; i < meta.terms.length; i++) {
+        try {
+          var mSnap = await firebase.firestore().collection('media')
+            .where('category','==',meta.terms[i])
+            .where('status','==','active').limit(20).get();
+          mSnap.docs.forEach(function(doc){
+            var md = doc.data();
+            if (md.url) all.push({url:md.url,title:md.title||meta.label});
+          });
+        } catch(e2){}
+      }
+      var seen = {};
+      all = all.filter(function(p){ if(seen[p.url]) return false; seen[p.url]=1; return true; });
+    } catch(e) {
+      c.innerHTML = '<div class="cat-tab-empty"><div class="ei">⚠️</div><h3>Error</h3><p>'+esc(e.message)+'</p></div>';
+      return;
+    }
+    
+    catPhotos = all;
+    if (all.length === 0) {
+      c.innerHTML = '<div class="cat-tab-empty"><div class="ei">🖼️</div><h3>Coming Soon</h3><p>Photos for '+esc(meta.label)+'</p><a href="#contact" class="btn-primary" onclick="closeCategoryTab()" style="display:inline-flex;margin-top:18px;">Get Quote</a></div><div class="cat-inquiry-bar"><p>Interested? Get a free quote!</p><a href="#contact" class="btn-primary" onclick="closeCategoryTab()">Quote →</a></div>';
+      return;
+    }
+    
+    c.innerHTML = '<p style="color:var(--gray);font-size:14px;">'+all.length+' photo'+(all.length>1?'s':'')+' · Click to enlarge</p>' +
+      '<div class="cat-photo-grid">'+all.map(function(p,i){ return '<div class="cat-photo-card" onclick="_lb('+i+')"><div class="cat-photo-img"><img src="'+escA(p.url)+'" loading="lazy"><div class="cat-photo-overlay"><span>🔍</span></div><div class="cat-photo-num">'+(i+1)+'/'+all.length+'</div></div></div>';}).join('')+'</div>' +
+      '<div class="cat-inquiry-bar"><p>Interested in '+esc(meta.label)+'?</p><a href="#contact" class="btn-primary" onclick="closeCategoryTab()">Quote →</a></div>';
+  }
+  
+  window._lb = function(i) {
+    lbIndex = i;
+    var p = catPhotos[i];
+    var el = document.createElement('div');
+    el.className = 'cat-lightbox';
+    el.id = 'catLB';
+    el.onclick = function(e){ if(e.target===el) closeLB(); };
+    el.innerHTML = '<img src="'+escA(p.url)+'" alt="">' +
+      '<button class="cat-lb-close" onclick="closeLB()">✕</button>' +
+      (catPhotos.length>1 ? '<button class="cat-lb-nav cat-lb-prev" onclick="navLb(-1)">‹</button><button class="cat-lb-nav cat-lb-next" onclick="navLb(1)">›</button>' : '');
+    document.body.appendChild(el);
+  };
+  
+  window.closeLB = function() { var lb = document.getElementById('catLB'); if(lb) lb.remove(); };
+  
+  window.navLb = function(d) { lbIndex = (lbIndex+d+catPhotos.length) % catPhotos.length; closeLB(); window._lb(lbIndex); };
+  
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') { closeLB(); if(document.getElementById('catTabOverlay').classList.contains('open')) closeCategoryTab(); } });
+})();
+</script>
+
 </body>
 </html>
