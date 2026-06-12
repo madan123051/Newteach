@@ -1602,17 +1602,15 @@ function buildInvoicePdf(inv){
     head:[['S.No.','Product Description','HSN\nSAC','Qty.\nNos.','Area\n(in Sqft)','Rate\n(In Rs.)','Amount\n(In Rs.)']],
     body:allRows,
     theme:'grid',
-    headStyles:{fillColor:[255,255,255],textColor:[0,0,0],fontStyle:'bold',lineColor:[0,0,0],lineWidth:0.3,fontSize:8,halign:'center',valign:'middle',cellPadding:2,cellBorderColor:[0,0,0]},
-    bodyStyles:{fillColor:[255,255,255],textColor:[0,0,0],lineColor:[0,0,0],lineWidth:0.3,fontSize:8,cellPadding:2,cellBorderColor:[0,0,0]},
+    headStyles:{fillColor:[255,255,255],textColor:[0,0,0],fontStyle:'bold',lineColor:[0,0,0],lineWidth:0.5,fontSize:8,halign:'center',valign:'middle',cellPadding:2},
+    bodyStyles:{fillColor:[255,255,255],textColor:[0,0,0],lineColor:[0,0,0],lineWidth:0.5,fontSize:8,cellPadding:2},
     columnStyles:colStyles,
     didParseCell:function(data){
       if(data.section==='body'&&data.row.index>=productCount){
         if(data.column.index===1||data.column.index===6) data.cell.styles.fontStyle='bold';
       }
-      data.cell.styles.cellBorderColor=[0,0,0];
-      data.cell.styles.lineColor=[0,0,0];
     },
-    margin:{left:lm,right:rm},tableLineColor:[0,0,0],tableLineWidth:0.3,cellBorderColor:[0,0,0]
+    margin:{left:lm,right:rm},tableLineColor:[0,0,0],tableLineWidth:0.5
   });
   let fy=doc.lastAutoTable.finalY;
 
