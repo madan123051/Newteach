@@ -1500,6 +1500,18 @@ function buildInvoicePdf(inv){
   const pw=doc.internal.pageSize.getWidth(); const ph=doc.internal.pageSize.getHeight();
   const lm=10;
 
+  // ── Calculated totals ──
+  const products=inv.products||[];
+  const productTotal=num(inv.productTotal)||products.reduce((s,i)=>s+num(calculateItem(i).lineTotal),0);
+  const deliveryAmt=num(inv.delivery)+num(inv.installation);
+  const subtotalAmt=num(inv.subtotal)||productTotal+deliveryAmt;
+  const taxRate=num(inv.taxRate)||18;
+  const taxAmt=num(inv.taxAmount)||num(inv.tax)||(subtotalAmt*taxRate/100);
+  const halfTax=taxAmt/2;
+  const grandTotal=num(inv.total)||subtotalAmt+taxAmt;
+  const roundoff=Math.round(grandTotal)-grandTotal;
+  const totalQty=products.reduce((s,p)=>s+num(p.quantity),0);
+
   let y=pdfCompanyHeader(doc,'TAX INVOICE');
 
   // ── Customer + Invoice info box ──
@@ -1543,7 +1555,6 @@ function buildInvoicePdf(inv){
   y=y+boxH+1;
 
   // ── Products Table ──
-  const products=inv.products||[];
   const bodyRows=[];
   products.forEach((item,idx)=>{
     const p=calculateItem(item);
