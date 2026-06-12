@@ -1102,16 +1102,16 @@ async function duplicateQuotation(id){
 
 async function downloadQuotationPdf(id){
   const q = calculateQuotation((db.quotations||[]).find(q=>q.id===id)||{});
-  if(q) buildQuotationPdf(q).download(`QuotationNo.${q.quotationNumber}.pdf`);
+  if(q) buildQuotationPdf(q).save(`QuotationNo.${q.quotationNumber}.pdf`);
 }
 
 async function printQuotationPdf(id){
   const q = calculateQuotation((db.quotations||[]).find(q=>q.id===id)||{});
-  if(q) buildQuotationPdf(q).open();
+  if(q) buildQuotationPdf(q).output('dataurlnewwindow');
 }
 
 async function previewCurrentQuotationPdf(){
-  buildQuotationPdf(currentQuotation()).open();
+  buildQuotationPdf(currentQuotation()).output('dataurlnewwindow');
 }
 
 function generateInvoiceNumber(){
@@ -1207,13 +1207,13 @@ async function duplicateInvoice(id){
 }
 async function downloadInvoicePdf(id){
   const inv = calculateInvoice((db.invoices||[]).find(inv=>inv.id===id)||{});
-  if(inv) buildInvoicePdf(inv).download(`InvoiceNo.${inv.invoiceNumber}.pdf`);
+  if(inv) buildInvoicePdf(inv).save(`InvoiceNo.${inv.invoiceNumber}.pdf`);
 }
 async function printInvoicePdf(id){
   const inv = calculateInvoice((db.invoices||[]).find(inv=>inv.id===id)||{});
-  if(inv) buildInvoicePdf(inv).open();
+  if(inv) buildInvoicePdf(inv).output('dataurlnewwindow');
 }
-async function previewCurrentInvoicePdf(){ buildInvoicePdf(currentInvoice()).open(); }
+async function previewCurrentInvoicePdf(){ buildInvoicePdf(currentInvoice()).output('dataurlnewwindow'); }
 function downloadCurrentInvoicePdf(){
   const inv = currentInvoice();
   const doc = buildInvoicePdf(inv);
@@ -1255,13 +1255,13 @@ async function saveWarrantyCard(id){
 }
 async function downloadWarrantyCardPdf(id){
   const wc = (db.warrantyCards||[]).find(wc=>wc.id===id);
-  if(wc) buildWarrantyCardPdf(wc).download(`WarrantyCard.${wc.serialNo}.pdf`);
+  if(wc) buildWarrantyCardPdf(wc).save(`WarrantyCard.${wc.serialNo}.pdf`);
 }
 async function printWarrantyCardPdf(id){
   const wc = (db.warrantyCards||[]).find(wc=>wc.id===id);
-  if(wc) buildWarrantyCardPdf(wc).open();
+  if(wc) buildWarrantyCardPdf(wc).output('dataurlnewwindow');
 }
-function printCurrentWarrantyCardPdf(){ buildWarrantyCardPdf(currentWarrantyCard()).open(); }
+function printCurrentWarrantyCardPdf(){ buildWarrantyCardPdf(currentWarrantyCard()).output('dataurlnewwindow'); }
 function downloadCurrentWarrantyCardPdf(){
   const wc = currentWarrantyCard();
   const doc = buildWarrantyCardPdf(wc);
