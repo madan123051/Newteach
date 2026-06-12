@@ -1377,90 +1377,107 @@ function getLogoBase64(){
   }catch(e){}
   return null;
 }
-const COMPANY_STAMP_INK = [42, 49, 158];
+const COMPANY_STAMP_INK = 'rgba(42,49,158,0.62)';
+const COMPANY_STAMP_PNG_CACHE = {data:null};
 
-function withPdfInk(doc, drawFn){
-  const previousDraw = doc.getDrawColor ? doc.getDrawColor() : '#000000';
-  const previousText = doc.getTextColor ? doc.getTextColor() : '#000000';
-  try{
-    drawFn();
-  } finally {
-    doc.setDrawColor(previousDraw);
-    doc.setTextColor(previousText);
-  }
-}
-
-function addCurvedStampText(doc, text, cx, cy, radius, startDeg, endDeg, options={}){
+function drawTextOnArc(ctx, text, cx, cy, radius, startDeg, endDeg, options={}){
   const chars = String(text).split('');
   if(!chars.length) return;
   const step = chars.length > 1 ? (endDeg - startDeg) / (chars.length - 1) : 0;
-  const reverse = !!options.reverse;
-  const size = options.size || 4.2;
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(size);
+  ctx.save();
+  ctx.font = options.font || '700 24px Arial, sans-serif';
+  ctx.fillStyle = COMPANY_STAMP_INK;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   chars.forEach((ch, i) => {
-    const angle = startDeg + (step * i);
-    const rad = angle * Math.PI / 180;
-    const x = cx + Math.cos(rad) * radius;
-    const y = cy + Math.sin(rad) * radius;
-    const rotation = reverse ? angle + 90 : angle - 90;
-    doc.text(ch, x, y, {align:'center', baseline:'middle', angle: rotation});
+    const angle = (startDeg + step * i) * Math.PI / 180;
+    ctx.save();
+    ctx.translate(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+    ctx.rotate(angle + (options.flip ? -Math.PI / 2 : Math.PI / 2));
+    ctx.fillText(ch, 0, 0);
+    ctx.restore();
   });
+  ctx.restore();
 }
 
-function addHardcodedSignature(doc, x, y, w, h){
-  withPdfInk(doc, () => {
-    doc.setDrawColor(...COMPANY_STAMP_INK);
-    doc.setLineWidth(Math.max(0.35, w * 0.018));
-    const sx = x + w * 0.04;
-    const sy = y + h * 0.55;
-    const strokes = [
-      [[0.00,0.50],[0.03,0.17],[0.10,0.10],[0.18,0.36],[0.24,0.71],[0.28,0.95]],
-      [[0.10,0.29],[0.16,0.62],[0.22,0.88],[0.31,0.72],[0.40,0.25],[0.44,0.18]],
-      [[0.42,0.20],[0.48,0.87],[0.56,0.47],[0.63,0.57],[0.70,0.28],[0.76,0.49],[0.84,0.32],[0.93,0.31]],
-      [[0.48,0.84],[0.63,0.64],[0.78,0.44],[1.00,0.18]]
-    ];
-    strokes.forEach(points => {
-      for(let i=1;i<points.length;i++){
-        const [ax,ay] = points[i-1];
-        const [bx,by] = points[i];
-        doc.line(sx + ax*w, sy - ay*h, sx + bx*w, sy - by*h);
-      }
-    });
-  });
+function drawDemoSignature(ctx, x, y, w, h){
+  ctx.save();
+  ctx.strokeStyle = 'rgba(42,49,158,0.88)';
+  ctx.lineWidth = Math.max(6, w * 0.032);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x + w * 0.02, y + h * 0.62);
+  ctx.bezierCurveTo(x + w * 0.02, y + h * 0.15, x + w * 0.13, y + h * 0.03, x + w * 0.24, y + h * 0.33);
+  ctx.bezierCurveTo(x + w * 0.33, y + h * 0.58, x + w * 0.25, y + h * 0.88, x + w * 0.14, y + h * 0.73);
+  ctx.moveTo(x + w * 0.14, y + h * 0.35);
+  ctx.lineTo(x + w * 0.28, y + h * 0.96);
+  ctx.moveTo(x + w * 0.20, y + h * 0.75);
+  ctx.bezierCurveTo(x + w * 0.32, y + h * 0.68, x + w * 0.44, y + h * 0.35, x + w * 0.48, y + h * 0.18);
+  ctx.bezierCurveTo(x + w * 0.54, y + h * 0.42, x + w * 0.54, y + h * 0.72, x + w * 0.62, y + h * 0.78);
+  ctx.bezierCurveTo(x + w * 0.69, y + h * 0.58, x + w * 0.76, y + h * 0.48, x + w * 0.86, y + h * 0.50);
+  ctx.bezierCurveTo(x + w * 0.94, y + h * 0.50, x + w * 0.98, y + h * 0.37, x + w * 1.02, y + h * 0.31);
+  ctx.moveTo(x + w * 0.50, y + h * 0.82);
+  ctx.lineTo(x + w * 1.10, y + h * 0.30);
+  ctx.stroke();
+  ctx.restore();
 }
 
-function addCompanySignatureStamp(doc, x, y, size){
-  const cx = x + size / 2;
-  const cy = y + size / 2;
-  withPdfInk(doc, () => {
-    doc.setDrawColor(...COMPANY_STAMP_INK);
-    doc.setTextColor(...COMPANY_STAMP_INK);
-    doc.setLineWidth(0.45);
-    doc.circle(cx, cy, size * 0.49, 'S');
-    doc.setLineWidth(0.3);
-    doc.circle(cx, cy, size * 0.36, 'S');
-    addCurvedStampText(doc, 'NewTech Home Solutions', cx, cy, size * 0.415, 205, 335, {size:size*0.095});
-    addCurvedStampText(doc, 'Interiors', cx, cy, size * 0.415, 132, 48, {size:size*0.12, reverse:true});
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(size * 0.145);
-    doc.text('New Delhi', cx, cy + size * 0.03, {align:'center'});
-    doc.setFontSize(size * 0.13);
-    doc.text('★', x + size * 0.18, y + size * 0.66, {align:'center'});
-    doc.text('★', x + size * 0.82, y + size * 0.66, {align:'center'});
-  });
-  addHardcodedSignature(doc, x - size * 0.28, y + size * 0.03, size * 0.98, size * 0.42);
+function getCompanySignatureStampPng(){
+  if(COMPANY_STAMP_PNG_CACHE.data) return COMPANY_STAMP_PNG_CACHE.data;
+  const canvas = document.createElement('canvas');
+  canvas.width = 720;
+  canvas.height = 430;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.save();
+  ctx.fillStyle = '#111111';
+  ctx.font = '700 32px Arial, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText('For NewTech Home Solutions', 80, 24);
+  ctx.restore();
+
+  ctx.save();
+  ctx.strokeStyle = COMPANY_STAMP_INK;
+  ctx.fillStyle = COMPANY_STAMP_INK;
+  ctx.lineWidth = 5;
+  const cx = 405;
+  const cy = 182;
+  const outer = 126;
+  const inner = 78;
+  ctx.beginPath(); ctx.arc(cx, cy, outer, 0, Math.PI * 2); ctx.stroke();
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(cx, cy, inner, 0, Math.PI * 2); ctx.stroke();
+  drawTextOnArc(ctx, 'NewTech Home Solutions', cx, cy, 103, 218, 322, {font:'700 20px Arial, sans-serif'});
+  drawTextOnArc(ctx, 'Interiors', cx, cy, 103, 132, 48, {font:'700 25px Arial, sans-serif', flip:true});
+  ctx.font = '700 25px Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('New Delhi', cx, cy);
+  ctx.font = '700 24px Arial, sans-serif';
+  ctx.fillText('★', cx - 86, cy + 60);
+  ctx.fillText('★', cx + 86, cy + 60);
+  ctx.restore();
+
+  drawDemoSignature(ctx, 52, 68, 330, 128);
+
+  ctx.save();
+  ctx.fillStyle = '#111111';
+  ctx.font = '400 30px Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('Authorised Signatory', 360, 324);
+  ctx.restore();
+
+  COMPANY_STAMP_PNG_CACHE.data = canvas.toDataURL('image/png');
+  return COMPANY_STAMP_PNG_CACHE.data;
 }
 
-function addPdfAuthorisedSignature(doc, x, y, size, labelY){
-  addCompanySignatureStamp(doc, x, y, size);
-  doc.setTextColor(0,0,0);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(8.5);
-  doc.text('For NewTech Home Solutions', x + size, y + 6, {align:'right'});
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(7.5);
-  doc.text('Authorised Signatory', x + size, labelY, {align:'right'});
+function addPdfAuthorisedSignature(doc, x, y, w, h){
+  const stamp = getCompanySignatureStampPng();
+  doc.addImage(stamp, 'PNG', x, y, w, h);
 }
 
 function pdfCompanyHeader(doc, title){
@@ -1650,7 +1667,7 @@ function buildQuotationPdf(q){
   doc.text('Advance : /-',lm,fy);
   doc.text('Outstanding : /-',lm,fy+5);
   // Company stamp + signature (hardcoded to match the demo)
-  addPdfAuthorisedSignature(doc, pw-lm-34, fy-9, 34, fy+24);
+  addPdfAuthorisedSignature(doc, pw-lm-72, fy-18, 72, 43);
 
   doc.setFontSize(7); doc.text('computer generated',pw/2,ph-5,{align:'center'});
   return doc;
@@ -1810,7 +1827,7 @@ function buildInvoicePdf(inv){
   fy+=4;
 
   // Company stamp + signature (hardcoded to match the demo)
-  addPdfAuthorisedSignature(doc, pw-lm-34, fy-9, 34, fy+24);
+  addPdfAuthorisedSignature(doc, pw-lm-72, fy-18, 72, 43);
   doc.setFontSize(7); doc.text('computer generated',pw/2,ph-5,{align:'center'});
   return doc;
 }
@@ -1876,7 +1893,7 @@ function buildWarrantyCardPdf(wc){
   doc.setLineWidth(0.2); doc.line(lx+22,cy+0.5,lx+70,cy+0.5);
   doc.text(wc.installedBy||'',lx+24,cy);
   // Company stamp + signature (hardcoded to match the demo)
-  addPdfAuthorisedSignature(doc, pw-lm-38, cy-33, 34, cy-2);
+  addPdfAuthorisedSignature(doc, pw-lm-76, cy-40, 72, 43);
 
   // ── Card 2: Terms & Conditions ──
   const c2y=c1y+c1h+6, c2h=ph-c2y-10;
