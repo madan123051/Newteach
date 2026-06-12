@@ -1496,7 +1496,7 @@ function buildQuotationPdf(q){
   // Company Stamp (hardcoded)
   try{ doc.addImage(COMPANY_STAMP_B64,'PNG',pw-lm-28,fy-5,28,28); }catch(e){}
   doc.setFont('helvetica','normal');
-  doc.text('Authorised Signatory',pw-lm,fy+26,{align:'right'});
+  doc.text('Authorised Signatory',pw-lm,fy+19,{align:'right'});
 
   doc.setFontSize(7); doc.text('computer generated',pw/2,ph-5,{align:'center'});
   return doc;
@@ -1654,7 +1654,7 @@ function buildInvoicePdf(inv){
   // Stamp (hardcoded)
   try{ doc.addImage(COMPANY_STAMP_B64,'PNG',pw-lm-28,fy-5,28,28); }catch(e){}
   doc.setFont('helvetica','normal');
-  doc.text('Authorised Signatory',pw-lm,fy+26,{align:'right'});
+  doc.text('Authorised Signatory',pw-lm,fy+19,{align:'right'});
   doc.setFontSize(7); doc.text('computer generated',pw/2,ph-5,{align:'center'});
   return doc;
 }
@@ -1722,7 +1722,7 @@ function buildWarrantyCardPdf(wc){
   // Company Stamp (hardcoded)
   try{ doc.addImage(COMPANY_STAMP_B64,'PNG',pw-lm-30,cy-26,28,28); }catch(e){}
   doc.setFont('helvetica','bold');
-  doc.text('Authorised Signatory',pw-lm-5,cy+4,{align:'right'});
+  doc.text('Authorised Signatory',pw-lm-5,cy-2,{align:'right'});
 
   // ── Card 2: Terms & Conditions ──
   const c2y=c1y+c1h+6, c2h=ph-c2y-10;
