@@ -921,6 +921,7 @@ const QUOTE_UNITS = ['Sq Ft','Sq Meter','CM','MM'];
 const TAX_OPTIONS = [{label:'No Tax',value:0},{label:'GST 5%',value:5},{label:'GST 12%',value:12},{label:'GST 18%',value:18},{label:'Custom Tax',value:'custom'}];
 
 function currency(n){const value = Number(n||0); return 'Rs. ' + value.toLocaleString('en-IN',{maximumFractionDigits:2});}
+function currency2(n){const value = Number(n||0); return value.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function num(v){return Number(v||0)||0;}
 function todayISO(){return new Date().toISOString().slice(0,10);}
 function generateQuotationNumber(){
