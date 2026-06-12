@@ -1568,14 +1568,18 @@ function buildQuotationPdf(q){
   doc.text('Outstanding : /-',lm,fy+5);
   // Company Signature & Stamp
   const sigName = q.signatory || COMPANY_PROFILE.name;
+  
+  // Stamp (50x50)
+  const stampY = fy - 10;
+  try { doc.addImage(COMPANY_STAMP_B64, 'PNG', pw - lm - 50, stampY, 50, 50); } catch (e) {}
+
+  // Top text: overlapping stamp top by ~5mm (10%)
   doc.setFontSize(10); doc.setFont('helvetica', 'bold');
-  doc.text(sigName, pw - lm, fy - 5, { align: 'right' });
+  doc.text(sigName, pw - lm, stampY + 5, { align: 'right' });
   
-  // Significantly Larger Company Stamp (50x50) positioned to touch Authorised Signatory
-  try { doc.addImage(COMPANY_STAMP_B64, 'PNG', pw - lm - 50, fy - 8, 50, 50); } catch (e) {}
-  
+  // Bottom text: touching stamp bottom exactly
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-  doc.text('Authorised Signatory', pw - lm, fy + 38, { align: 'right' });
+  doc.text('Authorised Signatory', pw - lm, stampY + 50, { align: 'right' });
 
   doc.setFontSize(7); doc.text('computer generated',pw/2,ph-5,{align:'center'});
   return doc;
@@ -1736,14 +1740,18 @@ function buildInvoicePdf(inv){
 
   // Company Signature & Stamp
   const invSigName = inv.signatory || COMPANY_PROFILE.name;
+  
+  // Stamp (50x50)
+  const stampYInv = fy - 10;
+  try { doc.addImage(COMPANY_STAMP_B64, 'PNG', pw - lm - 50, stampYInv, 50, 50); } catch (e) {}
+
+  // Top text: overlapping stamp top by ~5mm (10%)
   doc.setFontSize(10); doc.setFont('helvetica', 'bold');
-  doc.text(invSigName, pw - lm, fy - 5, { align: 'right' });
+  doc.text(invSigName, pw - lm, stampYInv + 5, { align: 'right' });
   
-  // Significantly Larger Company Stamp (50x50) positioned to touch Authorised Signatory
-  try { doc.addImage(COMPANY_STAMP_B64, 'PNG', pw - lm - 50, fy - 8, 50, 50); } catch (e) {}
-  
+  // Bottom text: touching stamp bottom exactly
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-  doc.text('Authorised Signatory', pw - lm, fy + 38, { align: 'right' });
+  doc.text('Authorised Signatory', pw - lm, stampYInv + 50, { align: 'right' });
   doc.setFontSize(7); doc.text('computer generated',pw/2,ph-5,{align:'center'});
   return doc;
 }
@@ -1809,14 +1817,17 @@ function buildWarrantyCardPdf(wc){
   doc.setLineWidth(0.2); doc.line(lx+22,cy+0.5,lx+70,cy+0.5);
   doc.text(wc.installedBy||'',lx+24,cy);
   // Company Signature & Stamp
+  const stampYWc = cy - 60;
+  // Stamp (50x50)
+  try { doc.addImage(COMPANY_STAMP_B64, 'PNG', pw - lm - 55, stampYWc, 50, 50); } catch (e) {}
+
+  // Top text: overlapping stamp top by ~5mm (10%)
   doc.setFontSize(10); doc.setFont('helvetica', 'bold');
-  doc.text(COMPANY_PROFILE.name, pw - lm - 5, cy - 52, { align: 'right' });
+  doc.text(COMPANY_PROFILE.name, pw - lm - 5, stampYWc + 5, { align: 'right' });
   
-  // Significantly Larger Company Stamp (50x50) positioned to touch Authorised Signatory
-  try { doc.addImage(COMPANY_STAMP_B64, 'PNG', pw - lm - 55, cy - 55, 50, 50); } catch (e) {}
-  
+  // Bottom text: touching stamp bottom exactly
   doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
-  doc.text('Authorised Signatory', pw - lm - 5, cy - 12, { align: 'right' });
+  doc.text('Authorised Signatory', pw - lm - 5, stampYWc + 50, { align: 'right' });
 
   // ── Card 2: Terms & Conditions ──
   const c2y=c1y+c1h+6, c2h=ph-c2y-10;
