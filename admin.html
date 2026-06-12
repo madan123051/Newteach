@@ -1428,7 +1428,7 @@ function buildQuotationPdf(q){
     theme:'grid',
     headStyles:{fillColor:[255,255,255],textColor:[0,0,0],fontStyle:'bold',lineColor:[0,0,0],lineWidth:0.3,fontSize:8,halign:'center',valign:'middle',cellPadding:2},
     bodyStyles:{fillColor:[255,255,255],textColor:[0,0,0],lineColor:[0,0,0],lineWidth:0.2,fontSize:8,cellPadding:2},
-    columnStyles:{0:{cellWidth:10,halign:'center'},1:{cellWidth:72},2:{cellWidth:18,halign:'center'},3:{cellWidth:24,halign:'center'},4:{cellWidth:24,halign:'center'},5:{cellWidth:24,halign:'right'}},
+    columnStyles:{0:{cellWidth:10,halign:'center'},1:{cellWidth:82},2:{cellWidth:22,halign:'center'},3:{cellWidth:26,halign:'center'},4:{cellWidth:25,halign:'center'},5:{cellWidth:25,halign:'right'}},
     margin:{left:lm,right:lm},tableLineColor:[0,0,0],tableLineWidth:0.3
   });
   let fy=doc.lastAutoTable.finalY;
@@ -1452,7 +1452,7 @@ function buildQuotationPdf(q){
   doc.autoTable({
     startY:fy,body:totRows,theme:'grid',
     bodyStyles:{fillColor:[255,255,255],textColor:[0,0,0],lineColor:[0,0,0],lineWidth:0.2,fontSize:8,cellPadding:2},
-    columnStyles:{0:{cellWidth:10},1:{cellWidth:72,fontStyle:'bold'},2:{cellWidth:18,halign:'center'},3:{cellWidth:24},4:{cellWidth:24},5:{cellWidth:24,halign:'right',fontStyle:'bold'}},
+    columnStyles:{0:{cellWidth:10},1:{cellWidth:82,fontStyle:'bold'},2:{cellWidth:22,halign:'center'},3:{cellWidth:26},4:{cellWidth:25},5:{cellWidth:25,halign:'right',fontStyle:'bold'}},
     margin:{left:lm,right:lm},tableLineColor:[0,0,0],tableLineWidth:0.3
   });
   fy=doc.lastAutoTable.finalY;
@@ -1460,7 +1460,7 @@ function buildQuotationPdf(q){
   doc.autoTable({
     startY:fy,body:[['','Total Payable Amount','','','',Math.round(grandTotal).toFixed(2)]],theme:'grid',
     bodyStyles:{fillColor:[255,255,255],textColor:[0,0,0],lineColor:[0,0,0],lineWidth:0.4,fontSize:9,fontStyle:'bold',cellPadding:2},
-    columnStyles:{0:{cellWidth:10},1:{cellWidth:72},2:{cellWidth:18},3:{cellWidth:24},4:{cellWidth:24},5:{cellWidth:24,halign:'right'}},
+    columnStyles:{0:{cellWidth:10},1:{cellWidth:82},2:{cellWidth:22},3:{cellWidth:26},4:{cellWidth:25},5:{cellWidth:25,halign:'right'}},
     margin:{left:lm,right:lm},tableLineColor:[0,0,0],tableLineWidth:0.4
   });
   fy=doc.lastAutoTable.finalY+2;
