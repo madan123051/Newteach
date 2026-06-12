@@ -1118,8 +1118,13 @@ async function previewCurrentQuotationPdf(){
 function generateInvoiceNumber(){
   const d = new Date();
   const y = d.getFullYear();
-  const count = (db.invoices||[]).filter(inv => String(inv.invoiceNumber||'').includes('INV-'+y)).length + 1;
-  return `INV-${y}-${String(count).padStart(4,'0')}`;
+  const ny = y + 1;
+  const prefix = y + '-' + String(ny).slice(2);
+  const count = (db.invoices||[]).filter(inv => {
+    const num = String(inv.invoiceNumber||'');
+    return num.startsWith(prefix) || num.includes('INV-'+y);
+  }).length + 1;
+  return prefix + '/' + String(count).padStart(3,'0');
 }
 
 function generateWarrantySerial(){
@@ -1531,7 +1536,8 @@ function buildInvoicePdf(inv){
     doc.setFont('helvetica','normal'); doc.text(String(val||''),x2,yy);
   }
 
-  lbl('To.',ic.name||inv.customerName||'',lx,vx,lby);
+  doc.setFont('helvetica','bold'); doc.text('To,',lx,lby);
+  doc.setFont('helvetica','bold'); doc.text(String(ic.name||inv.customerName||''),vx,lby);
   lby+=4.5;
   doc.setFont('helvetica','bold'); doc.text('Address :',lx,lby);
   doc.setFont('helvetica','normal');
@@ -1543,10 +1549,9 @@ function buildInvoicePdf(inv){
 
   const rx=lm+leftW+3, rlblW=24;
   let rby=y+5;
-  lbl('Date :',inv.invoiceDate||'',rx,rx+rlblW,rby);
+  const fmtDate=inv.invoiceDate?(inv.invoiceDate.split('-').reverse().join('.')):'';  lbl('Date :',fmtDate,rx,rx+rlblW,rby);
   rby+=5;
-  const invYr=inv.invoiceDate?(inv.invoiceDate.slice(2,4)+'-'+String(parseInt(inv.invoiceDate.slice(2,4))+1)):'';
-  lbl('Invoice No.',invYr+'/'+String(inv.invoiceNumber||'').replace(/[^\d]/g,''),rx,rx+rlblW,rby);
+  lbl('Invoice No.',inv.invoiceNumber||'',rx,rx+rlblW,rby);
   rby+=5; doc.setFont('helvetica','bold'); doc.text('Ref.',rx,rby);
   rby+=5; doc.setFont('helvetica','bold'); doc.text('Delivery Add :',rx,rby);
   doc.setFont('helvetica','normal');
@@ -1576,7 +1581,7 @@ function buildInvoicePdf(inv){
   const productCount=bodyRows.length;
   const allRows=[...bodyRows,
     ['','Total','','','','',currency2(productTotal)],
-    ['','Transportation & Installation Charges','','',String(totalQty||''),'',currency2(deliveryAmt)],
+    ['','Transportation & Installation Charges','',String(totalQty||''),'','',currency2(deliveryAmt)],
     ['','Sub Total (Without GST)','','','','',currency2(subtotalAmt)],
     ['','CGST @ '+(taxRate/2)+'%','','','','',currency2(halfTax)],
     ['','SGST @ '+(taxRate/2)+'%','','','','',currency2(halfTax)]
